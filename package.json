@@ -38,5 +38,8 @@
 	"dependencies": {
 		"pocketbase": "^0.25.2",
 		"svelte-maplibre": "^1.0.0"
+	},
+	"browser": {
+		"crypto": false
 	}
 }
