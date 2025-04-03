@@ -1,6 +1,8 @@
 import { pb } from '$lib/pocketbase';
 import { redirect } from '@sveltejs/kit';
 
+export const prerender = true;
+
 export const load = async ({ url }) => {
     // List of public routes that don't require authentication
     const publicRoutes = ['/login', '/register'];

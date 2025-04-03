@@ -11,9 +11,12 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test:e2e": "playwright test",
-		"test": "npm run test:e2e"
+		"test": "npm run test:e2e",
+		"machine-translate": "inlang machine translate --project project.inlang"
 	},
 	"devDependencies": {
+		"@inlang/cli": "^3.0.0",
+		"@inlang/paraglide-js": "2.0.10",
 		"@playwright/test": "^1.49.1",
 		"@sveltejs/adapter-auto": "^4.0.0",
 		"@sveltejs/kit": "^2.16.0",
@@ -33,6 +36,7 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
-		"pocketbase": "^0.25.2"
+		"pocketbase": "^0.25.2",
+		"svelte-maplibre": "^1.0.0"
 	}
 }

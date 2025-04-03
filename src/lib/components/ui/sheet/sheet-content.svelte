@@ -33,7 +33,7 @@
 		{inTransitionConfig}
 		{outTransition}
 		{outTransitionConfig}
-		class={cn(sheetVariants({ side }), className, "bg-midnight border-none")}
+		class={cn(sheetVariants({ side }), className, "bg-midnight border-none flex flex-col gap-2")}
 		{...$$restProps}
 	>
 		<slot />
