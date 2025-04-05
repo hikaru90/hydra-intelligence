@@ -1,6 +1,7 @@
 <script lang="ts">
     import { pb } from '$lib/pocketbase';
     import { goto } from '$app/navigation';
+  import { m } from '$src/paraglide/messages';
 
     let email = '';
     let password = '';
@@ -16,17 +17,17 @@
     }
 </script>
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
         <div>
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Sign in to your account
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-emerald-500">
+                {m.loginToAccount()}
             </h2>
         </div>
         <form class="mt-8 space-y-6" on:submit|preventDefault={handleSubmit}>
             <div class="rounded-md shadow-sm -space-y-px">
                 <div>
-                    <label for="email" class="sr-only">Email address</label>
+                    <label for="email" class="sr-only">{m.email()}</label>
                     <input
                         id="email"
                         name="email"
@@ -38,7 +39,7 @@
                     />
                 </div>
                 <div>
-                    <label for="password" class="sr-only">Password</label>
+                    <label for="password" class="sr-only">{m.password()}</label>
                     <input
                         id="password"
                         name="password"
@@ -55,12 +56,15 @@
                 <p class="text-red-500 text-sm text-center">{error}</p>
             {/if}
 
+            <a href="/register" class="text-center text-sm text-white/60 hover:text-white  mb-6 block">
+                {m.noAccount()}
+            </a>
             <div>
                 <button
                     type="submit"
-                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                 >
-                    Sign in
+                {m.login()}
                 </button>
             </div>
         </form>

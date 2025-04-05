@@ -3,5 +3,20 @@
   "example_message": "Guten Tag {username}",
   "login": "einloggen",
   "logout": "ausloggen",
-  "profile": "Profil"
+  "profile": "Profil",
+  "register": "registrieren",
+  "loginToAccount": "In Konto einloggen",
+  "email": "E-Mail",
+  "password": "Passwort",
+  "confirmPassword": "Passwort bestätigen",
+  "createAccount": "Konto erstellen",
+  "noAccount": "Kein Konto? Registrieren.",
+  "hasAccount": "Hast du bereits ein Konto? Zum Login.",
+  "addHydra": "Hydra hinzufügen",
+  "chooseLocation": "Standort der Hydra auswählen",
+  "addingHydraAt": "Hydra wird an folgendem Standort hinzugefügt:",
+  "orderId": "Bestellnummer",
+  "orderIdInvalid": "Die Bestellnummer ist ungültig",
+  "orderIdAlreadyDeployed": "Die Hydra mit dieser Bestellnummer wurde bereits registriert",
+  "hydraLabel": "Hydra Label"
 }

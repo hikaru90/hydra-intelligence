@@ -3,5 +3,20 @@
   "example_message": "Hello world {username}",
     "login": "login",
     "logout": "logout",
-    "profile": "profile"
+    "profile": "profile",
+    "register": "register",
+    "loginToAccount": "Login to your account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "createAccount": "Create account",
+    "noAccount": "Don't have an account? Register",
+    "hasAccount": "Already have an account? Login",
+    "addHydra": "Add Hydra",
+    "chooseLocation": "Choose location for Hydra deployment",
+    "addingHydraAt": "Hydra will be deployed at the following location:",
+    "orderId": "Order ID",
+    "orderIdInvalid": "The order ID is invalid",
+    "orderIdAlreadyDeployed": "The Hydra with this order Id has already been deployed",
+    "hydraLabel": "Hydra Label"
 }

@@ -1,5 +1,6 @@
 import { pb } from '$lib/pocketbase';
 import { redirect } from '@sveltejs/kit';
+import { goto } from '$app/navigation';
 
 export const prerender = true;
 
@@ -8,17 +9,20 @@ export const load = async ({ url }) => {
     const publicRoutes = ['/login', '/register'];
     const isPublicRoute = publicRoutes.includes(url.pathname);
     const isRootPath = url.pathname === '/';
+    
 
     // Check if user is authenticated
     const isAuthenticated = pb.authStore.isValid;
 
     // If authenticated and on a public route, redirect to home
-    if (isAuthenticated && isPublicRoute) {
-        throw redirect(303, '/');
+    if (isAuthenticated && isPublicRoute && !isRootPath) {
+        console.log('redirect to home');
+        goto('/');
+        // throw redirect(303, '/');
     }
 
     // If not authenticated and on a protected route (excluding root path)
-    if (!isAuthenticated && !isPublicRoute && !isRootPath) {
+    if (!isAuthenticated && !isPublicRoute) {
         throw redirect(303, '/login');
     }
 
