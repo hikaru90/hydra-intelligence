@@ -28,7 +28,7 @@
   }
 </script>
 
-<nav class="max-container py-4 {className} pointer-events-none px-4 sm:px-6 lg:px-8">
+<nav class="py-4 {className} pointer-events-none px-4 sm:px-6 lg:px-8">
   <div class="flex justify-between">
     <div class="flex pointer-events-auto">
       <a

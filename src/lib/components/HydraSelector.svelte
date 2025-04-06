@@ -86,6 +86,6 @@
     @apply flex-shrink-0 bg-emerald-500/10 first:rounded-l-md last:rounded-r-md px-2 py-2 text-start;
   }
   .cell.selected {
-    @apply bg-emerald-600 text-emerald-900;
+    @apply bg-emerald-600 text-black;
   }
 </style>

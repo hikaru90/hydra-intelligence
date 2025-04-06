@@ -11,18 +11,11 @@
   import type { PageProps } from "./$types";
   import Marquee from "$lib/components/Marquee.svelte";
   import HydraSelector from "$lib/components/HydraSelector.svelte";
-
+  import HydraTemp from "$lib/components/HydraTemp.svelte";
+  import type { Hydra } from "$lib/types";
   let { data }: PageProps = $props();
 
   console.log("data", data);
-
-  interface Hydra {
-    id: string;
-    deployed: boolean;
-    lon: number;
-    lat: number;
-    label: string;
-  }
 
   let hydras = $state<Hydra[]>([]);
 
@@ -97,7 +90,6 @@
   };
 
   const selectHydra = (hydra: Hydra) => {
-    console.log(hydra);
     selectedHydra = hydra;
     mapInstance?.flyTo({
       center: [hydra.lon, hydra.lat],
@@ -201,8 +193,7 @@
     <div class="py-8">
       <h2 class="text-2xl font-bold">{m.hydras()}</h2>
       <HydraSelector {hydras} selectHydra={selectHydra} selectedHydra={selectedHydra} class="my-6" />
-      <h2 class="text-2xl font-bold">{m.charts()}</h2>
-      <HydraTemp {hydras} selectedHydra={selectedHydra} class="my-6" />
+      <HydraTemp selectedHydra={selectedHydra} class="my-6" />
     </div>
   </div>
 </div>

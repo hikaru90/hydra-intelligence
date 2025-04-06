@@ -23,5 +23,7 @@
     "hydraLat": "Latitude",
     "hydraCreated": "Created at",
     "hydras": "Hydras",
-    "charts": "Charts"
+    "charts": "Charts",
+    "time": "Time",
+    "temperature": "Temperature"
 }
