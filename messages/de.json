@@ -18,5 +18,10 @@
   "orderId": "Bestellnummer",
   "orderIdInvalid": "Die Bestellnummer ist ungültig",
   "orderIdAlreadyDeployed": "Die Hydra mit dieser Bestellnummer wurde bereits registriert",
-  "hydraLabel": "Hydra Label"
+  "hydraLabel": "Hydra Label",
+  "hydraLon": "Längengrad",
+  "hydraLat": "Breitengrad",
+  "hydraCreated": "Erstellt am",
+  "hydras": "Hydras",
+  "charts": "Charts"
 }

@@ -28,7 +28,7 @@
   }
 </script>
 
-<nav class="max-container py-4 {className} pointer-events-none">
+<nav class="max-container py-4 {className} pointer-events-none px-4 sm:px-6 lg:px-8">
   <div class="flex justify-between">
     <div class="flex pointer-events-auto">
       <a
@@ -41,7 +41,7 @@
     <div class="flex items-center gap-2 pointer-events-auto">
       {#if data.isAuthenticated}
         <button
-          on:click={() => eventBus.emit("ADD_MARKER")}
+          onclick={() => eventBus.emit("ADD_MARKER")}
           class="cursor-pointer bg-midnight text-yellow-200 rounded-full p-2 flex items-center justify-center gap-2 size-16"
         >
           <BadgePlus class="size-5" />

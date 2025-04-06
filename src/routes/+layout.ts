@@ -6,7 +6,7 @@ export const prerender = true;
 
 export const load = async ({ url }) => {
     // List of public routes that don't require authentication
-    const publicRoutes = ['/login', '/register'];
+    const publicRoutes = ['/login', '/register', '/view'];
     const isPublicRoute = publicRoutes.includes(url.pathname);
     const isRootPath = url.pathname === '/';
     
@@ -17,7 +17,7 @@ export const load = async ({ url }) => {
     // If authenticated and on a public route, redirect to home
     if (isAuthenticated && isPublicRoute && !isRootPath) {
         console.log('redirect to home');
-        goto('/');
+        goto(url);
         // throw redirect(303, '/');
     }
 

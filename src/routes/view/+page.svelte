@@ -10,6 +10,7 @@
   import { pb } from "$lib/pocketbase.js";
   import type { PageProps } from "./$types";
   import Marquee from "$lib/components/Marquee.svelte";
+  import HydraSelector from "$lib/components/HydraSelector.svelte";
 
   let { data }: PageProps = $props();
 
@@ -36,7 +37,7 @@
   let orderIdAlreadyDeployed: boolean = $state(false);
   let hydraLabel: string = $state("");
   let validationRunning = $state(false);
-
+  let selectedHydra: Hydra | null = $state(null);
   const getHydras = async () => {
     const userId = pb.authStore.model?.id;
     const filter = `customer = '${userId}' && deployed = true`;
@@ -93,6 +94,15 @@
     } finally {
       isAddingHydra = false;
     }
+  };
+
+  const selectHydra = (hydra: Hydra) => {
+    console.log(hydra);
+    selectedHydra = hydra;
+    mapInstance?.flyTo({
+      center: [hydra.lon, hydra.lat],
+      duration: 1000,
+    });
   };
 
   onMount(() => {
@@ -154,7 +164,7 @@
   });
 </script>
 
-<div class="top-0 left-0 z-0 w-dvw h-dvh fixed">
+<div class="">
   {#if isAddingMarker}
     <div
       class="flex items-center justify-center gap-2 absolute bottom-6 left-1/2 -translate-x-1/2 z-20"
@@ -168,23 +178,32 @@
       </button>
     </div>
   {/if}
-  <div class="relative w-full h-full" bind:this={mapContainer}>
+  <div class="relative w-full h-[400px]" bind:this={mapContainer}>
     <MapLibre
       dragRotate={false}
       center={[10.1560948, 54.3302994]}
       zoom={14}
       style="/dark.json"
       bind:map={mapInstance}
+      attributionControl={false}
     >
       {#each hydras as hydra}
-        <Marker lngLat={[hydra.lon, hydra.lat]}>
-          <div class="size-5 relative">
-            <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500 to-emerald-500/0 rounded-full"></div>
-            <div class="absolute inset-0 bg-emerald-500 rounded-full animate-ping"></div>
-          </div>
+        <Marker onclick={() => selectHydra(hydra)} lngLat={[hydra.lon, hydra.lat]} class="relative size-5 rounded-full {selectedHydra?.id === hydra.id ? 'bg-emerald-500' : 'bg-emerald-500/40'}">
+          <div
+            class="absolute top-0 left-0 w-full h-full {selectedHydra?.id === hydra.id ? 'bg-emerald-500' : 'bg-emerald-500/40'} rounded-full animate-ping"
+          ></div>
         </Marker>
       {/each}
     </MapLibre>
+  </div>
+
+  <div class="max-container">
+    <div class="py-8">
+      <h2 class="text-2xl font-bold">{m.hydras()}</h2>
+      <HydraSelector {hydras} selectHydra={selectHydra} selectedHydra={selectedHydra} class="my-6" />
+      <h2 class="text-2xl font-bold">{m.charts()}</h2>
+      <HydraTemp {hydras} selectedHydra={selectedHydra} class="my-6" />
+    </div>
   </div>
 </div>
 

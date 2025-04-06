@@ -18,5 +18,10 @@
     "orderId": "Order ID",
     "orderIdInvalid": "The order ID is invalid",
     "orderIdAlreadyDeployed": "The Hydra with this order Id has already been deployed",
-    "hydraLabel": "Hydra Label"
+    "hydraLabel": "Hydra Label",
+    "hydraLon": "Longitude",
+    "hydraLat": "Latitude",
+    "hydraCreated": "Created at",
+    "hydras": "Hydras",
+    "charts": "Charts"
 }

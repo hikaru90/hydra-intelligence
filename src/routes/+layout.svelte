@@ -13,9 +13,9 @@
   {/each}
 </div>
 <div class="min-h-screen bg-cyan-950 text-emerald-500">
-  <Navbar {data} class="relative z-10" />
+  <Navbar {data} class="absolute top-4 left-0 w-full z-10" />
 
-  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+  <main>
     {@render children()}
   </main>
 </div>
@@ -23,6 +23,6 @@
 <style>
   @reference "tailwindcss";
   :global(.max-container) {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-7xl px-4 md:mx-auto;
   }
 </style>
