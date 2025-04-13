@@ -3,8 +3,11 @@
   import Navbar from "$lib/components/Navbar.svelte";
   import { page } from '$app/state';
   import { locales, localizeHref } from '$src/paraglide/runtime';
-
+  import { Toaster } from "$lib/components/ui/sonner";
+  import { user } from '$lib/stores/auth';
   let { children, data } = $props();
+  
+  user.set(data.user);
 </script>
 
 <div style="display:none">
@@ -18,6 +21,8 @@
   <main>
     {@render children()}
   </main>
+  
+  <Toaster />
 </div>
 
 <style>

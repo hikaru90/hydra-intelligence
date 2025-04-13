@@ -10,7 +10,8 @@
   import { pb } from "$lib/pocketbase.js";
   import type { PageProps } from "./$types";
   import Marquee from "$lib/components/Marquee.svelte";
-
+  import { user } from "$lib/stores/auth";
+  
   let { data }: PageProps = $props();
 
   console.log("data", data);
@@ -30,6 +31,8 @@
   let isAddingMarker = $state(false);
   let isAddingHydra = $state(false);
   let newMarkerPosition: [number, number] | null = $state(null);
+  let cursorPosition: [number, number] | null = $state(null);
+  let tooltipPosition: { x: number; y: number } | null = $state(null);
   let orderId: string = $state("");
   let orderIdTouched: boolean = $state(false);
   let orderIdIsValid: boolean = $state(false);
@@ -38,8 +41,7 @@
   let validationRunning = $state(false);
 
   const getHydras = async () => {
-    const userId = pb.authStore.model?.id;
-    const filter = `customer = '${userId}' && deployed = true`;
+    const filter = `customer = '${$user.id}' && deployed = true`;
     const records = await pb.collection("orders").getFullList<Hydra>({
       filter: filter,
     });
@@ -95,6 +97,18 @@
     }
   };
 
+  const handleMouseMove = (event: any) => {
+    if (isAddingMarker && mapInstance) {
+      const canvas = mapInstance.getCanvas();
+      const rect = canvas.getBoundingClientRect();
+      cursorPosition = [event.lngLat.lng, event.lngLat.lat];
+      tooltipPosition = {
+        x: event.point.x,
+        y: event.point.y
+      };
+    }
+  };
+
   onMount(() => {
     getHydras();
 
@@ -110,6 +124,7 @@
 
     if (mapInstance) {
       mapInstance.on("click", handleMapClick);
+      mapInstance.on("mousemove", handleMouseMove);
     }
 
     // Subscribe to event bus
@@ -148,6 +163,7 @@
       resizeObserver.disconnect();
       if (mapInstance) {
         mapInstance.off("click", handleMapClick);
+        mapInstance.off("mousemove", handleMouseMove);
       }
       unsubscribe();
     };
@@ -167,6 +183,14 @@
         <X class="size-5" />
       </button>
     </div>
+    {#if cursorPosition && tooltipPosition}
+      <div
+        class="fixed z-20 bg-midnight text-yellow-200 px-2 py-1 rounded-md text-sm pointer-events-none"
+        style="left: {tooltipPosition.x}px; top: {tooltipPosition.y}px; transform: translate(-50%, -120%) translateY(-8px)"
+      >
+        {cursorPosition[0].toFixed(6)}, {cursorPosition[1].toFixed(6)}
+      </div>
+    {/if}
   {/if}
   <div class="relative w-full h-full" bind:this={mapContainer}>
     <MapLibre
@@ -179,7 +203,7 @@
       {#each hydras as hydra}
         <Marker lngLat={[hydra.lon, hydra.lat]}>
           <div class="size-5 relative">
-            <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500 to-emerald-500/0 rounded-full"></div>
+            <div class="absolute inset-0 bg-emerald-500 rounded-full"></div>
             <div class="absolute inset-0 bg-emerald-500 rounded-full animate-ping"></div>
           </div>
         </Marker>

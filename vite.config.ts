@@ -15,7 +15,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      $src: path.resolve('./src')  // Create $src alias
+      $src: path.resolve('./src'),
+      $store: path.resolve('./src/lib/stores')
     }
   },
 });

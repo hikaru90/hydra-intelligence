@@ -2,7 +2,7 @@
   import type { Hydra } from "$lib/types";
   import { pb } from "$lib/pocketbase";
   import type { RecordModel } from "pocketbase";
-  import { RefreshCcw } from "lucide-svelte";
+  import { RefreshCcw } from "lucide-svelte/icons";
   import { m } from "$src/paraglide/messages.js";
   import * as Select from "$lib/components/ui/select/index.js";
   import { scaleOrdinal, scaleSequential, scaleTime } from 'd3-scale';
@@ -49,7 +49,7 @@
   const getData = async () => {
     if (!selectedHydra) return;
     refreshing = true;
-    const filter = `device = "${selectedHydra.id}" && created >= "${startTime.toISOString()}" && created <= "${endTime.toISOString()}"`
+    const filter = `device = "${selectedHydra.id}" && timestamp >= "${startTime.toISOString()}" && timestamp <= "${endTime.toISOString()}"`
     console.log('filter',filter);
     const data = await pb.collection('measurements').getFullList({
       filter: filter, sort: '-timestamp'
@@ -86,8 +86,9 @@
 </script>
 
 <div class={className}>
+  <h2 class="text-2xl font-bold">{m.charts()}</h2>
   <div class="flex items-center justify-between">
-    <h2 class="text-2xl font-bold">{m.charts()}</h2>
+    <h3 class="text-sm text-emerald-500">{m.temperature()} (°C)</h3>
     <div class="flex items-center gap-2">
 
       <Select.Root portal={null} onSelectedChange={(value) => {
@@ -113,8 +114,6 @@
     </button>
   </div>
   </div>
-
-  
 
   <div class="h-[300px] p-4 rounded-md bg-midnight text-emerald-500 mt-4">
     <Chart
@@ -147,7 +146,7 @@
         width={100}
         class="-top-[14px]"
       /> -->
-      <Tooltip.Root let:data>
+      <Tooltip.Root let:tempChart>
         <Tooltip.Header>{format(data.date, "eee, MMMM do")}</Tooltip.Header>
         <Tooltip.List>
           <Tooltip.Item label="value" value={data.value} />

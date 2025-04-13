@@ -9,6 +9,8 @@
   import * as Popover from "$lib/components/ui/popover";
   import { Languages, UserRoundCog, BadgePlus } from "lucide-svelte/icons";
   import { eventBus } from "$lib/stores/eventBus";
+  import { user } from '$lib/stores/auth';
+  import { onMount } from "svelte";
 
   let { data, class: className } = $props();
 
@@ -26,6 +28,10 @@
     console.log("setting locale");
     setLocale(newValue);
   }
+
+  onMount(() => {
+    console.log("user", $user);
+  });
 </script>
 
 <nav class="py-4 {className} pointer-events-none px-4 sm:px-6 lg:px-8">
@@ -39,7 +45,7 @@
       </a>
     </div>
     <div class="flex items-center gap-2 pointer-events-auto">
-      {#if data.isAuthenticated}
+      {#if $user}
         <button
           onclick={() => eventBus.emit("ADD_MARKER")}
           class="cursor-pointer bg-midnight text-yellow-200 rounded-full p-2 flex items-center justify-center gap-2 size-16"

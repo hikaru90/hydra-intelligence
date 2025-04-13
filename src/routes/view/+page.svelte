@@ -13,6 +13,8 @@
   import HydraSelector from "$lib/components/HydraSelector.svelte";
   import HydraTemp from "$lib/components/HydraTemp.svelte";
   import type { Hydra } from "$lib/types";
+  import { user } from "$lib/stores/auth";
+  
   let { data }: PageProps = $props();
 
   console.log("data", data);
@@ -25,6 +27,8 @@
   let isAddingHydra = $state(false);
   let newMarkerPosition: [number, number] | null = $state(null);
   let orderId: string = $state("");
+  let cursorPosition: [number, number] | null = $state(null);
+  let tooltipPosition: { x: number; y: number } | null = $state(null);
   let orderIdTouched: boolean = $state(false);
   let orderIdIsValid: boolean = $state(false);
   let orderIdAlreadyDeployed: boolean = $state(false);
@@ -32,7 +36,7 @@
   let validationRunning = $state(false);
   let selectedHydra: Hydra | null = $state(null);
   const getHydras = async () => {
-    const userId = pb.authStore.model?.id;
+    const userId = $user.id
     const filter = `customer = '${userId}' && deployed = true`;
     const records = await pb.collection("orders").getFullList<Hydra>({
       filter: filter,
@@ -88,6 +92,17 @@
       isAddingHydra = false;
     }
   };
+  const handleMouseMove = (event: any) => {
+    if (isAddingMarker && mapInstance) {
+      const canvas = mapInstance.getCanvas();
+      const rect = canvas.getBoundingClientRect();
+      cursorPosition = [event.lngLat.lng, event.lngLat.lat];
+      tooltipPosition = {
+        x: event.point.x,
+        y: event.point.y
+      };
+    }
+  };
 
   const selectHydra = (hydra: Hydra) => {
     selectedHydra = hydra;
@@ -103,6 +118,7 @@
     const resizeObserver = new ResizeObserver(() => {
       if (mapInstance) {
         mapInstance.resize();
+        mapInstance.on("mousemove", handleMouseMove);
       }
     });
 
@@ -169,6 +185,14 @@
         <X class="size-5" />
       </button>
     </div>
+    {#if cursorPosition && tooltipPosition}
+      <div
+        class="fixed z-20 bg-midnight text-yellow-200 px-2 py-1 rounded-md text-sm pointer-events-none"
+        style="left: {tooltipPosition.x}px; top: {tooltipPosition.y}px; transform: translate(-50%, -120%) translateY(-8px)"
+      >
+        {cursorPosition[0].toFixed(6)}, {cursorPosition[1].toFixed(6)}
+      </div>
+    {/if}
   {/if}
   <div class="relative w-full h-[400px]" bind:this={mapContainer}>
     <MapLibre
