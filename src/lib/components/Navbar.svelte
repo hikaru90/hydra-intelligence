@@ -7,7 +7,9 @@
   import * as Select from "$lib/components/ui/select";
   import { setLocale, getLocale } from "$src/paraglide/runtime";
   import * as Popover from "$lib/components/ui/popover";
-  import { Languages, UserRoundCog, BadgePlus } from "lucide-svelte/icons";
+  import Languages from "lucide-svelte/icons/languages";
+  import UserRoundCog from "lucide-svelte/icons/user-round-cog";
+  import BadgePlus from "lucide-svelte/icons/badge-plus";
   import { eventBus } from "$lib/stores/eventBus";
   import { user } from '$lib/stores/auth';
   import { onMount } from "svelte";

@@ -4,14 +4,15 @@
   import { eventBus } from "$lib/stores/eventBus";
   import * as Dialog from "$lib/components/ui/dialog";
   import { m } from "$src/paraglide/messages.js";
-  import { X, LoaderCircle } from "lucide-svelte/icons";
+  import X from "lucide-svelte/icons/x";
+  import LoaderCircle from "lucide-svelte/icons/loader-circle";
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label/index.js";
   import { pb } from "$lib/pocketbase.js";
   import type { PageProps } from "./$types";
   import Marquee from "$lib/components/Marquee.svelte";
   import { user } from "$lib/stores/auth";
-  
+  import { goto } from "$app/navigation";
   let { data }: PageProps = $props();
 
   console.log("data", data);
@@ -201,7 +202,9 @@
       bind:map={mapInstance}
     >
       {#each hydras as hydra}
-        <Marker lngLat={[hydra.lon, hydra.lat]}>
+        <Marker lngLat={[hydra.lon, hydra.lat]} onclick={() => {
+          goto(`/view/${hydra.id}`);
+        }}>
           <div class="size-5 relative">
             <div class="absolute inset-0 bg-emerald-500 rounded-full"></div>
             <div class="absolute inset-0 bg-emerald-500 rounded-full animate-ping"></div>

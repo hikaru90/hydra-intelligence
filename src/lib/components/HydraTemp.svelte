@@ -2,7 +2,7 @@
   import type { Hydra } from "$lib/types";
   import { pb } from "$lib/pocketbase";
   import type { RecordModel } from "pocketbase";
-  import { RefreshCcw } from "lucide-svelte/icons";
+  import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
   import { m } from "$src/paraglide/messages.js";
   import * as Select from "$lib/components/ui/select/index.js";
   import { scaleOrdinal, scaleSequential, scaleTime } from 'd3-scale';

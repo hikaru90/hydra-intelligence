@@ -4,18 +4,21 @@
   import { eventBus } from "$lib/stores/eventBus";
   import * as Dialog from "$lib/components/ui/dialog";
   import { m } from "$src/paraglide/messages.js";
-  import { X, LoaderCircle } from "lucide-svelte/icons";
+  import X from "lucide-svelte/icons/x";
+  import LoaderCircle from "lucide-svelte/icons/loader-circle";
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label/index.js";
   import { pb } from "$lib/pocketbase.js";
-  import type { PageProps } from "./$types";
+  import type { PageProps } from "../$types";
   import Marquee from "$lib/components/Marquee.svelte";
   import HydraSelector from "$lib/components/HydraSelector.svelte";
   import HydraTemp from "$lib/components/HydraTemp.svelte";
   import type { Hydra } from "$lib/types";
   import { user } from "$lib/stores/auth";
-  
+  import { page } from "$app/stores";
+
   let { data }: PageProps = $props();
+  let hydraId = $page.params.id;
 
   console.log("data", data);
 
@@ -112,8 +115,9 @@
     });
   };
 
-  onMount(() => {
-    getHydras();
+  onMount(async () => {
+    await getHydras();
+    selectHydra(hydras.find((hydra) => hydra.id === hydraId) || hydras[0]);
 
     const resizeObserver = new ResizeObserver(() => {
       if (mapInstance) {
