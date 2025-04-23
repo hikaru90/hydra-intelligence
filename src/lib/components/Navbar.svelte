@@ -22,6 +22,7 @@
   ];
 
   function handleLogout() {
+    console.log('pb.authStore',pb.authStore);
     pb.authStore.clear();
     goto("/login");
   }
@@ -33,6 +34,7 @@
 
   onMount(() => {
     console.log("user", $user);
+    console.log("pb.authStore.isValid", pb.authStore.isValid);
   });
 </script>
 

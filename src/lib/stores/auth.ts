@@ -7,7 +7,7 @@ export const user = writable<App.User | undefined>(undefined);
 export let token = writable(undefined);
 
 user.subscribe((value) => {
-  // console.log('user changed', value);
+  console.log('user changed', value);
 })
 token.subscribe((value) => {
   // console.log('token changed', value);

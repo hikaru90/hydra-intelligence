@@ -15,8 +15,6 @@
   import { goto } from "$app/navigation";
   let { data }: PageProps = $props();
 
-  console.log("data", data);
-
   interface Hydra {
     id: string;
     deployed: boolean;

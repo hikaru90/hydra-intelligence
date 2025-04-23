@@ -20,8 +20,6 @@
   let { data }: PageProps = $props();
   let hydraId = $page.params.id;
 
-  console.log("data", data);
-
   let hydras = $state<Hydra[]>([]);
 
   let mapContainer: HTMLDivElement | undefined = $state(undefined);

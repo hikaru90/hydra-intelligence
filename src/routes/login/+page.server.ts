@@ -15,6 +15,7 @@ const redirectToFightOrDashboard = (
 	if (loginRedirectTarget) {
 		redirect(302, loginRedirectTarget);
 	} else {
+		console.log('redirectToHomepage');
 		redirect(302, '/');
 	}
 };
