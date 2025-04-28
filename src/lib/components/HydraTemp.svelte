@@ -36,13 +36,14 @@
 
   let measurements = $state<RecordModel[]>([]);
   let refreshing = $state(false);
-  let startTime = $state(subtractTime(new Date(), 24*60));
+  let startTime = $state(subtractTime(new Date(), 24 * 7 * 60));
   let endTime = $state(new Date());
 
   const timeOptions = [
     { value: 10, label: "10m" },
     { value: 60, label: "1h" },
     { value: 24 * 60, label: "24h" },
+    { value: 24 * 7 * 60, label: "last week" },
   ];
 
   const getData = async () => {
@@ -101,7 +102,7 @@
           getData();
         }}
       >
-        <Select.Trigger class="bg-midnight border-none w-24">
+        <Select.Trigger class="bg-midnight border-none w-36">
           <Select.Value placeholder="Select a time" />
         </Select.Trigger>
         <Select.Content class="bg-midnight border-none">
