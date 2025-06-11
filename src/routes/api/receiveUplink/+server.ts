@@ -5,6 +5,7 @@ import { pb } from "$lib/pocketbase";
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
+    console.log('uplink received', body);
     const { ldr1, ldr2, temp, batt, uplinkMessage } = body.data;
 
     // Fallback values – you can replace with TTN metadata if needed
