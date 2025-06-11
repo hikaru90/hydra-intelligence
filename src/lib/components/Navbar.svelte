@@ -22,9 +22,7 @@
   ];
 
   function handleLogout() {
-    console.log('pb.authStore',pb.authStore);
-    pb.authStore.clear();
-    goto("/login");
+    goto("/logout");
   }
 
   function setValue(newValue: string) {
@@ -59,14 +57,14 @@
 
         <Sheet.Root>
           <Sheet.Trigger>
-            <button
+            <div
               class="cursor-pointer bg-midnight rounded-full p-2 flex items-center justify-center gap-2 size-16"
             >
               <span class="uppercase">
                 <!-- {data.user?.email[0]}{data.user?.email[1]} -->
                 <UserRoundCog class="size-5" />
               </span>
-            </button>
+            </div>
           </Sheet.Trigger>
           <Sheet.Content class="text-emerald-500">
             <Sheet.Header>
