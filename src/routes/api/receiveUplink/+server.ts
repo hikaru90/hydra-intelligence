@@ -6,7 +6,8 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     console.log('uplink received', body);
-    const { ldr1, ldr2, temp, batt, uplinkMessage } = body.data;
+    const decodedPayload = body.uplink_message.decoded_payload;
+    const { ldr1, ldr2, temp, batt, uplinkMessage } = decodedPayload;
 
     // Fallback values – you can replace with TTN metadata if needed
     const hydraId = "unknown"; // Optionally extract from request.headers or TTN gateway info
