@@ -75,7 +75,7 @@
       yDomain={scaleOrdinal()}
       tooltip={{ mode: "bisect-x" }}
       labels={{ offset: 10 }}
-      padding={{ left: 24, bottom: 24, top: 24, right: 24 }}
+      padding={{ left: 40, bottom: 40, top: 40, right: 40 }}
     >
       <Svg>
         <Axis

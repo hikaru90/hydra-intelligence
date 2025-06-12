@@ -13,6 +13,7 @@
   import Marquee from "$lib/components/Marquee.svelte";
   import HydraSelector from "$lib/components/HydraSelector.svelte";
   import HydraTemp from "$lib/components/HydraTemp.svelte";
+  import HydraBatt from "$lib/components/HydraBatt.svelte";
   import type { Hydra } from "$lib/types";
   import { user } from "$lib/stores/auth";
   import { page } from "$app/stores";
@@ -309,6 +310,7 @@
       <HydraTemp {measurements} {startTime} {endTime} class="my-6" />
       <HydraLdr1 {measurements} {startTime} {endTime} class="my-6" />
       <HydraLdr2 {measurements} {startTime} {endTime} class="my-6" />
+      <HydraBatt {measurements} {startTime} {endTime} class="my-6" />
     </div>
   </div>
 </div>

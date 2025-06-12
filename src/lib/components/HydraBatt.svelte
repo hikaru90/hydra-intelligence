@@ -42,7 +42,7 @@
       .map((measurement: RecordModel) => {
         return {
           date: new Date(measurement.timestamp),
-          value: measurement.ldr2,
+          value: measurement.batt / 10,
         };
       })
       .sort((a: { date: Date; value: number; }, b: { date: Date; value: number; }) => a.date.getTime() - b.date.getTime());
@@ -56,7 +56,7 @@
 </script>
 
 <div class={className}>
-  <h3 class="text-sm text-emerald-500 mb-4">Lichtintensität LDR2 (lux)</h3>
+  <h3 class="text-sm text-emerald-500 mb-4">Batteriespannung (V)</h3>
   <div class="h-[300px] rounded-md bg-midnight text-emerald-500 fill-emerald-500 relative">
     <LineChart
       data={chart}
@@ -120,7 +120,7 @@
       </Svg>
       <Legend
         scale={temperatureColor}
-        title="Lichtintensität LDR2 (lux)"
+        title="Batteriespannung (V)"
         placement="top-right"
         width={100}
         class="top-4 right-10"
