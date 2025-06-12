@@ -65,7 +65,7 @@
 
 <div class={className}>
   <h3 class="text-sm text-emerald-500 mb-4">Temperatur (°C)</h3>
-  <div class="h-[400px] rounded-md bg-midnight text-emerald-500 fill-emerald-500 relative">
+  <div class="h-[300px] rounded-md bg-midnight text-emerald-500 fill-emerald-500 relative">
     <LineChart
       data={chart}
       x="date"

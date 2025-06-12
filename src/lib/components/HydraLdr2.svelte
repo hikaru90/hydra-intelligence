@@ -12,17 +12,20 @@
   import {
     Axis,
     Canvas,
-    Chart,
+    LineChart,
     Highlight,
     Labels,
     Legend,
     LinearGradient,
     Spline,
     Svg,
+    Rule,
     Text,
     Tooltip,
     pivotLonger,
   } from "layerchart";
+  import { de } from "date-fns/locale";
+
 
   let { measurements, startTime, endTime, class: className = "" } = $props<{
     measurements: RecordModel[];
@@ -53,32 +56,66 @@
 </script>
 
 <div class={className}>
-  <h3 class="text-sm text-emerald-500">Lichtintensität LDR2 (lux)</h3>
-  <div class="h-[300px] p-4 rounded-md bg-midnight text-emerald-500 mt-4 fill-emerald-500">
-    <Chart
+  <h3 class="text-sm text-emerald-500 mb-4">Lichtintensität LDR2 (lux)</h3>
+  <div class="h-[300px] rounded-md bg-midnight text-emerald-500 fill-emerald-500 relative">
+    <LineChart
       data={chart}
       x="date"
-      xScale={scaleTime()}
       y="value"
+      xScale={scaleTime()}
       yDomain={scaleOrdinal()}
-      yNice
-      padding={{ left: 24, bottom: 24 }}
       tooltip={{ mode: "bisect-x" }}
+      labels={{ offset: 10 }}
+      padding={{ left: 24, bottom: 24, top: 24, right: 24 }}
     >
       <Svg>
-        <Axis placement="left" rule />
+        <Axis
+          placement="left"
+          rule
+          classes={{
+            rule: "stroke-emerald-600",
+            tick: "stroke-emerald-600/80",
+            tickLabel: "fill-emerald-600",
+          }}
+          tickLabelProps={{
+            textAnchor: "end",
+            style: "font-size: 12px;",
+          }}
+        />
+        <Axis
+          placement="right"
+          rule
+          classes={{
+            rule: "stroke-emerald-600",
+            tick: "stroke-emerald-600/80",
+            tickLabel: "fill-emerald-600",
+          }}
+          tickLabelProps={{
+            textAnchor: "start",
+            style: "font-size: 12px;",
+          }}
+        />
         <Axis
           placement="bottom"
-          format={(d) => formatDate(d, PeriodType.Day, { variant: "short" })}
           rule
+          format={(d: Date) => format(d, "p", { locale: de })}
+          classes={{
+            rule: "stroke-emerald-600",
+            tick: "stroke-emerald-600/80",
+            tickLabel: "fill-emerald-600",
+          }}
+          tickLabelProps={{
+            style: "font-size: 12px;",
+          }}
         />
-        <!-- <Spline class="stroke-2" stroke="white" fill="transparent" /> -->
+        <Rule x y />
+        <Highlight points lines axis="both" />
         <LinearGradient
-        stops={ticks(1, 0, 10).map(temperatureColor.interpolator())}
-        vertical
-        let:gradient
+          stops={ticks(1, 0, 10).map(temperatureColor.interpolator())}
+          vertical
+          let:gradient
         >
-        <Spline class="stroke-2" stroke={gradient} fill="transparent" />
+          <Spline class="stroke-2" stroke={gradient} fill="transparent" markerMid={{ type: 'circle', "stroke-width": 2 }} />
         </LinearGradient>
       </Svg>
       <Legend
@@ -86,7 +123,11 @@
         title="Lichtintensität LDR2 (lux)"
         placement="top-right"
         width={100}
-        class="-top-[14px]"
+        class="top-4 right-10"
+        classes={{
+          label: "fill-emerald-500 font-semibold",
+          title: "fill-emerald-500 font-bold"
+        }}
       />
       <Tooltip.Root let:data>
         <Tooltip.Header>{format(data.date, "eee, MMMM do")}</Tooltip.Header>
@@ -94,7 +135,7 @@
           <Tooltip.Item label="value" value={data.value} />
         </Tooltip.List>
       </Tooltip.Root>
-    </Chart>
+    </LineChart>
   </div>
 </div>
 
