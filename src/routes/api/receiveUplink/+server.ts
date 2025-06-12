@@ -8,16 +8,18 @@ export const POST: RequestHandler = async ({ request }) => {
     const decodedPayload = body.uplink_message.decoded_payload;
     const { ldr1, ldr2, temp, batt, uplinkMessage } = decodedPayload;
 
+    const devEui = body.end_device_ids.dev_eui;
+    const device = await pb.collection("orders").getFirstListItem(`devEui = "${devEui}"`);
+
     // Fallback values – you can replace with TTN metadata if needed
-    const hydraId = "k7azqjr7pfyq475"; // Optionally extract from request.headers or TTN gateway info
     const now = new Date();
     const hour = now.getHours();
     const timestamp = now.toISOString();
 
-    console.log(uplinkMessage || `Hydra ${hydraId} reported:\nHour: ${hour}\nLDR1: ${ldr1}\nLDR2: ${ldr2}\nTEMP: ${temp}\nBATT: ${batt}`);
+    console.log(uplinkMessage || `Hydra ${device.label} reported:\nHour: ${hour}\nLDR1: ${ldr1}\nLDR2: ${ldr2}\nTEMP: ${temp}\nBATT: ${batt}`);
 
     const data = {
-      device: hydraId,
+      device: device.id,
       ldr1,
       ldr2,
       temp,
