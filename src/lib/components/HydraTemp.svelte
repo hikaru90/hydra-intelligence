@@ -10,153 +10,136 @@
   import { interpolateTurbo } from "d3-scale-chromatic";
   import { format } from "date-fns";
   import { formatDate, PeriodType } from "@layerstack/utils";
+  import { de } from "date-fns/locale";
   import {
     Axis,
     Canvas,
-    Chart,
+    LineChart,
     Highlight,
     Labels,
     Legend,
     LinearGradient,
     Spline,
     Svg,
+    Rule,
     Text,
     Tooltip,
     pivotLonger,
   } from "layerchart";
+  import { subtractTime } from "$src/scripts/helpers";
 
-  let { selectedHydra, class: className = "" } = $props<{
-    selectedHydra: Hydra;
+  let {
+    measurements,
+    startTime,
+    endTime,
+    class: className = "",
+  } = $props<{
+    measurements: RecordModel[];
+    startTime: Date;
+    endTime: Date;
     class?: string;
   }>();
 
-  const subtractTime = (time: Date, minutes: number) => {
-    return new Date(time.getTime() - minutes * 60 * 1000);
-  };
-
-  let measurements = $state<RecordModel[]>([]);
-  let refreshing = $state(false);
-  let startTime = $state(subtractTime(new Date(), 24 * 7 * 60));
-  let endTime = $state(new Date());
-
-  const timeOptions = [
-    { value: 10, label: "10m" },
-    { value: 60, label: "1h" },
-    { value: 24 * 60, label: "24h" },
-    { value: 24 * 7 * 60, label: "last week" },
-  ];
-
-  const getData = async () => {
-    if (!selectedHydra) return;
-    refreshing = true;
-    const filter = `device = "${selectedHydra.id}" && timestamp >= "${startTime.toISOString()}" && timestamp <= "${endTime.toISOString()}"`;
-    console.log("filter", filter);
-    const data = await pb.collection("measurements").getFullList({
-      filter: filter,
-      sort: "-timestamp",
-    });
-    measurements = data;
-    console.log("measurements", measurements);
-    setTimeout(() => {
-      refreshing = false;
-    }, 200);
-  };
-
-  $effect(() => {
-    if (selectedHydra) {
-      console.log("Selected hydra changed");
-      getData();
-    }
-  });
-
-  const tempChart = $derived.by(() => {
-    console.log("measurements", measurements);
+  const chart = $derived.by(() => {
     const tempData = measurements
-      .map((measurement) => {
+      .map((measurement: RecordModel) => {
         return {
           date: new Date(measurement.timestamp),
-          value: measurement.temp,
+          value: measurement.temp / 10,
         };
       })
-      .sort((a, b) => a.date.getTime() - b.date.getTime());
-    console.log("tempData", tempData);
+      .sort(
+        (a: { date: Date; value: number }, b: { date: Date; value: number }) =>
+          a.date.getTime() - b.date.getTime()
+      );
     return tempData;
   });
 
   const temperatureColor = $derived.by(() =>
-    scaleSequential(extent(tempChart, (d) => d.value) as [number, number], interpolateTurbo)
+    scaleSequential(
+      extent(chart, (d: { value: number }) => d.value) as [number, number],
+      interpolateTurbo
+    )
   );
 </script>
 
 <div class={className}>
-  <h2 class="text-2xl font-bold">{m.charts()}</h2>
-  <div class="flex items-center justify-between">
-    <h3 class="text-sm text-emerald-500">{m.temperature()} (°C)</h3>
-    <div class="flex items-center gap-2">
-      <Select.Root
-        portal={null}
-        selected={timeOptions[2]}
-        onSelectedChange={(value) => {
-          console.log("value", value);
-          startTime = subtractTime(new Date(), parseInt(value?.value as string));
-          getData();
-        }}
-      >
-        <Select.Trigger class="bg-midnight border-none w-36">
-          <Select.Value placeholder="Select a time" />
-        </Select.Trigger>
-        <Select.Content class="bg-midnight border-none">
-          {#each timeOptions as time}
-            <Select.Item value={time.value} label={time.label}>{time.label}</Select.Item>
-          {/each}
-        </Select.Content>
-        <Select.Input name="favoriteFruit" />
-      </Select.Root>
-      <button
-        onclick={() => {
-          refreshing = true;
-          getData();
-        }}
-        class="text-emerald-500 p-2 rounded-md {refreshing ? 'animate-spin' : ''}"
-      >
-        <RefreshCcw class="size-5"></RefreshCcw>
-      </button>
-    </div>
-  </div>
-
-  <div class="h-[300px] p-4 rounded-md bg-midnight text-emerald-500 mt-4">
-    <Chart
-      data={tempChart}
+  <h3 class="text-sm text-emerald-500 mb-4">Temperatur (°C)</h3>
+  <div class="h-[400px] rounded-md bg-midnight text-emerald-500 fill-emerald-500 relative">
+    <LineChart
+      data={chart}
       x="date"
-      xScale={scaleTime()}
       y="value"
-      yDomain={[-50, 50]}
-      yNice
-      padding={{ left: 24, bottom: 24 }}
+      points
+      xScale={scaleTime()}
+      yDomain={scaleOrdinal()}
       tooltip={{ mode: "bisect-x" }}
+      labels={{ offset: 10 }}
+      padding={{ left: 24, bottom: 24, top: 24, right: 24 }}
     >
       <Svg>
-        <Axis placement="left" rule />
+        <Axis
+          placement="left"
+          rule
+          classes={{
+            rule: "stroke-emerald-600",
+            tick: "stroke-emerald-600/80",
+            tickLabel: "fill-emerald-600",
+          }}
+          tickLabelProps={{
+            textAnchor: "end",
+            style: "font-size: 12px;",
+          }}
+        />
+        <Axis
+          placement="right"
+          rule
+          classes={{
+            rule: "stroke-emerald-600",
+            tick: "stroke-emerald-600/80",
+            tickLabel: "fill-emerald-600",
+          }}
+          tickLabelProps={{
+            textAnchor: "start",
+            style: "font-size: 12px;",
+          }}
+        />
         <Axis
           placement="bottom"
-          format={(d) => formatDate(d, PeriodType.Day, { variant: "short" })}
           rule
+          format={(d: Date) => format(d, "p", { locale: de })}
+          classes={{
+            rule: "stroke-emerald-600",
+            tick: "stroke-emerald-600/80",
+            tickLabel: "fill-emerald-600",
+          }}
+          tickLabelProps={{
+            // rotate: 315,
+            // textAnchor: "end",
+            style: "font-size: 12px;",
+          }}
         />
+        <Rule x y />
+        <Highlight points lines axis="both" />
         <!-- <Spline class="stroke-2" stroke="white" fill="transparent" /> -->
         <LinearGradient
-        stops={ticks(1, 0, 10).map(temperatureColor.interpolator())}
-        vertical
-        let:gradient
+          stops={ticks(1, 0, 10).map(temperatureColor.interpolator())}
+          vertical
+          let:gradient
         >
-        <Spline class="stroke-2" stroke={gradient} fill="transparent" />
+          <Spline class="stroke-2" stroke={gradient} fill="transparent" markerMid={{ type: 'circle', "stroke-width": 2 }} />
         </LinearGradient>
       </Svg>
       <Legend
         scale={temperatureColor}
-        title="{m.temperature()} (°C)"
+        title="Temperatur (°C)"
         placement="top-right"
         width={100}
-        class="-top-[14px]"
+        class="top-4 right-10"
+        classes={{
+          label: "fill-emerald-500 font-semibold",
+          title: "fill-emerald-500 font-bold"
+        }}
       />
       <Tooltip.Root let:data>
         <Tooltip.Header>{format(data.date, "eee, MMMM do")}</Tooltip.Header>
@@ -164,12 +147,9 @@
           <Tooltip.Item label="value" value={data.value} />
         </Tooltip.List>
       </Tooltip.Root>
-    </Chart>
+    </LineChart>
   </div>
 </div>
 
 <style lang="scss">
-  @global(text) {
-    fill: white;
-  }
 </style>
