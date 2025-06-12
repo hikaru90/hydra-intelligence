@@ -5,12 +5,11 @@ import { pb } from "$lib/pocketbase";
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    console.log('uplink received', body);
     const decodedPayload = body.uplink_message.decoded_payload;
     const { ldr1, ldr2, temp, batt, uplinkMessage } = decodedPayload;
 
     // Fallback values – you can replace with TTN metadata if needed
-    const hydraId = "unknown"; // Optionally extract from request.headers or TTN gateway info
+    const hydraId = "k7azqjr7pfyq475"; // Optionally extract from request.headers or TTN gateway info
     const now = new Date();
     const hour = now.getHours();
     const timestamp = now.toISOString();
@@ -26,7 +25,11 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp
     };
 
-    const record = await pb.collection("measurements").create(data);
+    try{
+      const record = await pb.collection("measurements").create(data);
+    }catch(error){
+      console.warn("Failed to create measurement", error);
+    }
 
     return json({ message: "Uplink received" }, { status: 200 });
   } catch (error) {
