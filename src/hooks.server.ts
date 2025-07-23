@@ -12,7 +12,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
 	event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
 
 	// Define public routes that don't require authentication
-	const publicRoutes = ['/login', '/register', '/logout', '/reset-password', '/api/receiveUplink'];
+	const publicRoutes = ['/login', '/register', '/logout', '/reset-password', '/api/receiveUplink', '/api/comments'];
 	const isPublicRoute = publicRoutes.some(route => event.url.pathname.startsWith(route));
 
 	// Handle logout requests
