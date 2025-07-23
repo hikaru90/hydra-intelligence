@@ -1,16 +1,14 @@
 <script lang="ts">
   import type { Hydra } from "$lib/types";
   import { pb } from "$lib/pocketbase";
-  import type { RecordModel } from "pocketbase";
-  import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
   import { m } from "$src/paraglide/messages.js";
-  import * as Select from "$lib/components/ui/select/index.js";
   import { scaleOrdinal, scaleSequential, scaleTime } from "d3-scale";
   import { extent, flatGroup, ticks } from "d3-array";
   import { interpolateTurbo } from "d3-scale-chromatic";
   import { format } from "date-fns";
   import { formatDate, PeriodType } from "@layerstack/utils";
-  import { de } from "date-fns/locale";
+  import type { RecordModel } from "pocketbase";
+  import { subtractTime } from "$src/scripts/helpers";
   import {
     Axis,
     Canvas,
@@ -26,51 +24,43 @@
     Tooltip,
     pivotLonger,
   } from "layerchart";
-  import { subtractTime } from "$src/scripts/helpers";
+  import { de } from "date-fns/locale";
 
-  let {
-    measurements,
-    startTime,
-    endTime,
-    class: className = "",
-  } = $props<{
+  let { measurements, startTime, endTime, class: className = "" } = $props<{
     measurements: RecordModel[];
     startTime: Date;
     endTime: Date;
     class?: string;
   }>();
 
+  
+
   const chart = $derived.by(() => {
+    console.log("measurements", measurements);
     const tempData = measurements
       .map((measurement: RecordModel) => {
         return {
           date: new Date(measurement.timestamp),
-          value: measurement.temp / 10,
+          value: measurement.ldr1,
         };
       })
-      .sort(
-        (a: { date: Date; value: number }, b: { date: Date; value: number }) =>
-          a.date.getTime() - b.date.getTime()
-      );
+      .sort((a: { date: Date; value: number; }, b: { date: Date; value: number; }) => a.date.getTime() - b.date.getTime());
+    console.log("tempData", tempData);
     return tempData;
   });
 
   const temperatureColor = $derived.by(() =>
-    scaleSequential(
-      extent(chart, (d: { value: number }) => d.value) as [number, number],
-      interpolateTurbo
-    )
+    scaleSequential(extent(chart, (d: { value: number; }) => d.value) as [number, number], interpolateTurbo)
   );
 </script>
 
 <div class={className}>
-  <h3 class="text-sm text-emerald-500 mb-4">Temperatur (°C)</h3>
+  <h3 class="text-sm text-emerald-500">Lichtintensität LDR1 (lux)</h3>
   <div class="h-[300px] rounded-md bg-midnight text-emerald-500 fill-emerald-500 relative">
     <LineChart
       data={chart}
       x="date"
       y="value"
-      points
       xScale={scaleTime()}
       yDomain={scaleOrdinal()}
       tooltip={{ mode: "bisect-x" }}
@@ -114,14 +104,11 @@
             tickLabel: "fill-emerald-600",
           }}
           tickLabelProps={{
-            // rotate: 315,
-            // textAnchor: "end",
             style: "font-size: 12px;",
           }}
         />
         <Rule x y />
         <Highlight points lines axis="both" />
-        <!-- <Spline class="stroke-2" stroke="white" fill="transparent" /> -->
         <LinearGradient
           stops={ticks(1, 0, 10).map(temperatureColor.interpolator())}
           vertical
@@ -132,7 +119,7 @@
       </Svg>
       <Legend
         scale={temperatureColor}
-        title="Temperatur (°C)"
+        title="Lichtintensität LDR1 (lux)"
         placement="top-right"
         width={100}
         class="top-4 right-10"
@@ -152,4 +139,7 @@
 </div>
 
 <style lang="scss">
+  @global(text) {
+    fill: white;
+  }
 </style>

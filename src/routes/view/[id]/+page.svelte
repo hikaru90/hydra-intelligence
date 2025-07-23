@@ -13,14 +13,19 @@
   import Marquee from "$lib/components/Marquee.svelte";
   import HydraSelector from "$lib/components/HydraSelector.svelte";
   import HydraTemp from "$lib/components/HydraTemp.svelte";
+  import HydraBatt from "$lib/components/HydraBatt.svelte";
   import type { Hydra } from "$lib/types";
   import { user } from "$lib/stores/auth";
   import { page } from "$app/stores";
+  import HydraLdr1 from "$lib/components/HydraLdr1.svelte";
+  import HydraLdr2 from "$lib/components/HydraLdr2.svelte";
+  import type { RecordModel } from "pocketbase";
+  import { subtractTime } from "$src/scripts/helpers";
+  import * as Select from "$lib/components/ui/select/index.js";
+  import RefreshCcw from "lucide-svelte/icons/refresh-ccw";
 
   let { data }: PageProps = $props();
   let hydraId = $page.params.id;
-
-  console.log("data", data);
 
   let hydras = $state<Hydra[]>([]);
 
@@ -38,8 +43,23 @@
   let hydraLabel: string = $state("");
   let validationRunning = $state(false);
   let selectedHydra: Hydra | null = $state(null);
+  let measurements = $state<RecordModel[]>([]);
+  let startTime = $state(subtractTime(new Date(), 24 * 7 * 60));
+  let endTime = $state(new Date());
+
+  let refreshing = $state(false);
+
+  $effect(() => {
+    if (selectedHydra) {
+      console.log("Selected hydra changed");
+      getData();
+    }
+  });
+
   const getHydras = async () => {
-    const userId = $user.id
+    if (!$user) return;
+
+    const userId = $user.id;
     const filter = `customer = '${userId}' && deployed = true`;
     const records = await pb.collection("orders").getFullList<Hydra>({
       filter: filter,
@@ -102,9 +122,32 @@
       cursorPosition = [event.lngLat.lng, event.lngLat.lat];
       tooltipPosition = {
         x: event.point.x,
-        y: event.point.y
+        y: event.point.y,
       };
     }
+  };
+
+  const timeOptions = [
+    { value: 10, label: "10m" },
+    { value: 60, label: "1h" },
+    { value: 24 * 60, label: "24h" },
+    { value: 24 * 7 * 60, label: "last week" },
+  ];
+
+  const getData = async () => {
+    if (!selectedHydra) return;
+    refreshing = true;
+    const filter = `device = "${selectedHydra.id}" && timestamp >= "${startTime.toISOString()}" && timestamp <= "${endTime.toISOString()}"`;
+    console.log("filter", filter);
+    const data = await pb.collection("measurements").getFullList({
+      filter: filter,
+      sort: "-timestamp",
+    });
+    measurements = data;
+    console.log("measurements", measurements);
+    setTimeout(() => {
+      refreshing = false;
+    }, 200);
   };
 
   const selectHydra = (hydra: Hydra) => {
@@ -208,9 +251,17 @@
       attributionControl={false}
     >
       {#each hydras as hydra}
-        <Marker onclick={() => selectHydra(hydra)} lngLat={[hydra.lon, hydra.lat]} class="relative size-5 rounded-full {selectedHydra?.id === hydra.id ? 'bg-emerald-500' : 'bg-emerald-500/40'}">
+        <Marker
+          onclick={() => selectHydra(hydra)}
+          lngLat={[hydra.lon, hydra.lat]}
+          class="relative size-5 rounded-full {selectedHydra?.id === hydra.id
+            ? 'bg-emerald-500'
+            : 'bg-emerald-500/40'}"
+        >
           <div
-            class="absolute top-0 left-0 w-full h-full {selectedHydra?.id === hydra.id ? 'bg-emerald-500' : 'bg-emerald-500/40'} rounded-full animate-ping"
+            class="absolute top-0 left-0 w-full h-full {selectedHydra?.id === hydra.id
+              ? 'bg-emerald-500'
+              : 'bg-emerald-500/40'} rounded-full animate-ping"
           ></div>
         </Marker>
       {/each}
@@ -220,8 +271,46 @@
   <div class="max-container">
     <div class="py-8">
       <h2 class="text-2xl font-bold">{m.hydras()}</h2>
-      <HydraSelector {hydras} selectHydra={selectHydra} selectedHydra={selectedHydra} class="my-6" />
-      <HydraTemp selectedHydra={selectedHydra} class="my-6" />
+      <HydraSelector {hydras} {selectHydra} {selectedHydra} class="my-6" />
+
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold">{m.charts()}</h2>
+        <div class="flex items-center gap-2">
+          <Select.Root
+            portal={null}
+            selected={timeOptions[2]}
+            onSelectedChange={(value) => {
+              console.log("value", value);
+              startTime = subtractTime(new Date(), parseInt(value?.value as string));
+              getData();
+            }}
+          >
+            <Select.Trigger class="bg-midnight border-none w-36">
+              <Select.Value placeholder="Select a time" />
+            </Select.Trigger>
+            <Select.Content class="bg-midnight border-none">
+              {#each timeOptions as time}
+                <Select.Item value={time.value} label={time.label}>{time.label}</Select.Item>
+              {/each}
+            </Select.Content>
+            <Select.Input name="favoriteFruit" />
+          </Select.Root>
+          <button
+            onclick={() => {
+              refreshing = true;
+              getData();
+            }}
+            class="text-emerald-500 p-2 rounded-md {refreshing ? 'animate-spin' : ''}"
+          >
+            <RefreshCcw class="size-5"></RefreshCcw>
+          </button>
+        </div>
+      </div>
+
+      <HydraTemp {measurements} {startTime} {endTime} class="my-6" />
+      <HydraLdr1 {measurements} {startTime} {endTime} class="my-6" />
+      <HydraLdr2 {measurements} {startTime} {endTime} class="my-6" />
+      <HydraBatt {measurements} {startTime} {endTime} class="my-6" />
     </div>
   </div>
 </div>
