@@ -5,12 +5,24 @@ import { pb } from '$lib/pocketbase';
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const page = url.searchParams.get('page') || '';
+    const pageNum = parseInt(url.searchParams.get('pageNum') || '1');
+    const pageSize = 5; // Set this to your desired page size
+    
     const collection = 'comments';
     
-    const records = await pb.collection(collection).getList(1, 50, {
-      sort: '-created',
-      filter: `page="${page}"`
+    // PocketBase uses 0-based indexing, so subtract 1 from pageNum
+    const pbPage = pageNum - 1;
+    
+    console.log('Backend - pageNum:', pageNum, 'pbPage:', pbPage, 'pageSize:', pageSize);
+    console.log('Backend - filter:', `page="${page}"`);
+    
+    // Use PocketBase pagination correctly
+    const records = await pb.collection(collection).getList(pageNum, pageSize, {
+      sort: '-created'
+      // filter: `page="${page}"` // Temporarily disabled to test pagination
     });
+    
+    console.log('Backend - records returned:', records.items.length);
     
     return json(records, {
       headers: {
