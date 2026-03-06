@@ -3,16 +3,17 @@ import { sequence } from "@sveltejs/kit/hooks";
 import type { Handle } from "@sveltejs/kit";
 import { paraglideMiddleware } from "$src/paraglide/server";
 import { redirect } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
 
 const authHandle: Handle = async ({ event, resolve }) => {
 	// Initialize PocketBase for this request
-	event.locals.pb = new PocketBase('https://pbhydra.clustercluster.de');
+	event.locals.pb = new PocketBase(env.PUBLIC_PB_URL ?? '');
 	
 	// Load auth from cookie
 	event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
 
 	// Define public routes that don't require authentication
-	const publicRoutes = ['/login', '/register', '/logout', '/reset-password', '/api/receiveUplink', '/api/comments'];
+	const publicRoutes = ['/login', '/register', '/logout', '/reset-password', '/api/receiveUplink', '/api/comments', '/api/schema'];
 	const isPublicRoute = publicRoutes.some(route => event.url.pathname.startsWith(route));
 
 	// Handle logout requests

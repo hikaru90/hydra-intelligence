@@ -12,10 +12,19 @@ declare global {
 		// interface Platform {}
 		interface User {
 			id: string;
+			collectionId?: string;
+			collectionName?: string;
 			email: string;
+			emailVisibility?: boolean;
+			verified: boolean;
 			firstName?: string;
 			lastName?: string;
-			verified: boolean;
+			avatar?: string;
+			street?: string;
+			number?: string;
+			postcode?: string;
+			city?: string;
+			role?: string;
 			created: string;
 			updated: string;
 		}
