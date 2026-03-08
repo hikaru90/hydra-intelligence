@@ -1,6 +1,5 @@
 <script lang="ts">
   import * as Sheet from "$lib/components/ui/sheet";
-  import { pb } from "$lib/pocketbase";
   import { goto } from "$app/navigation";
   import { Button } from "$lib/components/ui/button";
   import { m } from "$src/paraglide/messages.js";
@@ -12,8 +11,6 @@
   import BadgePlus from "lucide-svelte/icons/badge-plus";
   import { eventBus } from "$lib/stores/eventBus";
   import { user } from '$lib/stores/auth';
-  import { onMount } from "svelte";
-
   let { data, class: className } = $props();
 
   const localeOptions = [
@@ -30,10 +27,6 @@
     setLocale(newValue);
   }
 
-  onMount(() => {
-    console.log("user", $user);
-    console.log("pb.authStore.isValid", pb.authStore.isValid);
-  });
 </script>
 
 <nav class="py-4 {className} pointer-events-none px-4 sm:px-6 lg:px-8">

@@ -49,6 +49,7 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
+		"better-auth": "^1.5.4",
 		"d3-array": "^3.2.4",
 		"d3-scale": "^4.0.2",
 		"d3-scale-chromatic": "^3.1.0",

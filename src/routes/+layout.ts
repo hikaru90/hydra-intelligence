@@ -1,4 +1,3 @@
-import { pb } from '$lib/pocketbase';
 import { redirect } from '@sveltejs/kit';
 import { goto } from '$app/navigation';
 

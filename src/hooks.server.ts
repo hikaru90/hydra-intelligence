@@ -1,81 +1,50 @@
-import PocketBase from 'pocketbase';
-import { sequence } from "@sveltejs/kit/hooks";
-import type { Handle } from "@sveltejs/kit";
-import { paraglideMiddleware } from "$src/paraglide/server";
+import { sequence } from '@sveltejs/kit/hooks';
+import type { Handle } from '@sveltejs/kit';
+import { svelteKitHandler } from 'better-auth/svelte-kit';
+import { building } from '$app/environment';
 import { redirect } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
+import { auth } from '$lib/server/auth';
 
 const authHandle: Handle = async ({ event, resolve }) => {
-	// Initialize PocketBase for this request
-	event.locals.pb = new PocketBase(env.PUBLIC_PB_URL ?? '');
-	
-	// Load auth from cookie
-	event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
+	const session = await auth.api.getSession({ headers: event.request.headers });
+	if (session) {
+		event.locals.session = session.session;
+		event.locals.user = session.user;
+	}
 
-	// Define public routes that don't require authentication
-	const publicRoutes = ['/login', '/register', '/logout', '/reset-password', '/api/receiveUplink', '/api/comments', '/api/schema'];
-	const isPublicRoute = publicRoutes.some(route => event.url.pathname.startsWith(route));
+	const publicRoutes = [
+		'/login',
+		'/register',
+		'/logout',
+		'/reset-password',
+		'/api/auth',
+		'/api/receiveUplink',
+		'/api/comments',
+		'/api/schema',
+	];
+	const isPublicRoute = publicRoutes.some((route) => event.url.pathname.startsWith(route));
 
-	// Handle logout requests
 	if (event.url.pathname === '/logout') {
-		event.locals.pb.authStore.clear();
 		event.locals.user = undefined;
-		throw redirect(303, '/login');
+		event.locals.session = undefined;
+		throw redirect(303, '/api/auth/sign-out?callbackURL=/login');
 	}
 
-	// Check if user is authenticated
-	if (event.locals.pb.authStore.isValid) {
-		// Verify the token is still valid and refresh if needed
-		try {
-			// This will throw if the token is invalid
-			if (event.locals.pb.authStore.model) {
-				event.locals.user = structuredClone(event.locals.pb.authStore.model) as unknown as App.User;
-				
-				// Optional: Refresh auth periodically (uncomment if needed)
-				// await event.locals.pb.collection('users').authRefresh();
-			}
-		} catch (error) {
-			// Token is invalid, clear auth
-			console.log('Auth token invalid, clearing auth store');
-			event.locals.pb.authStore.clear();
-			event.locals.user = undefined;
-			
-			if (!isPublicRoute) {
-				const from = event.url.pathname + event.url.search;
-				throw redirect(303, `/login?redirectTo=${encodeURIComponent(from)}`);
-			}
-		}
-	} else {
-		event.locals.user = undefined;
-		
-		// Redirect to login if accessing protected route
-		if (!isPublicRoute) {
-			const from = event.url.pathname + event.url.search;
-			throw redirect(303, `/login?redirectTo=${encodeURIComponent(from)}`);
-		}
+	if (!event.locals.user && !isPublicRoute) {
+		const from = event.url.pathname + event.url.search;
+		throw redirect(303, `/login?redirectTo=${encodeURIComponent(from)}`);
 	}
 
-	const response = await resolve(event);
-
-	// Set the auth cookie
-	response.headers.set(
-		"set-cookie",
-		event.locals.pb.authStore.exportToCookie({
-			secure: event.url.protocol === 'https:',
-			sameSite: 'lax',
-			httpOnly: false // Allow client-side access for the store
-		})
-	);
-
-	return response;
+	return svelteKitHandler({ event, resolve, auth, building });
 };
 
 const localeHandle: Handle = async ({ event, resolve }) => {
+	const { paraglideMiddleware } = await import('$src/paraglide/server');
 	return paraglideMiddleware(event.request, ({ request: localizedRequest, locale }) => {
 		event.request = localizedRequest;
 		return resolve(event, {
 			transformPageChunk: ({ html }) => {
-				return html.replace("%lang%", locale);
+				return html.replace('%lang%', locale);
 			},
 		});
 	});

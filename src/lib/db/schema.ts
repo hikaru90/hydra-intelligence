@@ -1,6 +1,5 @@
 /**
- * Drizzle schema derived from PocketBase (docs/schema.json).
- * Tables: comments, measurements, orders, products, users.
+ * Drizzle schema: PocketBase-derived (users, products, orders, etc.) + Better Auth (user, session, account, verification).
  */
 import {
 	pgTable,
@@ -10,6 +9,57 @@ import {
 	doublePrecision,
 	index,
 } from 'drizzle-orm/pg-core';
+
+// --- Better Auth tables (used by better-auth with drizzleAdapter provider: "pg") ---
+export const user = pgTable('user', {
+	id: text('id').primaryKey(),
+	name: text('name').notNull(),
+	email: text('email').notNull(),
+	emailVerified: boolean('emailVerified').notNull(),
+	image: text('image'),
+	createdAt: timestamp('createdAt', { withTimezone: true }).notNull(),
+	updatedAt: timestamp('updatedAt', { withTimezone: true }).notNull(),
+});
+
+export const session = pgTable('session', {
+	id: text('id').primaryKey(),
+	userId: text('userId')
+		.notNull()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	token: text('token').notNull(),
+	expiresAt: timestamp('expiresAt', { withTimezone: true }).notNull(),
+	ipAddress: text('ipAddress'),
+	userAgent: text('userAgent'),
+	createdAt: timestamp('createdAt', { withTimezone: true }).notNull(),
+	updatedAt: timestamp('updatedAt', { withTimezone: true }).notNull(),
+});
+
+export const account = pgTable('account', {
+	id: text('id').primaryKey(),
+	userId: text('userId')
+		.notNull()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	accountId: text('accountId').notNull(),
+	providerId: text('providerId').notNull(),
+	accessToken: text('accessToken'),
+	refreshToken: text('refreshToken'),
+	accessTokenExpiresAt: timestamp('accessTokenExpiresAt', { withTimezone: true }),
+	refreshTokenExpiresAt: timestamp('refreshTokenExpiresAt', { withTimezone: true }),
+	scope: text('scope'),
+	idToken: text('idToken'),
+	password: text('password'),
+	createdAt: timestamp('createdAt', { withTimezone: true }).notNull(),
+	updatedAt: timestamp('updatedAt', { withTimezone: true }).notNull(),
+});
+
+export const verification = pgTable('verification', {
+	id: text('id').primaryKey(),
+	identifier: text('identifier').notNull(),
+	value: text('value').notNull(),
+	expiresAt: timestamp('expiresAt', { withTimezone: true }).notNull(),
+	createdAt: timestamp('createdAt', { withTimezone: true }).notNull(),
+	updatedAt: timestamp('updatedAt', { withTimezone: true }).notNull(),
+});
 
 // --- users (PocketBase _pb_users_auth_) ---
 export const users = pgTable(

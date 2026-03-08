@@ -1,41 +1,49 @@
 <script lang="ts">
-  import { redirect } from "@sveltejs/kit";
   import * as Form from "$lib/components/ui/form";
   import { Input } from "$lib/components/ui/input";
   import { formSchema, type FormSchema } from "./schema";
   import { type SuperValidated, type Infer, superForm } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
   import { m } from "$src/paraglide/messages";
-  import SuperDebug from "sveltekit-superforms";
   import { toast } from "svelte-sonner";
   import { goto } from "$app/navigation";
   import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";
   import Check from "lucide-svelte/icons/check";
-  import { pb } from "$lib/pocketbase";
+  import { authClient } from "$lib/auth-client";
 
   let className: string | undefined = undefined;
   export { className as class };
-  export let data: SuperValidated<Infer<FormSchema>>;
+  export let data: SuperValidated<Infer<FormSchema>> & { redirectTo?: string | null };
 
-  let resetPassordDialogOpen = false;
+  let resetPasswordDialogOpen = false;
+  let signingIn = false;
 
   const form = superForm(data, {
     resetForm: false,
     validators: zodClient(formSchema),
     dataType: "json",
-    onResult: ({ result }) => {
-      console.log("result", result);
-      if (result.type === "failure") toast.error(m.error());
-      if (result.type === "success") {
-        // toast.success($t('default.page.login.toasts.success'));
-      }
-    },
   });
 
+  async function handleSubmit(e: Event) {
+    e.preventDefault();
+    if (!$formData.email || !$formData.password) return;
+    signingIn = true;
+    const { error } = await authClient.signIn.email({
+      email: $formData.email,
+      password: $formData.password,
+    });
+    signingIn = false;
+    if (error) {
+      toast.error(error.message ?? m.error());
+      return;
+    }
+    goto(data.redirectTo ?? "/", { invalidateAll: true });
+  }
+
   const resetPassword = async () => {
-    resetPassordDialogOpen = false;
-    await pb.collection("users").requestPasswordReset($formData.email);
+    resetPasswordDialogOpen = false;
+    // TODO: better-auth forgot password flow
     toast.success(m.forgotPasswordSuccess());
   };
 
@@ -49,7 +57,7 @@
         {m.loginToAccount()}
       </h2>
     </div>
-    <form method="POST" use:enhance class={className}>
+    <form method="POST" use:enhance action="?/default" class={className} on:submit={handleSubmit}>
       <Form.Field {form} name="email">
         <Form.Control let:attrs>
           <Form.Label>{m.email()}</Form.Label>
@@ -67,7 +75,7 @@
           ><a
             role="button"
             tabindex="0"
-            on:click={() => (resetPassordDialogOpen = true)}
+            on:click={() => (resetPasswordDialogOpen = true)}
             class="text-sm text-muted-foreground hover:underline">{m.forgotPassword()}</a
           ></Form.Description
         >
@@ -75,14 +83,14 @@
       </Form.Field>
 
       <div class="flex items-center justify-between">
-        <a href="/app/auth/register" class="text-sm hover:underline">{m.switchToRegister()}</a>
-        <Form.Button class="bg-primary text-muted">{m.login()}</Form.Button>
+        <a href="/register" class="text-sm hover:underline">{m.switchToRegister()}</a>
+        <Form.Button class="bg-primary text-muted" disabled={signingIn}>{m.login()}</Form.Button>
       </div>
     </form>
   </div>
 </div>
 
-<Dialog.Root bind:open={resetPassordDialogOpen} preventScroll={false}>
+<Dialog.Root bind:open={resetPasswordDialogOpen} preventScroll={false}>
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title class="mb-10 leading-tight">{m.forgotPassword()}</Dialog.Title>

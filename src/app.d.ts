@@ -4,29 +4,21 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			pb: import('pocketbase').default;
-			user: User | undefined;
+			session?: import('better-auth').Session;
+			user?: User;
 		}
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
 		interface User {
 			id: string;
-			collectionId?: string;
-			collectionName?: string;
+			name: string;
 			email: string;
-			emailVisibility?: boolean;
-			verified: boolean;
-			firstName?: string;
-			lastName?: string;
-			avatar?: string;
-			street?: string;
-			number?: string;
-			postcode?: string;
-			city?: string;
+			emailVerified: boolean;
+			image?: string | null;
+			createdAt: Date;
+			updatedAt: Date;
 			role?: string;
-			created: string;
-			updated: string;
 		}
 	}
 }

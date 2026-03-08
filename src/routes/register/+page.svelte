@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { pb } from "$lib/pocketbase";
   import { m } from "$src/paraglide/messages";
   import * as Form from "$lib/components/ui/form";
   import { Input } from "$lib/components/ui/input";
@@ -8,27 +7,39 @@
   import { zodClient } from "sveltekit-superforms/adapters";
   import { toast } from "svelte-sonner";
   import { goto } from "$app/navigation";
-  import { Button } from "$lib/components/ui/button";
+  import { authClient } from "$lib/auth-client";
 
   let className: string | undefined = undefined;
   export { className as class };
   export let data: SuperValidated<Infer<FormSchema>>;
 
+  let signingUp = false;
+
   const form = superForm(data, {
     resetForm: false,
     validators: zodClient(formSchema),
     dataType: "json",
-    onResult: ({ result }) => {
-      console.log("result", result);
-      if (result.type === "failure") toast.error(m.error());
-      if (result.type === "success") {
-        toast.success(m.success());
-      }
-    },
   });
 
-  const { form: formData, errors, enhance, delayed, message, constraints, reset } = form;
-  console.log("form", form);
+  async function handleSubmit(e: Event) {
+    e.preventDefault();
+    if (!$formData.firstName || !$formData.lastName || !$formData.email || !$formData.password) return;
+    signingUp = true;
+    const { error } = await authClient.signUp.email({
+      name: `${$formData.firstName} ${$formData.lastName}`.trim(),
+      email: $formData.email,
+      password: $formData.password,
+    });
+    signingUp = false;
+    if (error) {
+      toast.error(error.message ?? m.error());
+      return;
+    }
+    toast.success(m.success());
+    goto("/", { invalidateAll: true });
+  }
+
+  const { form: formData, errors, enhance } = form;
 </script>
 
 <div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -38,7 +49,7 @@
         {m.createAccount()}
       </h2>
     </div>
-    <form method="POST" use:enhance class={className}>
+    <form method="POST" use:enhance action="?/default" class={className} on:submit={handleSubmit}>
       <Form.Field {form} name="firstName">
         <Form.Control let:attrs>
           <Form.Label>{m.firstName()}</Form.Label>
@@ -72,10 +83,10 @@
         <Form.FieldErrors />
       </Form.Field>
       <div class="flex items-center justify-between">
-        <a href="/app/auth/login" class="text-sm hover:underline"
+        <a href="/login" class="text-sm hover:underline"
           >{m.switchToLogin()}</a
         >
-        <Form.Button class="bg-primary text-muted">{m.register()}</Form.Button>
+        <Form.Button class="bg-primary text-muted" disabled={signingUp}>{m.register()}</Form.Button>
       </div>
     </form>
   </div>
