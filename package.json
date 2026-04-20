@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"engines": {
-		"node": "^22.12.0"
+		"node": "^22.20.0"
 	},
 	"scripts": {
 		"dev-debug": "vite dev --host --debug",
@@ -33,14 +33,14 @@
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/pg": "^8.18.0",
-		"bits-ui": "^0.22.0",
+		"bits-ui": "^2.18.0",
 		"clsx": "^2.1.1",
 		"drizzle-kit": "^0.31.9",
 		"formsnap": "^1.0.1",
 		"lucide-svelte": "^0.487.0",
 		"mode-watcher": "^0.5.1",
 		"sass-embedded": "^1.86.1",
-		"svelte": "^5.0.0",
+		"svelte": "^5.55.4",
 		"svelte-check": "^4.0.0",
 		"svelte-sonner": "^0.3.28",
 		"sveltekit-superforms": "^2.24.1",
