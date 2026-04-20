@@ -6,10 +6,13 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
+import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
 import * as schema from '$lib/db/schema';
+import { sendMail } from '$lib/server/mail';
 
 export const auth = betterAuth({
+	baseURL: env.BETTER_AUTH_URL,
 	database: drizzleAdapter(db, {
 		provider: 'pg',
 		schema: {
@@ -19,6 +22,20 @@ export const auth = betterAuth({
 			verification: schema.verification,
 		},
 	}),
-	emailAndPassword: { enabled: true },
+	emailAndPassword: {
+		enabled: true,
+		requireEmailVerification: true,
+	},
+	emailVerification: {
+		sendOnSignUp: true,
+		sendOnSignIn: true,
+		sendVerificationEmail: async ({ user, url }) => {
+			void sendMail({
+				to: user.email,
+				template: 'verifyEmail',
+				vars: { name: user.name ?? user.email, link: url },
+			});
+		},
+	},
 	plugins: [sveltekitCookies(getRequestEvent)],
 });

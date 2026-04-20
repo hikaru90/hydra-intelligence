@@ -1,5 +1,13 @@
 # Agent instructions
 
+## Project conventions
+
+- **i18n**: Always use Paraglide for user-facing text. Provide messages in **German and English**.
+- **Svelte**: Use SvelteKit with **Svelte 4** syntax only (no runes: no `$state`, `$props`, `$derived`; use `let`, `$:`, `export let`, and Svelte 4 events/slots).
+- **Styling**: Use **Tailwind CSS 4** for styling.
+
+See `.cursor/rules/conventions.mdc` for details.
+
 ## Database / PocketBase schema
 
 Before executing any assignment that involves database structures, collections, or PocketBase schema:

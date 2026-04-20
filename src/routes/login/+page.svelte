@@ -35,7 +35,8 @@
     });
     signingIn = false;
     if (error) {
-      toast.error(error.message ?? m.error());
+      const isUnverified = error.status === 403 || error.message?.toLowerCase().includes('verify');
+      toast.error(isUnverified ? 'Please verify your email before signing in. Check your inbox for the verification link.' : (error.message ?? m.error()));
       return;
     }
     goto(data.redirectTo ?? "/", { invalidateAll: true });
@@ -57,7 +58,7 @@
         {m.loginToAccount()}
       </h2>
     </div>
-    <form method="POST" use:enhance action="?/default" class={className} on:submit={handleSubmit}>
+    <form method="POST" use:enhance action="/login?/login" class={className} on:submit={handleSubmit}>
       <Form.Field {form} name="email">
         <Form.Control let:attrs>
           <Form.Label>{m.email()}</Form.Label>

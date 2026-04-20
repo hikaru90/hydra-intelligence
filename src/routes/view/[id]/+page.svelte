@@ -248,7 +248,7 @@
       zoom={14}
       style="/dark.json"
       bind:map={mapInstance}
-      attributionControl={false}
+      attributionControl={{ compact: true }}
     >
       {#each hydras as hydra}
         <Marker

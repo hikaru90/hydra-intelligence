@@ -5,6 +5,13 @@ import { building } from '$app/environment';
 import { redirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/auth';
 
+const devToolsHandle: Handle = async ({ event, resolve }) => {
+	if (event.url.pathname === '/.well-known/appspecific/com.chrome.devtools.json') {
+		return new Response(null, { status: 404 });
+	}
+	return resolve(event);
+};
+
 const authHandle: Handle = async ({ event, resolve }) => {
 	const session = await auth.api.getSession({ headers: event.request.headers });
 	if (session) {
@@ -21,6 +28,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
 		'/api/receiveUplink',
 		'/api/comments',
 		'/api/schema',
+		'/api/orders',
 	];
 	const isPublicRoute = publicRoutes.some((route) => event.url.pathname.startsWith(route));
 
@@ -50,4 +58,4 @@ const localeHandle: Handle = async ({ event, resolve }) => {
 	});
 };
 
-export const handle = sequence(authHandle, localeHandle);
+export const handle = sequence(devToolsHandle, authHandle, localeHandle);

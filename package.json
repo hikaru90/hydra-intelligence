@@ -15,9 +15,9 @@
 		"test": "npm run test:e2e",
 		"machine-translate": "inlang machine translate --project project.inlang",
 		"pb:fetch:schema": "node --env-file=.env scripts/export-schema.mjs",
-		"db:generate": "node --env-file=.env ./node_modules/drizzle-kit/bin/drizzle-kit.js generate",
-		"db:push": "node --env-file=.env ./node_modules/drizzle-kit/bin/drizzle-kit.js push",
-		"db:studio": "node --env-file=.env ./node_modules/drizzle-kit/bin/drizzle-kit.js studio"
+		"db:generate": "NODE_TLS_REJECT_UNAUTHORIZED=0 node --env-file=.env ./node_modules/drizzle-kit/bin.cjs generate",
+		"db:push": "NODE_TLS_REJECT_UNAUTHORIZED=0 node --env-file=.env ./node_modules/drizzle-kit/bin.cjs push",
+		"db:studio": "NODE_TLS_REJECT_UNAUTHORIZED=0 node --env-file=.env ./node_modules/drizzle-kit/bin.cjs studio"
 	},
 	"devDependencies": {
 		"@inlang/cli": "^3.0.0",
@@ -57,7 +57,8 @@
 		"layerchart": "^1.0.8",
 		"pg": "^8.20.0",
 		"pocketbase": "^0.25.2",
-		"svelte-maplibre": "^1.0.0"
+		"svelte-maplibre": "^1.0.0",
+		"usesend-js": "^1.6.3"
 	},
 	"browser": {
 		"crypto": false

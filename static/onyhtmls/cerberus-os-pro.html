@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cerberus OS Pro — Cerberus Blue Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:auto!important;min-height:0!important;overflow-x:hidden}
+:root{
+  --teal:#0b2d3d;--teal2:#11394b;--green:#15e49a;--green2:#0fc484;
+  --bg:#ffffff;--bg2:#f7f8f6;--bg3:#eef2f0;
+  --text:#0b2d3d;--text2:#0b2d3d;--text3:#0b2d3d;
+  --border:#dde8ec;--radius:12px;
+}
+body{background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;}
+.breadcrumb{padding:14px 40px;font-size:11px;color:var(--text3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.bc-link{color:var(--text3);font-size:11px;font-family:'Montserrat',sans-serif;letter-spacing:0.06em;text-decoration:none;transition:color 0.2s;}
+.bc-link:hover{color:var(--teal)}
+.shop-layout{display:grid;grid-template-columns:200px 1fr;align-items:start;}
+.sidebar{padding:32px 24px;border-right:1px solid var(--border);align-self:start;}
+.sidebar-label{font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--text);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.sidebar-link{display:block;font-size:13px;font-weight:400;color:var(--text2);padding:8px 0;text-decoration:none;transition:color 0.2s;font-family:'Montserrat',sans-serif;}
+.sidebar-link:hover{color:var(--teal)}
+.sidebar-link.active{color:var(--teal);font-weight:500;}
+.overview{padding:32px 40px}
+.overview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+.product-card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;text-decoration:none;display:block;transition:box-shadow 0.25s,transform 0.18s;background:var(--bg);}
+.product-card:hover{box-shadow:0 6px 28px rgba(11,45,61,0.1);transform:translateY(-2px);}
+.product-img{aspect-ratio:1/1;overflow:hidden;background:var(--bg2);}
+.product-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease;}
+.product-card:hover .product-img img{transform:scale(1.04)}
+.product-info{padding:20px 22px}
+.product-cat{font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
+.product-name{font-family:'Montserrat Alternates',sans-serif;font-size:16px;font-weight:500;color:var(--text);margin-bottom:5px;line-height:1.25;}
+.product-tagline{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.5;}
+.product-footer{display:flex;align-items:center;justify-content:space-between;}
+.product-price{font-family:'Montserrat Alternates',sans-serif;font-size:16px;font-weight:500;color:var(--teal);}
+.product-price-sub{font-size:10px;color:var(--text3)}
+.product-cta-pill{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);border:1px solid var(--border);padding:7px 16px;border-radius:100px;transition:all 0.2s;}
+.product-card:hover .product-cta-pill{background:var(--teal);color:#fff;border-color:var(--teal);}
+.free-pill{display:inline-block;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--green2);background:rgba(21,228,154,0.12);padding:4px 11px;border-radius:100px;}
+.detail-wrap{max-width:1080px;margin:0 auto;padding:40px 40px 32px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
+.gallery{}
+.main-img{border-radius:var(--radius);overflow:hidden;aspect-ratio:1/1;background:var(--bg2);margin-bottom:10px;}
+.main-img img{width:100%;height:100%;object-fit:cover}
+.thumb-row{display:flex;gap:8px;flex-wrap:wrap}
+.thumb{width:60px;height:60px;border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:border-color 0.2s;background:var(--bg2);}
+.thumb.active,.thumb:hover{border-color:var(--green)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.det-cat{font-size:10px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+.det-title{font-family:'Montserrat Alternates',sans-serif;font-size:26px;font-weight:500;color:var(--text);line-height:1.2;margin-bottom:5px;}
+.det-sub{font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:400;color:var(--text2);margin-bottom:18px;}
+.det-price{font-family:'Montserrat Alternates',sans-serif;font-size:22px;font-weight:500;color:var(--teal);margin-bottom:3px;}
+.det-price-note{font-size:11px;color:var(--text3);margin-bottom:20px}
+.det-divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+.det-desc{font-size:13px;color:var(--text2);line-height:1.75;margin-bottom:14px}
+.det-includes-label{font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--text);margin-bottom:10px;}
+.det-list{list-style:none;margin-bottom:20px}
+.det-list li{font-size:12px;color:var(--text2);padding:5px 0 5px 16px;position:relative;line-height:1.5;}
+.det-list li::before{content:'';position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--green);}
+.det-note{font-size:11px;color:var(--text3);font-style:italic;line-height:1.6;margin-bottom:20px;}
+.det-btn{display:block;width:100%;padding:14px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'Montserrat Alternates',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:background 0.2s;text-align:center;margin-bottom:8px;text-decoration:none;}
+.det-btn:hover{background:var(--teal2)}
+.det-btn.outline{background:transparent;color:var(--teal);border:1.5px solid var(--border);}
+.det-btn.outline:hover{border-color:var(--teal);background:var(--bg2)}
+.det-btn.green-btn{background:var(--green);color:var(--teal);}
+.det-btn.green-btn:hover{background:var(--green2)}
+.ship-row{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text3);margin-top:6px;}
+.config-header{max-width:1080px;margin:0 auto;padding:40px 40px 0;display:grid;grid-template-columns:280px 1fr;gap:40px;align-items:center;margin-bottom:32px;}
+.config-header-img{border-radius:var(--radius);overflow:hidden;aspect-ratio:1/1;background:var(--bg2);}
+.config-header-img img{width:100%;height:100%;object-fit:cover}
+.config-wrap{max-width:1080px;margin:0 auto;padding:0 40px 32px;display:grid;grid-template-columns:1fr 340px;gap:40px;align-items:start;}
+.config-col{}
+.cfg-section{margin-bottom:32px}
+.cfg-label{font-size:10px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.base-card{background:var(--bg2);border:2px solid var(--green);border-radius:var(--radius);padding:18px 22px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.base-name{font-family:'Montserrat Alternates',sans-serif;font-size:14px;font-weight:500;margin-bottom:3px;}
+.base-desc{font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.included-tag{display:inline-block;font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--green2);background:rgba(21,228,154,0.12);padding:3px 9px;border-radius:100px;margin-right:4px;margin-bottom:3px;}
+.base-right{text-align:right;flex-shrink:0}
+.base-price-val{font-family:'Montserrat Alternates',sans-serif;font-size:20px;font-weight:500;}
+.base-price-note{font-size:10px;color:var(--text3);margin-top:2px}
+.sensor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.s-card{border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;cursor:pointer;transition:border-color 0.2s,background 0.2s;user-select:none;}
+.s-card:hover{border-color:rgba(21,228,154,0.45)}
+.s-card.selected{border-color:var(--green);background:rgba(21,228,154,0.04)}
+.s-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.s-name{font-family:'Montserrat Alternates',sans-serif;font-size:12px;font-weight:500}
+.chk{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;}
+.s-card.selected .chk{border-color:var(--green);background:var(--green)}
+.chk svg{display:none}
+.s-card.selected .chk svg{display:block}
+.s-desc{font-size:10px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.s-price{font-family:'Montserrat Alternates',sans-serif;font-size:12px;font-weight:500;color:var(--teal);}
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sw-card{border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:border-color 0.2s;}
+.sw-card.selected{border-color:var(--green);background:rgba(21,228,154,0.04)}
+.sw-name{font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:500;margin-bottom:3px}
+.sw-price{font-family:'Montserrat Alternates',sans-serif;font-size:14px;font-weight:500;color:var(--teal);margin-bottom:10px;}
+.sw-list{list-style:none}
+.sw-list li{font-size:10px;color:var(--text2);line-height:1.7;padding-left:11px;position:relative;}
+.sw-list li::before{content:'·';position:absolute;left:2px;color:var(--green);font-weight:700}
+.summary{background:var(--teal);border-radius:14px;padding:24px;position:sticky;top:24px;}
+.sum-heading{font-family:'Montserrat Alternates',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#fff;margin-bottom:16px;}
+.sum-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.07);}
+.sum-item{font-size:12px;color:#fff}
+.sum-val{font-size:12px;color:#fff;font-weight:500}
+.sum-sensors-title{font-size:9px;color:#fff;text-transform:uppercase;letter-spacing:0.1em;margin:10px 0 4px;}
+.sum-s-row{display:flex;justify-content:space-between;padding:3px 0}
+.sum-s-row span:first-child{font-size:11px;color:#fff}
+.sum-s-row span:last-child{font-size:11px;color:#fff}
+.sum-total-section{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.15);}
+.sum-total-row{display:flex;justify-content:space-between;align-items:baseline}
+.sum-total-label{font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#fff;}
+.sum-total{font-family:'Montserrat Alternates',sans-serif;font-size:24px;font-weight:500;color:var(--green);}
+.sum-subnote{font-size:10px;color:#fff;text-align:right;margin-top:4px}
+.req-btn{width:100%;margin-top:16px;padding:13px;background:var(--green);color:var(--teal);border:none;border-radius:8px;font-family:'Montserrat Alternates',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:background 0.2s;}
+.req-btn:hover{background:var(--green2)}
+.ship-badge{display:flex;align-items:center;gap:7px;margin-top:10px;padding:8px 11px;background:rgba(21,228,154,0.08);border-radius:7px;font-size:10px;color:#fff;}
+.ship-badge strong{color:var(--green);font-weight:500}
+.overlay{display:none;position:fixed;inset:0;background:rgba(11,45,61,0.6);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:32px;max-width:480px;width:100%;position:relative;max-height:90vh;overflow-y:auto;}
+.modal-x{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;border:none;background:var(--bg2);font-size:15px;cursor:pointer;color:var(--text2);}
+.m-title{font-family:'Montserrat Alternates',sans-serif;font-size:18px;font-weight:500;color:var(--teal);margin-bottom:5px;}
+.m-sub{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:18px}
+.m-summary{background:var(--bg2);border-radius:8px;padding:13px;font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:18px;}
+.m-summary strong{color:var(--teal);font-weight:500}
+.f-r{margin-bottom:11px}
+.f-r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f-lbl{display:block;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text2);margin-bottom:4px;}
+.f-inp{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-family:'Montserrat',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.f-inp:focus{border-color:var(--green)}
+textarea.f-inp{height:68px;resize:vertical}
+.f-submit{width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'Montserrat Alternates',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;margin-top:6px;transition:background 0.2s;}
+.f-submit:hover{background:var(--teal2)}
+.success-view{display:none;text-align:center;padding:12px 0}
+.s-icon{width:50px;height:50px;border-radius:50%;background:rgba(21,228,154,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 13px;font-size:22px;}
+.s-title{font-family:'Montserrat Alternates',sans-serif;font-size:17px;font-weight:500;color:var(--teal);margin-bottom:7px;}
+.s-txt{font-size:12px;color:var(--text2);line-height:1.6}
+@media(max-width:768px){
+  .shop-layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .overview{padding:20px 16px}
+  .overview-grid{grid-template-columns:1fr}
+  .breadcrumb{padding:12px 16px}
+  .detail-wrap{grid-template-columns:1fr;padding:20px 16px 32px;gap:20px}
+  .main-img{aspect-ratio:1/1;height:auto}
+  .config-header{grid-template-columns:1fr;padding:20px 16px 0;gap:14px;margin-bottom:16px;}
+  .config-header-img{max-height:220px;aspect-ratio:16/9;}
+  .config-header-img img{object-position:center top}
+  .config-wrap{grid-template-columns:1fr;padding:0 16px 32px;gap:20px}
+  .config-col .cfg-section:first-child{margin-top:24px}
+  .summary{position:static}
+  .sensor-grid{grid-template-columns:1fr}
+  .sw-grid{grid-template-columns:1fr}
+  .base-card{flex-direction:column;gap:8px}
+  .base-right{text-align:left}
+  .f-r2{grid-template-columns:1fr}
+  .det-title{font-size:22px}
+}
+@media(min-width:769px) and (max-width:1024px){
+  .shop-layout{grid-template-columns:160px 1fr}
+  .overview-grid{grid-template-columns:repeat(2,1fr)}
+  .detail-wrap{padding:32px 24px 32px;gap:32px}
+  .config-header{padding:32px 24px 0;gap:24px}
+  .config-wrap{padding:0 24px 32px;gap:24px}
+}
+
+
+.back-btn{display:inline-flex;align-items:center;gap:8px;margin:24px 40px 0;padding:10px 18px;background:var(--bg2);border:1.5px solid var(--border);border-radius:100px;font-size:12px;font-weight:500;color:var(--teal);text-decoration:none;transition:all 0.2s;font-family:'Montserrat',sans-serif;letter-spacing:0.04em;}
+.back-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal);}
+.back-btn:hover svg{transform:translateX(-2px)}
+.back-btn svg{transition:transform 0.2s}
+.inline-form{margin-top:32px;padding:28px;background:#e5faff;border-radius:14px;}
+.inline-form-title{font-family:'Montserrat Alternates',sans-serif;font-size:15px;font-weight:600;color:var(--teal);margin-bottom:4px;}
+.inline-form-sub{font-size:11px;color:var(--text3);margin-bottom:18px;line-height:1.5;}
+.f-submit{width:100%;padding:14px;background:var(--green);color:var(--teal);border:none;border-radius:8px;font-family:'Montserrat Alternates',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;margin-top:4px;transition:background 0.2s;}
+.f-submit:hover{background:var(--green2)}
+.f-submit:disabled{opacity:0.6;cursor:not-allowed}
+.f-note{font-size:12px;color:var(--text3);margin-top:10px;line-height:1.6;text-align:center;}
+.f-success{display:none;text-align:center;padding:24px 0;}
+.f-success-icon{width:48px;height:48px;border-radius:50%;background:rgba(21,228,154,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:20px;}
+.f-success-title{font-family:'Montserrat Alternates',sans-serif;font-size:16px;font-weight:500;color:var(--teal);margin-bottom:6px;}
+.f-success-text{font-size:12px;color:var(--text2);line-height:1.6;}
+.f-error{display:none;font-size:12px;color:#c0392b;margin-top:8px;text-align:center;}
+@media(max-width:768px){
+  .back-btn{margin:16px 16px 0;}
+  .inline-form{padding:18px;}
+  .f-r2{grid-template-columns:1fr}
+}
+
+</style>
+</head>
+<body>
+<!-- Orders: set API URL in shop-config.js only. -->
+<a class="back-btn" href="https://cerberusblue.com/products">
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  All Products
+</a>
+<div class="detail-wrap">
+  <div class="gallery">
+    <div class="main-img">
+      <img src="https://assets.zyrosite.com/YD06VgnVR6sr1Pn3/verkauf53-X0QwSp7GReTTMAbh.png" alt="Cerberus OS Pro">
+    </div>
+  </div>
+  <div class="detail-info">
+    <div class="det-cat">Cerberus OS</div>
+    <div class="det-title">Cerberus OS Pro</div>
+    <div class="det-sub">Monthly billed · Cancel anytime</div>
+    <div class="det-price">€49</div>
+    <div class="det-price-note">/month per buoy · Cancel anytime</div>
+    <hr class="det-divider">
+    <p class="det-desc">For operators who need more than monitoring — they need documentation, control and the ability to share what they're seeing. Pro gives you custom alert conditions you define yourself, photo documentation linked to sensor data, and a shareable view for partners and stakeholders.</p>
+    <p class="det-desc">Built for aquaculture operators running active sites, researchers documenting field conditions, and coastal organisations that need to share water quality data externally.</p>
+    <div class="det-includes-label">Everything in Basic, plus</div>
+    <ul class="det-list">
+      <li>Custom alerts — set your own thresholds and conditions</li>
+      <li>Email notifications</li>
+      <li>Photo documentation linked to sensor data</li>
+      <li>Compare two buoy locations simultaneously</li>
+      <li>Shareable guest view for partners and stakeholders</li>
+    </ul>
+    <p class="det-note">Requires an active HYDRA Core deployment.</p>
+
+<div class="inline-form">
+  <div class="inline-form-title">Place your order</div>
+  <p class="inline-form-sub">No payment now. We'll confirm within 1–2 business days.</p>
+  <form id="orderForm" novalidate>
+    <div class="f-r2">
+      <div class="f-r"><label class="f-lbl" for="fFirst">First name</label><input class="f-inp" id="fFirst" name="firstName" autocomplete="given-name" placeholder="Jan"></div>
+      <div class="f-r"><label class="f-lbl" for="fLast">Last name</label><input class="f-inp" id="fLast" name="lastName" autocomplete="family-name" placeholder="Müller"></div>
+    </div>
+    <div class="f-r"><label class="f-lbl" for="fEmail">Email</label><input class="f-inp" type="email" id="fEmail" name="email" autocomplete="email" placeholder="jan@yourfarm.com"></div>
+    <div class="f-r"><label class="f-lbl" for="fOrg">Organisation (optional)</label><input class="f-inp" id="fOrg" name="organisation" autocomplete="organization" placeholder="Farm or company name"></div>
+    <div class="f-r"><label class="f-lbl" for="fMsg">Message (optional)</label><textarea class="f-inp" id="fMsg" name="message" placeholder="Deployment location, questions, use case…"></textarea></div>
+    <button type="submit" class="f-submit" id="submitBtn">Place Order →</button>
+    <div class="f-error" id="formError" role="alert" aria-live="polite"></div>
+  </form>
+  <div class="f-success" id="formSuccess">
+    <div class="f-success-icon">✓</div>
+    <div class="f-success-title">Order received.</div>
+    <p class="f-success-text">No payment has been taken. We will contact you at <strong id="successEmail"></strong> within 1–2 business days.</p>
+  </div>
+</div>
+
+  </div>
+</div>
+<script src="shop-config.js"></script>
+<script src="shop-order.standalone.js"></script>
+<script>
+
+async function submitOrder(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const errEl = document.getElementById('formError');
+  const payload = {
+    firstName: document.getElementById('fFirst').value,
+    lastName: document.getElementById('fLast').value,
+    email: document.getElementById('fEmail').value,
+    organisation: document.getElementById('fOrg').value,
+    message: document.getElementById('fMsg').value,
+    product: 'Cerberus OS Pro',
+    configuration: 'Cerberus OS Pro — €49/month per buoy',
+    total: '€49/month'
+  };
+  const validated = ShopOrder.validateOrderPayload(payload);
+  if (!validated.ok) {
+    errEl.textContent = validated.message;
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+  errEl.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  const result = await ShopOrder.postOrder(validated.data);
+  if (result.ok) {
+    document.getElementById('orderForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+    document.getElementById('successEmail').textContent = validated.data.email;
+    return;
+  }
+  errEl.textContent = ShopOrder.formatUserMessage(result);
+  errEl.style.display = 'block';
+  btn.disabled = false;
+  btn.textContent = 'Place Order →';
+}
+document.getElementById('orderForm').addEventListener('submit', submitOrder);
+
+</script>
+</body></html>

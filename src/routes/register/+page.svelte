@@ -49,7 +49,7 @@
         {m.createAccount()}
       </h2>
     </div>
-    <form method="POST" use:enhance action="?/default" class={className} on:submit={handleSubmit}>
+    <form method="POST" use:enhance action="/register?/register" class={className} on:submit={handleSubmit}>
       <Form.Field {form} name="firstName">
         <Form.Control let:attrs>
           <Form.Label>{m.firstName()}</Form.Label>

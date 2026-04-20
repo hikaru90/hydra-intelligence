@@ -45,7 +45,7 @@
       filter: filter,
     });
     hydras = records;
-    console.log("hydras", hydras);
+    console.log("hydras", $state.snapshot(hydras));
   };
   const handleMapClick = (event: any) => {
     if (isAddingMarker) {
@@ -169,8 +169,9 @@
   });
 </script>
 
-<div class="top-0 left-0 z-0 w-dvw h-dvh fixed">
-  {#if isAddingMarker}
+<div class="flex flex-col min-h-dvh">
+  <div class="z-0 w-dvw h-70 relative flex-shrink-0">
+    {#if isAddingMarker}
     <div
       class="flex items-center justify-center gap-2 absolute bottom-6 left-1/2 -translate-x-1/2 z-20"
     >
@@ -183,24 +184,25 @@
       </button>
     </div>
     {#if cursorPosition && tooltipPosition}
-      <div
+    <div
         class="fixed z-20 bg-midnight text-yellow-200 px-2 py-1 rounded-md text-sm pointer-events-none"
         style="left: {tooltipPosition.x}px; top: {tooltipPosition.y}px; transform: translate(-50%, -120%) translateY(-8px)"
       >
         {cursorPosition[0].toFixed(6)}, {cursorPosition[1].toFixed(6)}
       </div>
-    {/if}
-  {/if}
-  <div class="relative w-full h-full" bind:this={mapContainer}>
-    <MapLibre
+      {/if}
+      {/if}
+      <div class="relative w-full h-full" bind:this={mapContainer}>
+        <MapLibre
       dragRotate={false}
       center={[10.1560948, 54.3302994]}
       zoom={14}
       style="/dark.json"
       bind:map={mapInstance}
+      attributionControl={{ compact: true }}
     >
       {#each hydras as hydra}
-        <Marker lngLat={[hydra.lon, hydra.lat]} onclick={() => {
+      <Marker lngLat={[hydra.lon, hydra.lat]} onclick={() => {
           goto(`/view/${hydra.id}`);
         }}>
           <div class="size-5 relative">
@@ -208,18 +210,23 @@
             <div class="absolute inset-0 bg-emerald-500 rounded-full animate-ping"></div>
           </div>
         </Marker>
-      {/each}
-    </MapLibre>
+        {/each}
+      </MapLibre>
+    </div>
+  </div>
+  
+  <div class="bg-white flex-grow">
+    aaa
   </div>
 </div>
-
-<Dialog.Root bind:open={isAddingHydra}>
-  <Dialog.Content>
-    <Dialog.Header>
-      <Dialog.Title>{m.addHydra()}</Dialog.Title>
-      <Dialog.Description class="flex flex-col gap-4">
-        {m.addingHydraAt()}
-        {#if newMarkerPosition}
+  
+  <Dialog.Root bind:open={isAddingHydra}>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>{m.addHydra()}</Dialog.Title>
+        <Dialog.Description class="flex flex-col gap-4">
+          {m.addingHydraAt()}
+          {#if newMarkerPosition}
           {newMarkerPosition[0].toFixed(6)}, {newMarkerPosition[1].toFixed(6)}
         {/if}
         <div class="flex w-full flex-col gap-2">

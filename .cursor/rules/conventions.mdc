@@ -1,0 +1,26 @@
+---
+description: Paraglide i18n, Svelte 4, and Tailwind 4 conventions
+alwaysApply: true
+---
+
+# Project conventions
+
+## i18n: Paraglide (German + English)
+
+- **Always** use Paraglide for user-facing text. Provide messages in **German and English**.
+- Import messages: `import * as m from "$src/paraglide/messages.js"` (or the path your project uses).
+- Use message functions in templates: `{m.someKey()}` or `{m.someKey({ name: "value" })}`.
+- Add new strings to the Paraglide message files for both `de` and `en`; do not hardcode UI text in components.
+
+## Svelte: Svelte 4 syntax
+
+- This project uses **SvelteKit with Svelte 4**. Use Svelte 4 syntax only.
+- Use `let` for component state, not runes (`$state`, `$props`, `$derived`, etc.).
+- Use `export let` for component props and for page/layout data from load (e.g. `export let data` in +page.svelte).
+- Use `$:` for reactive statements, not `$derived`.
+- Use Svelte 4 event handlers (`on:click`, `on:submit`, etc.) and slot syntax; avoid Svelte 5-specific APIs.
+
+## Styling: Tailwind CSS 4
+
+- Use **Tailwind CSS 4** for styling.
+- Prefer Tailwind utility classes; follow existing patterns in the codebase for spacing, colors, and layout.

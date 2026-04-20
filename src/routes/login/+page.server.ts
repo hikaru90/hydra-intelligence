@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types.js';
+import type { PageServerLoad, Actions } from './$types.js';
 import { redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -13,4 +13,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		form: await superValidate(zod(formSchema)),
 		redirectTo: url.searchParams.get('redirectTo'),
 	};
+};
+
+export const actions: Actions = {
+	login: async () => ({ form: await superValidate(zod(formSchema)) }),
 };
