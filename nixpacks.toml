@@ -1,2 +1,5 @@
-[phases.setup]
-nixPkgs = ["nodejs", "nodePackages.pnpm", "openssl"] 
+# Node 22 from Nixpacks uses a newer nixpkgs pin than the default; satisfies
+# @prisma/client@7 (optional peer of better-auth). Do not add `nodejs` to
+# nixPkgs here — that pulled Node 22.11 and broke `npm ci` (EBADENGINE).
+[variables]
+NIXPACKS_NODE_VERSION = "22"
