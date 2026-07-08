@@ -3,7 +3,7 @@
   import { Input } from "$lib/components/ui/input";
   import { formSchema, type FormSchema } from "./schema";
   import { type SuperValidated, type Infer, superForm } from "sveltekit-superforms";
-  import { zodClient } from "sveltekit-superforms/adapters";
+  import { zod4Client } from "sveltekit-superforms/adapters";
   import { m } from "$src/paraglide/messages";
   import { toast } from "svelte-sonner";
   import { goto } from "$app/navigation";
@@ -21,7 +21,7 @@
 
   const form = superForm(data, {
     resetForm: false,
-    validators: zodClient(formSchema),
+    validators: zod4Client(formSchema),
     dataType: "json",
   });
 

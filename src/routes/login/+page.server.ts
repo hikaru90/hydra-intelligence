@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { formSchema } from './schema';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -10,11 +10,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		throw redirect(302, redirectTo || '/');
 	}
 	return {
-		form: await superValidate(zod(formSchema)),
+		form: await superValidate(zod4(formSchema)),
 		redirectTo: url.searchParams.get('redirectTo'),
 	};
 };
 
 export const actions: Actions = {
-	login: async () => ({ form: await superValidate(zod(formSchema)) }),
+	login: async () => ({ form: await superValidate(zod4(formSchema)) }),
 };
