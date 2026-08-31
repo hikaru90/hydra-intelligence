@@ -106,14 +106,14 @@ html.vt-forward::view-transition-old(root) {
 }
 html.vt-forward::view-transition-new(root) {
   z-index: 1;
-  animation: push-in-right 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: push-in-right 400ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 html.vt-back::view-transition-new(root) {
   animation: none;
 }
 html.vt-back::view-transition-old(root) {
   z-index: 1;
-  animation: push-out-right 320ms cubic-bezier(0.4, 0, 1, 1) both;
+  animation: push-out-right 400ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 @keyframes push-in-right {
   from {
@@ -137,10 +137,17 @@ html.vt-back::view-transition-old(root) {
    screen's header pill instead of just cross-fading with everything
    else — the specific buoy you tapped visibly becomes the screen you
    land on, layered on top of the page-level slide above. Matches
-   automatically in both directions (list -> header, header -> list). */
-::view-transition-group(*) {
-  animation-duration: 320ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+   automatically in both directions (list -> header, header -> list).
+   The group (box resize/position) and the old/new (content cross-fade
+   inside that box) are two separate animations — leaving old/new on
+   the browser's default duration while only the group used ours made
+   the box finish resizing before the content finished fading, which
+   read as a jerky snap at the end. Matching all three fixes it. */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
