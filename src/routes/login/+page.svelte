@@ -96,6 +96,16 @@
         {signingIn ? '…' : m.login()}
       </button>
       <a class="btn-cancel" href="/register">{m.switchToRegister()}</a>
+
+      {#if import.meta.env.DEV}
+        <button
+          type="button"
+          class="dev-bypass"
+          onclick={() => goto('/')}
+        >
+          Dev: weiter ohne echten Login (nur zum Testen des Übergangs)
+        </button>
+      {/if}
     </form>
   </div>
 </div>
@@ -265,5 +275,24 @@
   }
   .btn-cancel:active {
     color: rgba(255, 255, 255, 0.9);
+  }
+
+  .dev-bypass {
+    display: block;
+    width: 100%;
+    margin-top: 22px;
+    padding: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    background: none;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.45);
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .dev-bypass:active {
+    color: rgba(255, 255, 255, 0.7);
   }
 </style>
