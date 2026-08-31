@@ -50,12 +50,10 @@
 <div class="screen">
   <div class="photo-band" aria-hidden="true"></div>
   <div class="content" style="view-transition-name: brand-mark">
-    <div class="wordmark-wrap">
-      <div class="glow" aria-hidden="true"></div>
-      <img class="wordmark" src="/cerberus-wordmark-dark.svg" alt="Cerberus Blue Systems" />
+    <div class="brand-row">
+      <img class="mark" src="/cerberus-mark-dark.svg" alt="" aria-hidden="true" />
+      <span class="brand-text">Cerberus Blue Systems</span>
     </div>
-
-    <h1 class="heading">{m.loginToAccount()}</h1>
 
     <form method="POST" use:enhance action="/login?/login" onsubmit={handleSubmit} class="form">
       <div class="field">
@@ -162,38 +160,26 @@
     z-index: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
     max-width: 340px;
   }
-  .wordmark-wrap {
-    position: relative;
+  .brand-row {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 40px;
+    gap: 10px;
+    margin-bottom: 28px;
   }
-  .glow {
-    position: absolute;
-    inset: -30px;
-    z-index: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(21, 228, 154, 0.28) 0%, rgba(21, 228, 154, 0) 70%);
-    filter: blur(4px);
+  .mark {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
   }
-  .wordmark {
-    position: relative;
-    z-index: 1;
-    width: 200px;
-    height: auto;
-    display: block;
-  }
-  .heading {
-    align-self: flex-start;
-    margin: 0 0 22px;
+  .brand-text {
     font-family: var(--font-heading);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
+    letter-spacing: 0.01em;
     color: #fff;
   }
   .form {
