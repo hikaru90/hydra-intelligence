@@ -52,44 +52,40 @@
   }
 }
 
-/* Login → dashboard brand-mark morph (see +layout.svelte's onNavigate).
-   A slower, eased cross-fade reads as the login window settling into the
-   header mark, rather than the sharper default view-transition timing. */
-::view-transition-old(brand-mark),
-::view-transition-new(brand-mark) {
-  animation-duration: 1.1s;
-  animation-timing-function: cubic-bezier(0.45, 0, 0.15, 1);
-}
-
-/* Water-ripple page wipe, only for leaving /login (flagged by +layout.svelte
+/* Water-drain page wipe, only for leaving /login (flagged by +layout.svelte
    as html.vt-water — the default cross-fade is too flat an entrance for the
-   one moment the app should feel like "arriving"). The old page holds still
-   underneath while the new one spreads outward from the corner the brand
-   mark lands in, like a ripple washing over it, instead of both fading
-   through each other.
-   Timing: cubic-bezier(0.22, 1, 0.36, 1) (the previous curve) front-loads
-   almost all the motion into the first ~200ms, so even at 0.75s it read as
-   an instant cut. (0.45, 0, 0.15, 1) spreads the growth evenly across the
-   full duration instead, and 1.1s roughly matches the brand-mark morph so
-   both finish together. */
+   one moment the app should feel like "arriving"). The new page (dashboard)
+   sits fully visible underneath from the start; the old page (login) stays
+   on top and shrinks away toward the corner the logo lives in, like water
+   draining out of the screen into it, distorting as it goes — rather than
+   the dashboard wiping in over a static login screen.
+   Timing: cubic-bezier(0.22, 1, 0.36, 1) (an earlier version of this curve)
+   front-loads almost all the motion into the first ~200ms, so even at 0.75s
+   it read as an instant cut. (0.45, 0, 0.15, 1) spreads the shrink evenly
+   across the full 1.1s duration instead. */
 html.vt-water::view-transition-old(root) {
-  animation: none;
+  z-index: 1;
+  animation: water-drain 1.1s cubic-bezier(0.45, 0, 0.15, 1) both;
+  /* feTurbulence + feDisplacementMap (defined in +layout.svelte, driven by
+     onNavigate's animateWaterDistortion) — refracts the draining login
+     screen like light through disturbed water instead of a mathematically
+     clean wipe. */
+  filter: url('#water-distort');
 }
 html.vt-water::view-transition-new(root) {
-  animation: water-reveal 1.1s cubic-bezier(0.45, 0, 0.15, 1) both;
+  z-index: 0;
+  animation: none;
 }
-@keyframes water-reveal {
+@keyframes water-drain {
   from {
-    clip-path: circle(0% at 30px 30px);
+    clip-path: circle(150% at 30px 30px);
   }
   to {
-    clip-path: circle(150% at 30px 30px);
+    clip-path: circle(0% at 30px 30px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(brand-mark),
-  ::view-transition-new(brand-mark),
   html.vt-water::view-transition-old(root),
   html.vt-water::view-transition-new(root) {
     animation: none;

@@ -56,7 +56,7 @@
 
 <div class="screen">
   <div class="photo-band" aria-hidden="true"></div>
-  <div class="content" style="view-transition-name: brand-mark">
+  <div class="content">
     <div class="brand-row">
       <img class="mark" src="/cerberus-icon-green.svg" alt="" aria-hidden="true" />
       <span class="brand-text">Cerberus Blue Systems</span>
