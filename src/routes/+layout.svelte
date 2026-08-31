@@ -6,8 +6,14 @@
   import { Toaster } from "$lib/components/ui/sonner";
   import { user } from '$lib/stores/auth';
   let { children, data } = $props();
-  
+
   user.set(data.user);
+
+  // Cerberus OS app screens (dashboard, buoy detail) ship their own full-screen
+  // layout and header — the global Navbar is only shown on the remaining pages.
+  const isAppScreen = $derived(
+    page.url.pathname === '/' || page.url.pathname.startsWith('/buoy/')
+  );
 </script>
 
 <div style="display:none">
@@ -15,15 +21,19 @@
     <a href={localizeHref(page.url.pathname, { locale })}>{locale}</a>
   {/each}
 </div>
-<div class="min-h-screen bg-cyan-950 text-emerald-500">
-  <Navbar {data} class="absolute top-4 left-0 w-full z-10" />
+{#if isAppScreen}
+  {@render children()}
+{:else}
+  <div class="min-h-screen bg-cyan-950 text-emerald-500">
+    <Navbar {data} class="absolute top-4 left-0 w-full z-10" />
 
-  <main>
-    {@render children()}
-  </main>
-  
-  <Toaster />
-</div>
+    <main>
+      {@render children()}
+    </main>
+  </div>
+{/if}
+
+<Toaster />
 
 <style>
   @reference "tailwindcss";

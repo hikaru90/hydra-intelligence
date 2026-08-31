@@ -30,7 +30,10 @@ const authHandle: Handle = async ({ event, resolve }) => {
 		'/api/schema',
 		'/api/orders',
 	];
-	const isPublicRoute = publicRoutes.some((route) => event.url.pathname.startsWith(route));
+	// V1 has no login (see REQUIREMENTS.md) — dashboard and buoy detail are
+	// the app itself, not behind an account.
+	const isAppScreen = event.url.pathname === '/' || event.url.pathname.startsWith('/buoy/');
+	const isPublicRoute = isAppScreen || publicRoutes.some((route) => event.url.pathname.startsWith(route));
 
 	if (event.url.pathname === '/logout') {
 		event.locals.user = undefined;
