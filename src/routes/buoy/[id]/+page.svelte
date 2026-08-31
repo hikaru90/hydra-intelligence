@@ -33,6 +33,7 @@
 	let exportOpen = $state(false);
 	let detailOpen = $state(false);
 	let detailParam = $state<ParameterId | null>(null);
+	let detailBuoyId = $state<string | null>(null);
 
 	const currentId = $derived(selectedOverride ?? data.buoyId);
 	const compareId = $derived(
@@ -101,8 +102,9 @@
 			});
 		}
 	}
-	function expandParameter(id: ParameterId) {
+	function expandParameter(id: ParameterId, buoyId: string) {
 		detailParam = id;
+		detailBuoyId = buoyId;
 		detailOpen = true;
 	}
 </script>
@@ -140,7 +142,7 @@
 		{/if}
 
 		<div class="scroll">
-			<ParameterGrid {range} {compare} onexpand={expandParameter} />
+			<ParameterGrid {range} buoyId={currentId} compareBuoyId={compareId} {compare} onexpand={expandParameter} />
 		</div>
 	{:else}
 		<div class="scroll">
@@ -161,7 +163,13 @@
 		onsave={saveCheckIn}
 	/>
 	<ExportSheet bind:open={exportOpen} />
-	<ParameterDetailSheet bind:open={detailOpen} paramId={detailParam} buoyName={buoy.name} {range} />
+	<ParameterDetailSheet
+		bind:open={detailOpen}
+		paramId={detailParam}
+		buoyId={detailBuoyId ?? currentId}
+		buoyName={(detailBuoyId && BUOYS.find((b) => b.id === detailBuoyId)?.name) || buoy.name}
+		{range}
+	/>
 </div>
 
 <style>

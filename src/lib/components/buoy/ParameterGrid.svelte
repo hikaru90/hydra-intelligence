@@ -5,18 +5,20 @@
 
 	interface Props {
 		range: TimeRange;
+		buoyId: string;
+		compareBuoyId?: string;
 		compare?: boolean;
-		onexpand?: (id: ParameterId) => void;
+		onexpand?: (id: ParameterId, buoyId: string) => void;
 	}
 
-	let { range, compare = false, onexpand }: Props = $props();
+	let { range, buoyId, compareBuoyId, compare = false, onexpand }: Props = $props();
 </script>
 
 <div class="grid" class:compare>
 	{#each PARAMETERS as param (param.id)}
-		<ParameterCard {param} {range} variant="primary" compact={compare} {onexpand} />
-		{#if compare}
-			<ParameterCard {param} {range} variant="compare" compact {onexpand} />
+		<ParameterCard {param} {range} {buoyId} compact={compare} {onexpand} />
+		{#if compare && compareBuoyId}
+			<ParameterCard {param} {range} buoyId={compareBuoyId} compact {onexpand} />
 		{/if}
 	{/each}
 </div>

@@ -13,30 +13,29 @@
 	interface Props {
 		param: ParameterDef;
 		range: TimeRange;
-		/** primary buoy or the compared buoy (second column). */
-		variant?: 'primary' | 'compare';
+		/** Which buoy's data this card shows. */
+		buoyId: string;
 		/** true inside the two-column compare grid (smaller type). */
 		compact?: boolean;
-		onexpand?: (id: ParameterDef['id']) => void;
+		onexpand?: (id: ParameterDef['id'], buoyId: string) => void;
 	}
 
-	let { param, range, variant = 'primary', compact = false, onexpand }: Props = $props();
+	let { param, range, buoyId, compact = false, onexpand }: Props = $props();
 
-	const isCompare = $derived(variant === 'compare');
 	const isSnapshot = $derived(range === 'now');
 
-	const value = $derived(formatValue(telemetrySnapshot(param.id, isCompare)));
-	const direction = $derived(telemetryDirection(param.id));
+	const value = $derived(formatValue(telemetrySnapshot(param.id, buoyId)));
+	const direction = $derived(telemetryDirection(param.id, buoyId));
 	const trendWord = $derived(direction === 1 ? 'rising' : direction === -1 ? 'falling' : 'same');
 
 	// Snapshot has no window, so trend cards borrow the 24h band when range is 'now'.
-	const stat = $derived(telemetryRange(param.id, range === 'now' ? '24h' : range));
-	const series = $derived(telemetrySeries(param.id, isCompare));
+	const stat = $derived(telemetryRange(param.id, buoyId, range === 'now' ? '24h' : range));
+	const series = $derived(telemetrySeries(param.id, buoyId));
 	const ticks = $derived(timeAxisTicks(range === 'now' ? '24h' : range, compact ? 2 : 3));
-	const gradientId = $derived(`grad-${param.id}-${variant}`);
+	const gradientId = $derived(`grad-${param.id}-${buoyId}`);
 
 	function expand() {
-		onexpand?.(param.id);
+		onexpand?.(param.id, buoyId);
 	}
 	function onKeydown(e: KeyboardEvent) {
 		if (e.key === 'Enter' || e.key === ' ') {

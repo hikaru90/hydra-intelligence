@@ -10,20 +10,21 @@
 	interface Props {
 		open?: boolean;
 		paramId: ParameterId | null;
+		buoyId: string;
 		buoyName: string;
 		range: TimeRange;
 		onclose?: () => void;
 	}
 
-	let { open = $bindable(false), paramId, buoyName, range, onclose }: Props = $props();
+	let { open = $bindable(false), paramId, buoyId, buoyName, range, onclose }: Props = $props();
 
 	const param = $derived(paramId ? (PARAMETERS.find((p) => p.id === paramId) ?? null) : null);
 	const window = $derived<Exclude<TimeRange, 'now'>>(range === 'now' ? '24h' : range);
-	const series = $derived(paramId ? telemetrySeries(paramId) : []);
+	const series = $derived(paramId ? telemetrySeries(paramId, buoyId) : []);
 	const sMin = $derived(series.length ? Math.min(...series) : 0);
 	const sMax = $derived(series.length ? Math.max(...series) : 1);
 	const sRange = $derived(sMax - sMin || 1);
-	const stat = $derived(paramId ? telemetryRange(paramId, window) : { min: 0, max: 1 });
+	const stat = $derived(paramId ? telemetryRange(paramId, buoyId, window) : { min: 0, max: 1 });
 	const ticks = $derived(timeAxisTicks(window, 4));
 	const windowLabel = $derived(
 		window === '24h' ? 'last 24 hours' : window === '7d' ? 'last 7 days' : 'last 30 days'

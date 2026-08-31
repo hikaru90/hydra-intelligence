@@ -2,17 +2,37 @@ import type { Buoy, Observation, Site } from '$lib/types';
 
 // Temporary in-memory fixtures so the UI runs before PocketBase is connected.
 // Replace these with load functions / a PocketBase client behind the same types.
+//
+// Coordinates are real open-water points (not on land) in two actual fjord
+// systems: the Limfjord near Aalborg, Denmark, and the Kieler Förde in
+// Germany — the latter matches the pilot region from REQUIREMENTS.md.
 
 const DAY = 86_400_000;
 const ago = (days: number) => new Date(Date.now() - days * DAY).toISOString();
 
 export const SITES: Site[] = [
-	{ id: 'limfjord', name: 'Limfjord', country: 'Denmark', short: 'Limfjord, DK', lat: 56.9508, lng: 9.2812, zoom: 13.4 },
-	{ id: 'chiloe', name: 'Chiloé', country: 'Chile', short: 'Chiloé, CL', lat: -42.4812, lng: -73.7626, zoom: 13.4 }
+	{
+		id: 'limfjord',
+		name: 'Limfjord',
+		country: 'Denmark',
+		short: 'Limfjord, DK',
+		lat: 57.048,
+		lng: 9.935,
+		zoom: 13.2
+	},
+	{
+		id: 'kieler-foerde',
+		name: 'Kieler Förde',
+		country: 'Germany',
+		short: 'Kieler Förde, DE',
+		lat: 54.378,
+		lng: 10.185,
+		zoom: 12.8
+	}
 ];
 
 /** Approximate current position of the person in the field (drives GPS-nearest later). */
-export const YOU = { lat: 56.9472, lng: 9.2705 };
+export const YOU = { lat: 57.047, lng: 9.9305 };
 
 export const BUOYS: Buoy[] = [
 	{
@@ -23,9 +43,9 @@ export const BUOYS: Buoy[] = [
 		status: 'ok',
 		deployment: 'seaweed',
 		subject: 'Saccharina latissima',
-		locationDescription: '20 m from pier',
-		lat: 56.9515,
-		lng: 9.2831,
+		locationDescription: 'mid-channel off Aalborg',
+		lat: 57.0498,
+		lng: 9.9206,
 		lastCheckInAt: ago(3)
 	},
 	{
@@ -36,9 +56,9 @@ export const BUOYS: Buoy[] = [
 		status: 'warn',
 		deployment: 'shellfish',
 		subject: 'Blue mussel',
-		locationDescription: 'close by the cliffs',
-		lat: 56.9479,
-		lng: 9.2718,
+		locationDescription: 'east of Nørresundby ferry line',
+		lat: 57.0525,
+		lng: 9.9445,
 		lastCheckInAt: ago(0)
 	},
 	{
@@ -48,23 +68,36 @@ export const BUOYS: Buoy[] = [
 		battery: 49,
 		status: 'mid',
 		deployment: 'research',
-		locationDescription: 'near the restaurant',
-		lat: 56.9531,
-		lng: 9.2904,
+		locationDescription: 'fjord centre, Limfjordsbroen',
+		lat: 57.045,
+		lng: 9.905,
 		lastCheckInAt: ago(11)
 	},
 	{
 		id: 'hydra-4',
 		name: 'HYDRA 4',
-		siteId: 'chiloe',
+		siteId: 'kieler-foerde',
 		battery: 84,
 		status: 'ok',
 		deployment: 'seaweed',
-		subject: 'Ulva spp.',
-		locationDescription: 'next to the boats',
-		lat: -42.4808,
-		lng: -73.7601,
-		lastCheckInAt: ago(3)
+		subject: 'Saccharina latissima',
+		locationDescription: 'off Düsternbrook, west shore',
+		lat: 54.339,
+		lng: 10.15,
+		lastCheckInAt: ago(2)
+	},
+	{
+		id: 'hydra-5',
+		name: 'HYDRA 5',
+		siteId: 'kieler-foerde',
+		battery: 63,
+		status: 'mid',
+		deployment: 'shellfish',
+		subject: 'Blue mussel',
+		locationDescription: 'off Möltenort, east shore',
+		lat: 54.3735,
+		lng: 10.203,
+		lastCheckInAt: ago(6)
 	}
 ];
 
@@ -96,8 +129,13 @@ export const OBSERVATIONS: Observation[] = [
 	o('hydra-3', 11, 'All clear, no visible fouling.', true),
 	o('hydra-3', 30, 'Baseline check. Sensors reading steady, nothing growing — research site.', false),
 
-	o('hydra-4', 3, 'Slight drift on the mooring, repositioned.', true),
-	o('hydra-4', 14, 'Ulva mats dense, took a sample for the lab.', true)
+	o('hydra-4', 2, 'Blades around 35 cm, water clear, no fouling on the sensor housing.', true),
+	o('hydra-4', 9, 'Ferry wake noticeable at this mooring, line held steady.', true),
+	o('hydra-4', 20, 'Deployed off Düsternbrook, first calibration done.', false),
+
+	o('hydra-5', 6, 'Mussels developing well, some light growth on the sensor arm.', true),
+	o('hydra-5', 16, 'Checked after strong easterly wind — mooring intact, slight drift.', true),
+	o('hydra-5', 27, 'Initial deployment off Möltenort, GPS waypoint marked.', false)
 ];
 
 /** Observations for one buoy, newest first. */
