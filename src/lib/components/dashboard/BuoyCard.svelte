@@ -38,6 +38,7 @@
 	onclick={activate}
 	onkeydown={onKeydown}
 	aria-label={`${buoy.name}, ${statusText}`}
+	style:view-transition-name={`buoy-card-${buoy.id}`}
 >
 	<div class="photo" style:background-image={photoUrl ? `url("${photoUrl}")` : undefined}>
 		<div class="photo-dot">

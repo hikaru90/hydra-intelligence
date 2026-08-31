@@ -132,6 +132,17 @@ html.vt-back::view-transition-old(root) {
   }
 }
 
+/* The tapped buoy card itself (see BuoyCard/DetailHeader's dynamic
+   view-transition-name={`buoy-card-${id}`}) morphs into the detail
+   screen's header pill instead of just cross-fading with everything
+   else — the specific buoy you tapped visibly becomes the screen you
+   land on, layered on top of the page-level slide above. Matches
+   automatically in both directions (list -> header, header -> list). */
+::view-transition-group(*) {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html.vt-water::view-transition-old(root),
   html.vt-water::view-transition-new(root),

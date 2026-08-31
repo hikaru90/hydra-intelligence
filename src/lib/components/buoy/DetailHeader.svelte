@@ -40,7 +40,7 @@
 			Comparing
 		</div>
 	{:else}
-		<div class="pill-wrap">
+		<div class="pill-wrap" style:view-transition-name={`buoy-card-${buoy.id}`}>
 			<button
 				class="title-pill"
 				onclick={(e) => {
