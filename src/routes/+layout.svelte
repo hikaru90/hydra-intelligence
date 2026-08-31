@@ -2,12 +2,26 @@
   import "../app.css";
   import Navbar from "$lib/components/Navbar.svelte";
   import { page } from '$app/state';
+  import { onNavigate } from '$app/navigation';
   import { locales, localizeHref } from '$src/paraglide/runtime';
   import { Toaster } from "$lib/components/ui/sonner";
   import { user } from '$lib/stores/auth';
   let { children, data } = $props();
 
   user.set(data.user);
+
+  // Lets the login screen morph into the header's small brand mark instead
+  // of hard-cutting between pages (both carry view-transition-name:
+  // brand-mark). No-ops in browsers without the View Transition API.
+  onNavigate((navigation) => {
+    if (!document.startViewTransition) return;
+    return new Promise((resolve) => {
+      document.startViewTransition(async () => {
+        resolve();
+        await navigation.complete;
+      });
+    });
+  });
 
   // Cerberus OS app screens (dashboard, buoy detail, login) ship their own
   // full-screen layout and header — the global Navbar is only shown on the

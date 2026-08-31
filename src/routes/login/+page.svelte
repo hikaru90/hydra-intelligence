@@ -48,8 +48,11 @@
 </script>
 
 <div class="screen">
-  <div class="content">
-    <img class="wordmark" src="/cerberus-wordmark-dark.svg" alt="Cerberus Blue Systems" />
+  <div class="content" style="view-transition-name: brand-mark">
+    <div class="wordmark-wrap">
+      <div class="glow" aria-hidden="true"></div>
+      <img class="wordmark" src="/cerberus-wordmark-dark.svg" alt="Cerberus Blue Systems" />
+    </div>
 
     <h1 class="heading">{m.loginToAccount()}</h1>
 
@@ -124,7 +127,9 @@
     max-width: 480px;
     margin: 0 auto;
     padding: 32px 24px;
-    background: var(--color-teal-darkest, #092b3a);
+    /* Matches the wordmark SVG's own background fill exactly, so the image
+       has no visible edge/card around it — it just sits on the screen. */
+    background: var(--color-teal);
   }
   .content {
     display: flex;
@@ -133,11 +138,27 @@
     width: 100%;
     max-width: 340px;
   }
+  .wordmark-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .glow {
+    position: absolute;
+    inset: -30px;
+    z-index: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(21, 228, 154, 0.28) 0%, rgba(21, 228, 154, 0) 70%);
+    filter: blur(4px);
+  }
   .wordmark {
+    position: relative;
+    z-index: 1;
     width: 200px;
     height: auto;
-    margin-bottom: 36px;
-    border-radius: 14px;
+    display: block;
   }
   .heading {
     align-self: flex-start;

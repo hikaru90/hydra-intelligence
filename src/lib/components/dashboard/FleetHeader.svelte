@@ -15,7 +15,7 @@
 
 <header class="s1-header">
 	<div class="brand">
-		<img class="logo" src="/cerberus-mark-green.svg" alt="" aria-hidden="true" />
+		<img class="logo" src="/cerberus-mark-dark.svg" alt="" aria-hidden="true" style="view-transition-name: brand-mark" />
 		<span class="brand-name">Cerberus OS</span>
 	</div>
 

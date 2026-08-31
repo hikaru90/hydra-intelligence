@@ -52,6 +52,22 @@
   }
 }
 
+/* Login → dashboard brand-mark morph (see +layout.svelte's onNavigate).
+   A slower, eased cross-fade reads as the login window settling into the
+   header mark, rather than the sharper default view-transition timing. */
+::view-transition-old(brand-mark),
+::view-transition-new(brand-mark) {
+  animation-duration: 0.55s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(brand-mark),
+  ::view-transition-new(brand-mark) {
+    animation: none;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
