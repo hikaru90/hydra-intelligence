@@ -40,10 +40,9 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 10px;
-		padding: 15px 18px 13px;
+		padding: 12px 16px 10px;
 		background: var(--color-teal);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-		border-radius: 0 0 16px 16px;
 	}
 	.brand {
 		display: flex;
