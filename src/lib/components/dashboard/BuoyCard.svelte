@@ -41,7 +41,7 @@
 >
 	<div class="photo" style:background-image={photoUrl ? `url("${photoUrl}")` : undefined}>
 		<div class="photo-dot">
-			<StatusDot status={buoy.status} variant="card" live={isLive} />
+			<StatusDot status={buoy.status} variant="card" live={buoy.status === 'warn'} />
 		</div>
 	</div>
 

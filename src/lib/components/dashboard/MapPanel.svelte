@@ -24,6 +24,7 @@
 	let map = $state<MlMap | undefined>(undefined);
 	let currentSite = $state(0);
 	let menuOpen = $state(false);
+	let attribOpen = $state(false);
 
 	const firstSite = $derived(sites[0]);
 	const initialCenter = $derived<[number, number]>(
@@ -56,6 +57,7 @@
 		zoom={initialZoom}
 		class="map"
 		cooperativeGestures
+		attributionControl={false}
 	>
 		{#each pins as buoy (buoy.id)}
 			<Marker
@@ -65,7 +67,7 @@
 			>
 				<div class="pin">
 					<div class="pin-label">{buoy.name}</div>
-					<StatusDot status={buoy.status} variant="map" live={buoy.status !== 'warn'} />
+					<StatusDot status={buoy.status} variant="map" live={buoy.status === 'warn'} />
 				</div>
 			</Marker>
 		{/each}
@@ -122,6 +124,24 @@
 			{/each}
 		</div>
 	{/if}
+
+	<!-- Map data attribution (required by the OpenFreeMap/OSM licence) — kept
+	     minimal: a small "i" pill that expands the credit text on tap, instead
+	     of MapLibre's default bar, which stays permanently expanded on the
+	     narrow widths this app always runs at. -->
+	<div class="attrib" class:open={attribOpen}>
+		{#if attribOpen}
+			<span class="attrib-text">OpenFreeMap © OpenStreetMap contributors</span>
+		{/if}
+		<button
+			class="attrib-btn"
+			onclick={() => (attribOpen = !attribOpen)}
+			aria-label="Map data attribution"
+			aria-expanded={attribOpen}
+		>
+			i
+		</button>
+	</div>
 </div>
 
 <style>
@@ -308,5 +328,46 @@
 		font-size: 12px;
 		font-weight: 700;
 		color: rgba(255, 255, 255, 0.85);
+	}
+
+	.attrib {
+		position: absolute;
+		bottom: 8px;
+		left: 8px;
+		z-index: 6;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+	.attrib-text {
+		padding: 3px 8px;
+		border-radius: 10px;
+		background: rgba(9, 43, 58, 0.75);
+		backdrop-filter: blur(4px);
+		color: rgba(255, 255, 255, 0.65);
+		font-size: 9px;
+		font-weight: 500;
+		white-space: nowrap;
+	}
+	.attrib-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 18px;
+		height: 18px;
+		flex-shrink: 0;
+		border: none;
+		border-radius: 50%;
+		background: rgba(9, 43, 58, 0.75);
+		backdrop-filter: blur(4px);
+		color: rgba(255, 255, 255, 0.6);
+		font-family: serif;
+		font-size: 11px;
+		font-style: italic;
+		cursor: pointer;
+	}
+	.attrib.open .attrib-btn {
+		color: #fff;
+		background: rgba(9, 43, 58, 0.9);
 	}
 </style>
