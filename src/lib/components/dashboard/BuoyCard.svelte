@@ -110,8 +110,8 @@
 	.photo {
 		position: relative;
 		flex-shrink: 0;
-		width: 130px;
-		min-width: 130px;
+		width: 104px;
+		min-width: 104px;
 		height: 111px;
 		overflow: hidden;
 		border-radius: 56px 0 0 56px;
@@ -132,7 +132,7 @@
 	.photo-dot {
 		position: absolute;
 		top: 50%;
-		left: 42%;
+		left: 48%;
 		z-index: 3;
 		transform: translate(-50%, -50%);
 	}
@@ -144,7 +144,7 @@
 		flex-direction: column;
 		justify-content: center;
 		gap: 2px;
-		padding: 15px 8px 15px 14px;
+		padding: 15px 8px 15px 10px;
 	}
 	.name-row {
 		display: flex;

@@ -12,18 +12,30 @@
 
   onNavigate((navigation) => {
     if (!document.startViewTransition) return;
+    const fromPath = navigation.from?.url.pathname;
+    const toPath = navigation.to?.url.pathname;
+
     // The drain-into-the-corner wipe (app.css) is reserved for leaving
     // /login — every other navigation keeps the plain cross-fade so it
     // doesn't get old fast.
-    const isLoginExit = navigation.from?.url.pathname === '/login';
-    if (isLoginExit) document.documentElement.classList.add('vt-water');
+    const isLoginExit = fromPath === '/login';
+    // Dashboard <-> buoy detail reads as drilling into / backing out of a
+    // buoy, so it gets a native-feeling push/pop slide instead of the flat
+    // default cross-fade. (Switching buoys *within* the detail screen is
+    // client-side state, not a route change, so it never hits this.)
+    const isDrillIn = fromPath === '/' && !!toPath?.startsWith('/buoy/');
+    const isBackOut = !!fromPath?.startsWith('/buoy/') && toPath === '/';
+
+    const cls = isLoginExit ? 'vt-water' : isDrillIn ? 'vt-forward' : isBackOut ? 'vt-back' : null;
+    if (cls) document.documentElement.classList.add(cls);
+
     return new Promise((resolve) => {
       const transition = document.startViewTransition(async () => {
         resolve();
         await navigation.complete;
       });
       transition.finished.finally(() => {
-        document.documentElement.classList.remove('vt-water');
+        if (cls) document.documentElement.classList.remove(cls);
       });
     });
   });
