@@ -126,7 +126,7 @@
 	.label { font-family: var(--font-heading); font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); margin-bottom: 8px; }
 
 	.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-	.chip { padding: 11px 15px; border: 1.5px solid rgba(255, 255, 255, 0.3); border-radius: 12px; background: none; cursor: pointer; font-family: var(--font-heading); font-size: 12.5px; font-weight: 600; color: rgba(255, 255, 255, 0.7); transition: all 0.15s; }
+	.chip { min-height: 44px; padding: 11px 15px; border: 1.5px solid rgba(255, 255, 255, 0.3); border-radius: 12px; background: none; cursor: pointer; font-family: var(--font-heading); font-size: 12.5px; font-weight: 600; color: rgba(255, 255, 255, 0.7); transition: all 0.15s; }
 	.chip.sel { border-color: var(--color-green); background: rgba(21, 228, 154, 0.1); color: #fff; }
 
 	.resolved { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; font-family: var(--font-body); font-size: 11px; font-weight: 500; color: rgba(255, 255, 255, 0.72); }
@@ -135,7 +135,7 @@
 	.dates { display: flex; gap: 8px; }
 	.field { flex: 1; display: flex; flex-direction: column; gap: 6px; }
 	.date-lbl { font-family: var(--font-heading); font-size: 10px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
-	.date { width: 100%; padding: 13px 12px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: rgba(255, 255, 255, 0.07); color: #fff; font-family: var(--font-body); font-size: 13px; color-scheme: dark; }
+	.date { width: 100%; min-height: 48px; padding: 13px 12px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: rgba(255, 255, 255, 0.07); color: #fff; font-family: var(--font-body); font-size: 16px; color-scheme: dark; }
 	.date:focus { outline: none; border-color: rgba(255, 255, 255, 0.35); }
 	.summary { margin: 10px 0 18px; font-family: var(--font-body); font-size: 11px; font-weight: 600; color: rgba(255, 255, 255, 0.85); }
 	.summary.bad { color: var(--color-orange); }

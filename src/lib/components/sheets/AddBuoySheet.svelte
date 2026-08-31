@@ -91,7 +91,7 @@
 	.label { font-family: var(--font-heading); font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); margin-bottom: 8px; }
 	.hint { margin: -4px 0 8px; font-family: var(--font-body); font-size: 10px; font-style: italic; color: rgba(255, 255, 255, 0.5); }
 
-	.input { width: 100%; margin-bottom: 12px; padding: 13px 14px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: rgba(255, 255, 255, 0.07); color: #fff; font-family: var(--font-body); font-size: 13px; }
+	.input { width: 100%; margin-bottom: 12px; padding: 14px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: rgba(255, 255, 255, 0.07); color: #fff; font-family: var(--font-body); font-size: 16px; }
 	.input::placeholder { color: rgba(255, 255, 255, 0.45); }
 	.input:focus { outline: none; border-color: rgba(255, 255, 255, 0.35); }
 

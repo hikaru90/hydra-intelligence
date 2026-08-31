@@ -186,7 +186,7 @@
 	.photo-ph { display: flex; flex-direction: column; align-items: center; gap: 5px; color: rgba(255, 255, 255, 0.75); }
 	.photo-ph span { font-family: var(--font-heading); font-size: 11px; font-weight: 600; }
 
-	.note { width: 100%; height: 80px; margin-bottom: 14px; padding: 12px; resize: none; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: rgba(255, 255, 255, 0.07); color: #fff; font-family: var(--font-body); font-size: 13px; }
+	.note { width: 100%; height: 80px; margin-bottom: 14px; padding: 12px; resize: none; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: rgba(255, 255, 255, 0.07); color: #fff; font-family: var(--font-body); font-size: 16px; }
 	.note::placeholder { color: rgba(255, 255, 255, 0.45); }
 	.note:focus { outline: none; border-color: rgba(255, 255, 255, 0.35); }
 

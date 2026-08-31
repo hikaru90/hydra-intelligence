@@ -47,6 +47,7 @@
 		align-items: center;
 		gap: 10px;
 		width: 100%;
+		min-height: 44px;
 		padding: 11px 15px;
 		border: none;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.07);

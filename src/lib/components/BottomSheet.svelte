@@ -60,7 +60,7 @@
 		z-index: 501;
 		max-height: 90%;
 		overflow-y: auto;
-		padding: 0 16px 40px;
+		padding: 0 16px calc(40px + env(safe-area-inset-bottom));
 		background: var(--color-teal);
 		border-radius: 24px 24px 0 0;
 		transform: translateY(100%);

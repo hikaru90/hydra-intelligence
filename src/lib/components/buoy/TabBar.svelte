@@ -64,7 +64,7 @@
 		justify-content: center;
 		gap: 7px;
 		flex: 1;
-		height: 38px;
+		height: 44px;
 		border: none;
 		border-radius: 10px;
 		background: transparent;

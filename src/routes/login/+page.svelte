@@ -133,7 +133,7 @@
     max-width: 480px;
     margin: 0 auto;
     position: relative;
-    padding: 32px 24px 56px;
+    padding: 32px 24px calc(56px + env(safe-area-inset-bottom));
     /* Matches the wordmark SVG's own background fill exactly, so the logo
        has no visible edge/card around it — the photo band above is capped
        to a fixed height so it never reaches this far down. */
@@ -217,13 +217,15 @@
   }
   .input {
     width: 100%;
-    padding: 13px 14px;
+    padding: 14px;
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.07);
     color: #fff;
     font-family: var(--font-body);
-    font-size: 13px;
+    /* 16px, not 13 — iOS Safari auto-zooms the page on focus for any input
+       with a smaller font-size, which reads as a jarring "jump" on mobile. */
+    font-size: 16px;
   }
   .input::placeholder {
     color: rgba(255, 255, 255, 0.45);
