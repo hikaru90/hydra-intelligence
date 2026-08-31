@@ -23,6 +23,7 @@
 	// Bound map instance — used for programmatic camera moves (flyTo).
 	let map = $state<MlMap | undefined>(undefined);
 	let currentSite = $state(0);
+	let currentBuoy = $state(0);
 	let menuOpen = $state(false);
 	let attribOpen = $state(false);
 	let expanded = $state(false);
@@ -52,8 +53,19 @@
 		}
 	}
 
-	function cycleSite() {
-		focusSite((currentSite + 1) % sites.length);
+	// The crosshair steps through every individual buoy (not just the two
+	// broad site areas — that's what the chevron's dropdown is for).
+	function focusBuoy(i: number) {
+		currentBuoy = i;
+		const buoy = pins[i];
+		if (map && buoy?.lng != null && buoy?.lat != null) {
+			map.flyTo({ center: [buoy.lng, buoy.lat], zoom: 15, duration: 900 });
+		}
+	}
+
+	function cycleBuoy() {
+		if (!pins.length) return;
+		focusBuoy((currentBuoy + 1) % pins.length);
 	}
 </script>
 
@@ -112,9 +124,11 @@
 		{/if}
 	</button>
 
-	<!-- Site-jump control: tap the body to cycle sites, the chevron to open the list. -->
+	<!-- Crosshair steps through every buoy one by one; the chevron opens the
+	     broader site-area list (that's the only thing that still jumps
+	     between "Limfjord" / "Kieler Förde" as a whole). -->
 	<div class="site-jump">
-		<button class="sj-btn" onclick={cycleSite} aria-label="Jump to next site">
+		<button class="sj-btn" onclick={cycleBuoy} aria-label="Jump to next buoy">
 			<span class="sj-icon" aria-hidden="true">
 				<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#15e49a" stroke-width="2">
 					<circle cx="12" cy="12" r="3" />
@@ -123,8 +137,8 @@
 				</svg>
 			</span>
 			<span class="sj-text">
-				<span class="sj-kicker">Site</span>
-				<span class="sj-name">{sites[currentSite]?.short ?? ''}</span>
+				<span class="sj-kicker">Buoy</span>
+				<span class="sj-name">{pins[currentBuoy]?.name ?? ''}</span>
 			</span>
 		</button>
 		<button

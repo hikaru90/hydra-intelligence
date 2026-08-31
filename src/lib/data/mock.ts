@@ -81,9 +81,9 @@ export const BUOYS: Buoy[] = [
 		status: 'ok',
 		deployment: 'seaweed',
 		subject: 'Saccharina latissima',
-		locationDescription: 'off Düsternbrook, west shore',
-		lat: 54.339,
-		lng: 10.15,
+		locationDescription: 'mid-fjord off Düsternbrook',
+		lat: 54.348,
+		lng: 10.165,
 		lastCheckInAt: ago(2)
 	},
 	{
@@ -94,9 +94,9 @@ export const BUOYS: Buoy[] = [
 		status: 'mid',
 		deployment: 'shellfish',
 		subject: 'Blue mussel',
-		locationDescription: 'off Möltenort, east shore',
-		lat: 54.3735,
-		lng: 10.203,
+		locationDescription: 'mid-fjord off Friedrichsort',
+		lat: 54.378,
+		lng: 10.185,
 		lastCheckInAt: ago(6)
 	}
 ];
