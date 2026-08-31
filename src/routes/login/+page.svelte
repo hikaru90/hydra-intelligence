@@ -23,6 +23,13 @@
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
+    if (import.meta.env.DEV) {
+      // No working Postgres connection in local dev (see .env) — the login
+      // button just goes straight through so the transition/UI can still
+      // be tested without real credentials.
+      goto('/');
+      return;
+    }
     if (!$formData.email || !$formData.password) return;
     signingIn = true;
     const { error } = await authClient.signIn.email({
@@ -51,7 +58,7 @@
   <div class="photo-band" aria-hidden="true"></div>
   <div class="content" style="view-transition-name: brand-mark">
     <div class="brand-row">
-      <img class="mark" src="/cerberus-mark-dark.svg" alt="" aria-hidden="true" />
+      <img class="mark" src="/cerberus-icon-green.svg" alt="" aria-hidden="true" />
       <span class="brand-text">Cerberus Blue Systems</span>
     </div>
 
@@ -95,16 +102,6 @@
         {signingIn ? '…' : m.login()}
       </button>
       <a class="btn-cancel" href="/register">{m.switchToRegister()}</a>
-
-      {#if import.meta.env.DEV}
-        <button
-          type="button"
-          class="dev-bypass"
-          onclick={() => goto('/')}
-        >
-          Dev: weiter ohne echten Login (nur zum Testen des Übergangs)
-        </button>
-      {/if}
     </form>
   </div>
 </div>
@@ -131,12 +128,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     min-height: 100dvh;
     max-width: 480px;
     margin: 0 auto;
     position: relative;
-    padding: 32px 24px;
+    padding: 32px 24px 56px;
     /* Matches the wordmark SVG's own background fill exactly, so the logo
        has no visible edge/card around it — the photo band above is capped
        to a fixed height so it never reaches this far down. */
@@ -167,20 +164,20 @@
   .brand-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 28px;
+    gap: 14px;
+    margin-bottom: 36px;
   }
   .mark {
-    width: 32px;
-    height: 32px;
+    width: 46px;
+    height: 46px;
     flex-shrink: 0;
   }
   .brand-text {
     font-family: var(--font-heading);
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: 0.01em;
-    color: #fff;
+    letter-spacing: 0.02em;
+    color: var(--color-green);
   }
   .form {
     display: flex;
@@ -279,24 +276,5 @@
   }
   .btn-cancel:active {
     color: rgba(255, 255, 255, 0.9);
-  }
-
-  .dev-bypass {
-    display: block;
-    width: 100%;
-    margin-top: 22px;
-    padding: 10px;
-    border: 1px dashed rgba(255, 255, 255, 0.25);
-    border-radius: 12px;
-    background: none;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.45);
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .dev-bypass:active {
-    color: rgba(255, 255, 255, 0.7);
   }
 </style>
