@@ -10,20 +10,15 @@
 		/** The person's current position, if known. */
 		you?: { lat: number; lng: number } | null;
 		/**
-		 * OpenFreeMap style URL. Defaults to the public "liberty" style — no API key needed.
-		 * If your engineer configured a different style/endpoint, pass it here.
+		 * Map style URL. Defaults to the app's dark teal style (static/dark.json,
+		 * built on OpenFreeMap tiles — no API key needed) to match the rest of
+		 * the Cerberus OS design.
 		 */
 		styleUrl?: string;
 		onselect?: (id: string) => void;
 	}
 
-	let {
-		buoys,
-		sites,
-		you = null,
-		styleUrl = 'https://tiles.openfreemap.org/styles/liberty',
-		onselect
-	}: Props = $props();
+	let { buoys, sites, you = null, styleUrl = '/dark.json', onselect }: Props = $props();
 
 	// Bound map instance — used for programmatic camera moves (flyTo).
 	let map = $state<MlMap | undefined>(undefined);

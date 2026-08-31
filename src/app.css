@@ -1,6 +1,8 @@
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 @plugin '@tailwindcss/forms';
+/* Montserrat / Montserrat Alternates are loaded via a <link> in app.html —
+   a CSS @import of an external URL here gets silently dropped by Vite's
+   build. */
 
 /*
  * Cerberus OS design tokens (dashboard + buoy screens).
