@@ -61,7 +61,7 @@
 		<div class="snap-body">
 			<div class="head">
 				<span class="label"><span class="lname">{param.label}</span><span class="unit">{param.unit}</span></span>
-				<span class="trend">
+				<span class="snap-trend">
 					{#if direction === 1}
 						<svg viewBox="0 0 9 9" aria-hidden="true"><polygon points="4.5,1 8,8 1,8" fill="currentColor" /></svg>
 					{:else if direction === -1}
@@ -185,7 +185,7 @@
 		color: rgba(255, 255, 255, 0.38);
 	}
 
-	.trend {
+	.snap-trend {
 		display: flex;
 		align-items: center;
 		gap: 4px;
@@ -194,14 +194,14 @@
 		font-weight: 600;
 		color: rgba(255, 255, 255, 0.82);
 	}
-	.trend svg {
+	.snap-trend svg {
 		width: 10px;
 		height: 10px;
 	}
-	.compact .trend {
+	.compact .snap-trend {
 		font-size: 9px;
 	}
-	.compact .trend svg {
+	.compact .snap-trend svg {
 		width: 8px;
 		height: 8px;
 	}
