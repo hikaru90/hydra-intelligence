@@ -15,10 +15,17 @@
   // brand-mark). No-ops in browsers without the View Transition API.
   onNavigate((navigation) => {
     if (!document.startViewTransition) return;
+    // The water-ripple wipe (app.css) is reserved for leaving /login — every
+    // other navigation keeps the plain cross-fade so it doesn't get old fast.
+    const isLoginExit = navigation.from?.url.pathname === '/login';
+    if (isLoginExit) document.documentElement.classList.add('vt-water');
     return new Promise((resolve) => {
-      document.startViewTransition(async () => {
+      const transition = document.startViewTransition(async () => {
         resolve();
         await navigation.complete;
+      });
+      transition.finished.finally(() => {
+        document.documentElement.classList.remove('vt-water');
       });
     });
   });

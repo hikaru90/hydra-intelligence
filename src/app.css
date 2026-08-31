@@ -61,9 +61,32 @@
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Water-ripple page wipe, only for leaving /login (flagged by +layout.svelte
+   as html.vt-water — the default cross-fade is too flat an entrance for the
+   one moment the app should feel like "arriving"). The old page holds still
+   underneath while the new one spreads outward from the corner the brand
+   mark lands in, like a ripple washing over it, instead of both fading
+   through each other. */
+html.vt-water::view-transition-old(root) {
+  animation: none;
+}
+html.vt-water::view-transition-new(root) {
+  animation: water-reveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes water-reveal {
+  from {
+    clip-path: circle(0% at 30px 30px);
+  }
+  to {
+    clip-path: circle(150% at 30px 30px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(brand-mark),
-  ::view-transition-new(brand-mark) {
+  ::view-transition-new(brand-mark),
+  html.vt-water::view-transition-old(root),
+  html.vt-water::view-transition-new(root) {
     animation: none;
   }
 }
