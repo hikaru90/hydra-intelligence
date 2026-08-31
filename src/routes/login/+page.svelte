@@ -48,6 +48,7 @@
 </script>
 
 <div class="screen">
+  <div class="photo-band" aria-hidden="true"></div>
   <div class="content" style="view-transition-name: brand-mark">
     <div class="wordmark-wrap">
       <div class="glow" aria-hidden="true"></div>
@@ -136,12 +137,29 @@
     min-height: 100dvh;
     max-width: 480px;
     margin: 0 auto;
+    position: relative;
     padding: 32px 24px;
-    /* Matches the wordmark SVG's own background fill exactly, so the image
-       has no visible edge/card around it — it just sits on the screen. */
+    /* Matches the wordmark SVG's own background fill exactly, so the logo
+       has no visible edge/card around it — the photo band above is capped
+       to a fixed height so it never reaches this far down. */
     background: var(--color-teal);
   }
+  .photo-band {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 300px;
+    z-index: 0;
+    /* Real HYDRA-in-water photo for a maritime feel, fading into the
+       screen's flat fill so it reads as an accent, not a full backdrop. */
+    background:
+      linear-gradient(180deg, rgba(9, 43, 58, 0.15) 0%, var(--color-teal) 100%),
+      url('/login-bg-hydra.jpg') top center / cover no-repeat;
+  }
   .content {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
