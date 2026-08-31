@@ -1,0 +1,600 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--teal:#11394b;--dark:#092B3A;--green:#15e49a;--yellow:#FBFFAA;--orange:#FD7A4E}
+body{font-family:'Montserrat',sans-serif;font-size:14px}
+.app{max-width:393px;margin:0 auto;height:760px;position:relative;overflow:hidden;border-radius:44px;border:1px solid #ccc;background:#fff}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1)}
+.screen.off{transform:translateX(100%)}
+.s1bg{position:absolute;inset:0;background:linear-gradient(173deg,#ffffff 55%,#a9e3f4 100%);z-index:0}
+.s2bg{position:absolute;inset:0;background:linear-gradient(173deg,#ffffff 0%,#a9e3f4 100%);z-index:0}
+.s1-header{display:flex;align-items:center;justify-content:space-between;padding:15px 18px 13px;background:var(--teal);flex-shrink:0;position:relative;z-index:2;border-bottom:1px solid rgba(255,255,255,0.07);gap:10px}
+.s1-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.s1-brand-name{font-family:'Montserrat Alternates',sans-serif;font-size:16px;font-weight:700;color:white;letter-spacing:0.02em;white-space:nowrap}
+.fleet{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.fleet-total{font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:700;color:white;white-space:nowrap}
+.fleet-alert{display:inline-flex;align-items:center;gap:4px;background:rgba(253,122,78,0.16);color:#FD7A4E;padding:4px 9px;border-radius:20px;font-family:'Montserrat Alternates',sans-serif;font-size:12px;font-weight:700;white-space:nowrap}
+.fleet-alert svg{width:12px;height:12px;flex-shrink:0}
+.map-area{height:296px;background:#11394b;flex-shrink:0;position:relative;overflow:hidden;z-index:1}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(21,228,154,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(21,228,154,0.06) 1px,transparent 1px);background-size:40px 40px;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1)}
+.map-ph{position:absolute;bottom:12px;left:14px;font-size:10px;color:rgba(255,255,255,0.22);font-family:'Montserrat Alternates',sans-serif;font-weight:600;letter-spacing:0.05em}
+.map-canvas{position:absolute;inset:0;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1)}
+.map-pin{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transform:translate(-50%,-50%);padding:8px}
+.pin-lbl{background:var(--teal);color:white;font-size:9px;font-weight:700;padding:3px 9px;border-radius:10px 10px 10px 2px;font-family:'Montserrat Alternates',sans-serif;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.25)}
+.sdot{position:relative;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(9,43,58,0.6);border:1px solid rgba(255,255,255,0.16)}
+.sdot .sd-core{border-radius:50%;position:relative;z-index:2}
+.sdot .sd-pulse{position:absolute;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.sdot.live .sd-pulse{animation:sdpulse 2.2s ease-out infinite}
+@keyframes sdpulse{0%{transform:translate(-50%,-50%) scale(1);opacity:0.5}70%{transform:translate(-50%,-50%) scale(2.1);opacity:0}100%{opacity:0}}
+.sdot.card{width:44px;height:44px}
+.sdot.card .sd-core{width:18px;height:18px}
+.sdot.card .sd-pulse{width:18px;height:18px}
+.sdot.map{width:30px;height:30px;box-shadow:0 2px 8px rgba(0,0,0,0.35)}
+.sdot.map .sd-core{width:12px;height:12px}
+.sdot.map .sd-pulse{width:12px;height:12px}
+.sdot.mini{width:22px;height:22px;flex-shrink:0}
+.sdot.mini .sd-core{width:10px;height:10px}
+.you-m{position:absolute;display:flex;align-items:center;gap:5px;transform:translate(-50%,-50%)}
+.you-dot{width:9px;height:9px;border-radius:50%;background:white;box-shadow:0 0 0 3px rgba(255,255,255,0.3)}
+.you-lbl{background:var(--teal);color:white;font-size:9px;padding:3px 9px;border-radius:10px;font-family:'Montserrat Alternates',sans-serif;font-weight:600}
+.site-jump{position:absolute;bottom:14px;right:14px;z-index:6;display:flex;align-items:center}
+button.sj-btn{display:inline-flex !important;align-items:center !important;gap:8px !important;background:rgba(9,43,58,0.82) !important;border:1px solid rgba(255,255,255,0.14) !important;backdrop-filter:blur(6px);border-radius:22px !important;height:44px !important;min-height:44px !important;padding:0 8px 0 14px !important;cursor:pointer !important;color:white !important;font-family:'Montserrat Alternates',sans-serif !important;box-shadow:0 4px 14px rgba(0,0,0,0.3) !important;transition:background 0.15s}
+button.sj-btn:active{background:rgba(9,43,58,0.95) !important}
+.sj-icon{display:flex;flex-shrink:0}
+.sj-txt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.05;text-align:left}
+.sj-txt .sj-kick{font-size:8px;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:0.06em;text-transform:uppercase;font-family:'Montserrat',sans-serif}
+.sj-txt .sj-name{font-size:12px;font-weight:700;white-space:nowrap}
+.sj-next{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sites-menu{position:absolute;bottom:66px;right:14px;z-index:7;background:var(--teal);border:1px solid rgba(255,255,255,0.15);border-radius:16px;overflow:hidden;min-width:210px;box-shadow:0 10px 34px rgba(0,0,0,0.45);display:none}
+.sites-menu.open{display:block}
+.sm-head{padding:11px 15px 8px;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.45);font-family:'Montserrat Alternates',sans-serif}
+.sm-item{padding:12px 15px;display:flex;align-items:center;gap:11px;cursor:pointer;border-top:1px solid rgba(255,255,255,0.07);transition:background 0.12s}
+.sm-item:active{background:rgba(255,255,255,0.1)}
+.sm-item.sel{background:rgba(21,228,154,0.1)}
+.sm-loc{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.sm-name{font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:700;color:white;line-height:1}
+.sm-sub{font-size:10px;color:rgba(255,255,255,0.6);font-weight:500}
+.sm-count{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.sm-cdot{width:7px;height:7px;border-radius:50%}
+.sm-cnum{font-family:'Montserrat Alternates',sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,0.85)}
+.list-wrap{flex:1;position:relative;z-index:1;overflow:hidden}
+.scroll{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 90px;display:flex;flex-direction:column;gap:8px}
+.scroll::-webkit-scrollbar{display:none}
+.site-label{display:flex;align-items:center;gap:8px;padding:4px 6px 2px;margin-top:4px}
+.site-label:first-child{margin-top:0}
+.site-label .sl-name{font-family:'Montserrat Alternates',sans-serif;font-size:11px;font-weight:700;color:rgba(17,57,75,0.75);letter-spacing:0.04em;text-transform:uppercase}
+.site-label .sl-line{flex:1;height:1px;background:rgba(17,57,75,0.14)}
+.bcard{background:var(--teal);border-radius:56px;display:flex;align-items:stretch;overflow:hidden;height:111px;cursor:pointer;transition:opacity 0.15s;flex-shrink:0}
+.bcard:active{opacity:0.82}
+.bphoto{width:130px;min-width:130px;height:111px;position:relative;flex-shrink:0;overflow:hidden;border-radius:56px 0 0 56px;background-color:#0d2c3b;background-size:cover;background-position:center}
+.bphoto,.obs-photo{background-image:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAwICQsJCAwLCgsODQwOEh4UEhEREiUbHBYeLCcuLisnKyoxN0Y7MTRCNCorPVM+QkhKTk9OLztWXFVMW0ZNTkv/2wBDAQ0ODhIQEiQUFCRLMisyS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0v/wAARCADNAPADASIAAhEBAxEB/8QAGwAAAQUBAQAAAAAAAAAAAAAABQECAwQGAAf/xAA+EAACAQMDAgQCCAUCBAcAAAABAgMABBESITEFQRMiUWEGcRQjMoGRobHBQlLR4fAHMxVyc/EkNlNkdJKy/8QAGgEAAgMBAQAAAAAAAAAAAAAAAgMAAQQFBv/EAC4RAAICAQQBAwIGAQUAAAAAAAABAhEDBBIhMUETIlEyYQUUI3HB8BUzQoGRof/aAAwDAQACEQMRAD8AxakGkkBFRqCD5fwp7MQMkVuU4vsxuMl0OWQ43qZW1Y3++ootL7VsPh74IkvYoLy8mWO3lAcIm7MP0FVKO3ki9xpIuk2fXPh7p6zKyaYVKtHgEEjB/Ssj8T/Ca9LKy2bSSxFfNrxlT93avTI40ijWONQqIAqqOABWZ+IeptMkkEECEqxXxGbt8qzZ83px7NGLHul0eXwwzT3q26fbc4HtWzsZbbp9jDb3N404GoSaEKgbk8nc/gKAXJ+h30c5RBIGBLAYOPSu69dfSZFeM4CrpIH8Xuax5ZyyyUY9PybMcFjTk+w/N8RWEUSyKpldidI/lAPvxV7p95ZdURXjXTL33wwrz6NUKZeUKc7Z3zUXiaXUxsR7jbFIl+Hw/wBraYa1MvKPWo7x0t2VZB4qHDepHY1Ys+pgP4Nzs2fK/Y/OvMLXqF4z6BdMjE51H+I+55o1YdWmmk0TNFJhtTqRpcH09DvQKGbTy3Rlf25Lfp5VTRvJeowpjBLDO/y9RUNvfplvFY6f5uQKx971lbSYCUSAZw6Ou4HbGaIWHV7aeA6CWV20qAMHI9qGWq1O5ZGvaRafFTguzXABhlSCPUGk01m+k35WZpUfUinS8ZGCR7+4qa4uCs+LeRgWPlwdP41q/wAmtqe39xD0T3VZf6muq46bH/Ndhv8A6qxq+VrNXHU5opLWabEs0BY6SuANQxyOds1esPiW2um8OWNopdzjkY9c1rxarFldRYrJp8kEm0FtNdiqkXU0l8QrGdIOFOoeb1q5CwliR9vMN/amxywlLanyJljlFW0JjPahc3WbZLz6MkiNLkKkYyWcnnGOwqP4k6sbKNba2UyXc3lVV3O/FV/h/oyWsaXlwGa+kmALE/YG/lGDxR2VXFsPld6TTUpFNY4B3xRWDRQn+r3ycdt+P7VUlgaWRTgk5yTV64ZVJb7R/U0PnlnWIlAuiM7ZO3yqmwkiC5TwSXDIFkQxuDtk76fz2+8UJ0rLaRwwL4muYgYbGRqP+fcaJyul1ayxzCaKTwmeOQgdhnYj0wDQ2yPh3a2sY0kOsjy7Zx4YH4+Y49zS2xiRJ1B5TEYw0Es0rcNuoA9B+O/9azkUb3E8SQIyuzgMcADPHbgdq00Fz9VOkCrgE+ZuMfqTgVnpTIqlonZWd9nzgEd/zxvQSfJaQDzhqlBBG9NuPAA+qLFs96RG2orBoaFMTbHy16v/AKd3FxP0V4pkcRxSfVOw2IO5A+R/WvLVIJwcV7T8I/8Aljpn/QH6mr3UqK2+S7N5I3bjSpNZS9t/EJfOnucitlKgkjZG4YYNYvqUrRM2ljsNt64v4rKS2tHQ0UU20YTrBP0vUSSC22aHyvuQaJdXjWQu+eBtn1oKWLqQzeYfpWvTu8aKzqpsjL8jkU6M7VGQvYn8Kf8AZXIIJFbDITrJgZHIqxYXE4v1Ns6rKx5fGPvzQ9pPzoj0uRLR0lGC/OrAyD7Zpc0qdhxbsOfFNsJPAmVjrlUs4PY0CjvHiiERYlUDBBnZS3O1GuoXElzGblsyM5wW7A87+9Z24xn3rNpvo2s0ZuHaOjvZ4nzHM8YYjODWo6D1Zbi6VJZ9cu/mKn8Pc471jj60sMvgSFwSDyMetOzYIzjx2JhllFmm6pc3cN2Fd3CNnw2I2YV1rdKskXiokrNgaC2Afn/ehF71CW+hhDsCY+KqJOVYEkt6UGLDtiuORkstur4PQ7fqS+PKxbU4I1hMaAcYIX22G9GrP4ispUMUaeFIpwExtmvO+k3EnhO4IK68bnirt7eFJbeYMdYONuPXOaVCU4ZJV2wpxjOKsNQoY+oPdzyR3MykNnB274FXbbqzMkatsRKWGOODQz6dFNbqXTDM2SyLnG/cfjTrw2yRIlsrKfExu25Gk8+9aI6m6VciJYWuQ+Os6JfMNtOau/SPETKkEkDasgBPMdCKSdAA7AHPrV1opbBvCZy04GTpGQB6U15lHsWsTfKC80jBgdGsgnC55qpeXMgIEsWNXIJz8s47VHa3s14wQMFI7hd/uqxeWSmNVaWQErwGx677c9qPdfRSVFWSSO9geKcMFzwuQAcbH8TQe3vHtDcMscZnfyg4+ycAFsfdt8zU13mN2EMrsCRhWOSfw4qgNtf8xY5pbkEkd9Lfw0iDFEA0+v4VFgFTgjTnAOOSP0pTgLhvN7U3UGyvodxxQXYVGakJzzinIdhTJDxSKcCtAosKxDgcV618D37H4dsg2WVFZcfJjXkBOADR7o0s30MiNpcBz9knHrVVZZ7Ff3LQWbTwqHIxjPv3rE9VuNcfnwJdznHNUOk3M0fUIvEaURsdJ8QnG4/rRC/ikLMrKpxsCABtXH/EF70pdG/StU2jLXVq04WONWZ+wHeglxAbdpAwOphjHpWsil+iXUjsBhUJ/tWb6rK8z63bLFiSfnQ6XLNy2+BmaCqwNuTtTxttjmm6tEmQPsnFK+krsdxXXTOcNbYkHtU6MxG3FRYJXUeKmUjSFHHyq2RFm3uCxWF5XEZO4Wop1AlI1Z359aiyUYEUkjsQSRS1GnaGbuBhydx2qNj+dPGQp+VNIJ7bmm+RZIDpAHpTdLM+ynbsO1c4OcHb0pFZtXJqiBvpNiJTGZryC1iwfO5JyfYDen39xEskltAxlVDjxSMaiO4HYUL1Y75btXK/nLN3HNKlG3YyMuC9D1GaNx4ThJBsQTjH34xR2xW4MCvI/wBY7EhBgqB/zVk7gagsgPA3H71YsOoyxApGhdvT1pOXCpR9nY2GRp+7o2VtMs8iwxTr4znSFbOc+3IH4ip+n3eWcOPPjGSckkUB6R1FJ4J4ZC6yA6ip4A/rTz1OKx0vJhgTpBA3rnzwtPars0qaasIX2u0ui8b6DJvlGyR6iq0t1PN/uTSNgbZar729tNbvetdBo41UIoGNRJ2HPPJ+6h6gBiMHb17V0cU7ilZjnCnZ0cjeKMk5G5qIA6RjfNW/BBTOSD6Ab1CFCsFGTTGwaI/D1MCeT60/6OiatRBOdsVzArLyBTZyxHly224FA7ZKMkxyuaaDtTQfLXA1sEkobKVoPhy2NzbOfpUMIV8aXcqTtzxWbU7EVsfgaGaa3n8BiuHGrEertU6I1wXG6TI2NF/bE/8AWP8ASiNvDes5juZ45Y1T7Sb49BkjeiadKLY8fz7clcY/P9qp3LC3DqhLPIdx6D51z/xDIlBR+TTpYXKwF1aNVzpfDDlQcg0A6hGGQMhBBBrQdUg8SPy8jcHPeg0ziVJCU0lRuPfHNYMEo7VJdm3JFp0wKkLFJJSgIQDOR3qsxGolRgemaKXQXQRtvvtQwrpbBrrY5WjnzVHBzp09qcr7U0rk5FKNqaAP3OT6UxnJBBp6kheaRsEDbfvUIKR5Rnb0pEI1acfhSMSq6dsHenQgtIQBk9gKuyhHhf8AtTliCEZ3btg1LJ5SAx3qFzhsZ7d6hCQ6x5mAwd/MtRiTzE7E9qY0zPgMSVG2KTBL4G+KoIsawI2OMfKmQsybpsfUbVFlimnIAzmnDSoGTUS4JZYjuWt7oSAZypDDPIqeS78aPw3byNznfAoeSCRpzmpFYONxweaW4Juw1J1QZkje1tEZnUpgcNuPetD0ebpt3EDOZVnK9hkE/wBKxTyfUsrccgYqfp101q4kjZmXgr6UicJRTlHsbGSlSkb6OK38SKMAfWNg87bdqsL0+1yMqc7gk/8Aag/Srtbq5WQsDoQsqgnbtvRGO+j+kajn/bwSM7nNL0rm4e/smZJS4JXsbPX52PHrjt6Uq2VlypCn5imjqEfiNgv7YNKt1GU0FmCn1B/pWkVZ5Sp2paYp4p3etIkVTvW5/wBMHElzfQGJZPKkgyM4xse/vWEzvWs/00uRD8S+EeJ4WX7wM/tUIespEAo2UY7aay3UrR4rmVSGPmyMcEVqNXsfxod1eKNoxKUbxRsNJzke/wDWsOvw+pitdodpsm2dfJkrlgrGMb7bkjmg3UbcxgyouTpwd9setFL9JW6gI4/N4m4H3c1Mxjn6ckDRHxEkODgYZTzn5EfnXHwrbTZ0pytUY64OsZI25obLyRtzReeEwyPEfNocqPU4oWyanzkDPvXaxSswTRGo2FSouFPqKQKV704EkHHenNi0hoTIG9SFSkZO21SQoAc0kzEEouNxV2VRU3Zt+9SBjE2UPmH504Jo8zkY7VExDNkDFWVQ92OcYxTGbIA4py5dc53FcqEnB2BqEIVG9c2ScAVZVQD64prRgnNWSiDfGPSn5yo74NIoBz5c086ANj91QgzTk05Tp2wcZ4rmC4255rofMfNxVMiOlJRyD+dPhYDcDf0xSzR6x7rx8qjXUuzZ9qp8otOmaDoHUZLUyIukFxjJG6/KigKqwOoEEZ4rLWjASg527itJCVe3QKPNkg7VmUan+4cncbJYzqYnAx8hSmV1byjHyFS2fT/EYCeTwVyCe5x8q1MFp0yzCyR4lfRqDOwYn3wdhT9rFWzxcUvekpM708EdRb4Tn+j/ABR0587eOqn79v3oPmiPw/lviDp49bmP9RU8lPo9uJ9T+dQXgVoCdRGO/NSHSDtv91Nch1KnIBq8uPfBxFQntkmYy+juRdYj05iXxY3xxjsfWpjKhtBeokkcMg1KD67ah771ZvtDrLExAkUkLg4Puao3KSt0wWsKF08XUoPYnkD274rzqcXFKaqX9/6OzzdrozFyxlkll0kFyWDUMljKEagMHcGtF1WFobU6yPqzhBjB9gaCzqzYfGduT2rdgnasTkRVKggVat41IyBVY42J2xtRK0gItS7Ddtx/SnzkkgIxspxktcBACc8inFPrHGCdxn2qxYRB7iUcPpyPYd64+Gsvh6vqy32iMEiqc+aJt4KN1GQA2Nu1QHH2R371cuSS+nOEU4AqAKAxJNOjKwJI4oFjAGwzUaHOVO/pUkoGkHn3pojIO1E2CkPTbP7UpO2AM1wiJUsTjFMjQuaGwqEb7QYYO3famTZJDEY+/NPlTB9/SonG4xxRJ2CzgMqfepRowQo++o91wVOxp6DVjA371bBRzNhTmmqdfOduKsOMAhuMZqupJ5+VCETwqFI1bn0rRdLkCoXyMouaAWqBm3O4rT9HhVrQqQGEhKkdxxQJXNEk6iV5Lsafq1bP8xbcetM8aWRMKCVz37mrM1nHbyMjF8ckZqRAkcI0Lp1bAkfjWhyFWjC0lLSCrIdRT4WYJ8S9OJ/9daFmiHw42PiLpx/9yn61F2iPo9m55NKBSZA7ZpryaVLY4Gae2krZlSt0gT8SWCT23ixkLOpHfkH96qRwSiEmYksY9TtzsO5qPrPi302qDWAG1AaxjNWrO4e/t/C8PRPGuHXO0gHp/SvN58kc2T9P58dnZxwePH7gD1K4bqMMYcY8MEjHf51n44X+tJyVGFGe1aJoctI0eRFq8ueTQljIHmjQeU+Y+3vUxSauIcqfIPW0aVjpA0qfNvRdLecWSSuAsLfYwd6qoZLVi0eh8jzBu/30c6L/AOPsxCwJt4z5wRx99HnySity6JCKujP28jW9yZMEsDsw5+VSzI1zPNcNHGXc5KrsoHoParj2iB5DExeMP5Tjnaq7QGSQoHKqSM49KYsifILiDJcFtD6duCu/51C2I8jIbPBJ4ole2sdtKBECQcYzuT61Xu4R4moLyN60wknQmSoqA6tiMj2qxFEGViD9lc5pBFwBkDFTxW76VA38Qb47iinIqKIUUMpAGc8U5cY2XFXLm0W3ddBYsRkA1UETvMwHloVNSVrotxadEEy53ZRVVlwfar82QxVwNQ9qgeLIC553BpqYDRU3xinRkhtqcwKDBpYhqbAHNGwBzsW55xTIR7U6QaRng8U+IA44zQ3wXRJAhDA+9bDojC0s3uHgL5bAYdtv61mbQmJwcBsDbPFbPoVtLc9NSK7iYQDzRsQNx6evyqYlcwMrqILtpRJdvJK2pjlgOATXXUgSRFdCnl4YjIyapfErN0u8iFsECuCSMZG3IoRcXst4F8XDoAQqkbL8qbXhiYxvkEV1N1HtSVdjBxq98Pb9f6f/APIT9aHUV+FoWm+IrBV/hlDn2A3P6VFy0U+j10saZIPEjZM/aGKbqxXa61Tjui4/Jki6aYPvLQxxMsWdR9uaTokYjuWJD50/xZwN6snXkBlyAdm1HenwgxyOHBBxkebO1eY0WKUdVtfhnZ1GRPBa8gzqltHaIUDfWyOzY9B70FsenS9RklaAqSqZOpsZFaLqyeNIHMZO3KjnHah9vErdJu9Q0SgDP/LkYwfStKh+q1NVV/8AgO/9NOL7AkEOufSyDA5J33o906LR0y9twmFZTJnHuNvyoWtsyFdGdTcb8Vq+lWawwSGSXxVlXAPGfurNCKy5FD5HTlsi5AXp6/WoNOX8QFQV2pfiDp8NhHHJFIFaZ8aCM6Bjke1EbGw09QKyFWZfsajtupwfyoWlrdTdSlEsJeU/bywOB8/vpuLG4uScbYuc06afAIvYmiVV+25XIOPXmhunyyOQzActjb2o91K2ltp3gmi8NlHlVTnK+uapGFk6fcQKW0yOuRjdsZPPt+9MxuuGXL5QNtiCQG4P5UZHS5EsIbxWOGZiFx2HcH8appar4QDKAfTIyK0tzbWrxdO6d9YBFsxyNiRnY+uaOTtNgrhpGcvI5IwJJSdbqMZOTj0qrbwyeIWZguOx71rr/oqzxh4n3gj+ydxge/rWevkZrQTrhTjDD1wcUGKe6CLkqYOmheWYqfUYJqOS3CgsWyVz7VOjsyHJyAO9QxgyhkbjvT4tgMoSnW9SReQ7d6RIiSxB4O1TJGxU4OdskU9sXRDOgGDnNJCPNknHzp4XWuBzS+H5l0d9jn1quyFu3bzeXBx616V0uc3HTIJpcBmTfAxxtWH6B095r9VMakJhnDDIA963isFUIMBQMADsKfpk+X4M2oa4Rjvje2D6JIwx0ediffY1lYGChtW47fOvTb+yFzGys+Qezfpmshd/DgtJPrA+lj5ccfjV5ItOyseRJUzHV1dXUA06tp/p/wBO0LN1GQbtmKLPp/Ef2/GsX3r0r4Q3+HrTB7N/+jTcSuQrK6iHNddqpldmtJlLwSOSNVUNtzt3qOdQj8YyPSrVq/i2wESDXGQCM80NlkYyMWOWzua4+lwP8zKcvH8nQz5V6KivI6dyIm0qGI4BqjYKbm2uNZGJhpDdx34/CrSkZyzYA3qO1QQRmNTkAkg/PetDg56p7uq/v8ilPbg47v8Av8ApUaF/DcZcbZHajnT2kFmokzjJKg+lDbyMKQSuSTwDV60Om3QHbbjOcVi0GJLUS46NGrneFc9k9jEZb65xgAYb78VUtZFtpbpzJqf7RT+c+tWg2M6ds0MQa79w8Z1iMAZ7Eb/mK1ZMUsU90ebbf/IrHkWSNPxRQhie/wCtsLx3jMqngdgNgPbFX+odPisrQxqrqpm8uo6iRp59qq3Ec30xCfq3U5Rhvg0VtpmvFMdwmNGCWU7N/Ss+Kpp439fI/I3Gpr6QP022AvoJdKkhwcEUUv0ji6jHM+pY0YO2N/mcVNa2cVvMZdi3A9qfdoJRqODtg7dqc9POOB33difXjLMq66I+oXcAsBCkyZlw2Ad3Xf8AKsj1GEs4iDKsTNnP6Ci91YgW8k9v5PC5HZt+1Nt+mrd2P0tpBqCthAgO+4/vSoxcq2quP6x+6MFy75AE31ACAZAHHvQxi4OQSPUii9wGWV1UgqBksTxiqMkbMdJGDmhxyGSRCijSWU98ae9SxBkdQo3PfjekWMxNqXerAzI6+HnvkHbFMbBoht1TV9Z5dzjNMliRBHKjE6hh1/lb+lSiFZBIdeGQeVRvqOd6nFrrQB9j6VV1yVQY+F7xElMZVmkkAUEDYAZrU6qEdE6ZFZwpLuZWXv2opmulgTUOTnZmnPgk1jg71Uu0VpAWfEYGSmNifX51NkGoZiMYO9NfQtHkNdXV1YzadjNeh/BTN/wFFYfZlcD5Zz+9eeGvQPgx89CX2lcfpTcX1Csv0h/VSFqYTTSa0GYnjuJISTG5UkYOPSo9dR5rialK7IShqUPUGfelDVZRLKC6jPAOdqVG8oyMfdinWzZVstgDc1DqyaxYoS/MTm/2NGSS9GMUThqai6Znk1faUDHy/wC9R6sUuuthmGSoQytp1SM2xxgVYiURZOSS3NQsxxqVhldgDSl/f86wabDGOSUn2ma8+WThFLqixqrixIIGOO9V/EpfE963PlUZFwM6goFlpB+yR2zk0Jhu7yxV1VElgY5IGcrnmi8jFo2GATjYE0LleXxUjRPO+4HtXL1W7HkWz4Ojp6nBqXyD7u1KKxQoYnGvI5odKFlmyuw9a0LwSPDqlBXO1CMKkgCqCTnO1ZIujZ2Qp0+eWbwxhAQSrPnBHqKtxRD6PLAGzIwyMgcd96sdMliKOs0miWP/AG1ZsA+lUp3dZtQBViMj76PkFPkqNbNCFIkRV42PBxxT44sRZySe4FTzt4kSgpjJyT/MadbyaYm2OonYgfa9aJvgqgr8OySs8qmV3RVHlY5wc0ayRQroS+HFK2SNRA3opqBrpadv01Zzc/8AqM7NNbB5G9KcdjSGnCkeR0oFLilA2rKbSM1tPge7DWUtqRvG5cH1B/vWQCZPFbn4W6XJYWjyzjTLPg6e6qOM+9HjvcLyVt5DRNJXE0hNabMp2aTNITSE1LILmlzTNXqa7NSyh+fn+ldq/wAzUer7/lSav85qWQk1/Ku1GotXzrs1LITeIFjYk4ORXaqhO4xxTs/KlRTUm/DCbTivsSBqXVUYb3/Ouz/mKZYBIWqlcCSG7Eq6gpXBPIH41Zz91OLOXUyEGMjsPyNY9UpNLajXpmk3Ysg8ZRrbPc44NBLgeBcEnAHvRnVk9qjnt4p48SgANkh/TH9aVqcVtOxumy0mqBnhwXGkd+xGxqW7sB9GhwWZwdxjPP8AgqW2sisheQgLnIUVdis47xpJZHYeFjThiMe9I9N44+7yP9RTlw+gBDF5iCNh60+QEnCDCjcb8VNIkiyqcDzHBPvU8tsyMMZOnv6UtJ9jHJdF6zQR26DBBIyc85qbVUYJwM896UGuxGkkkclu3bJA1NuJfDt5H/lQn8qSm3Efi28keftqRUsiPMtO1djApc0v2his9msdazPbzxyofPGwYZ9q9IgnW4gjmT7Mihh99eZDINa/4evoBaQia4ZWjBQIXwvtt35o8cqYGSO5cGgJppNM+kQlVYOCGOkEb71KI1ZXPiqPD+0uDkfdTt8fkR6cn4IyaaWpqSxyxh45AfVSMMKRmxVqSfQLi1wx2rFIW9fwpmcfPuabmpZVDy1dmmZ/Cu1bY49hV2UPz99Ln/OBUeeN6XI/71Vkofn5UoY+tRhxjORj1zSCePb6xTn0OaHfH5C2SfSJ8n3rs1A1xEiB2YBSSAcVG1/Apxkn5LVepH5L9KfwW844/WlyeM7elUD1WDsr5BxggV3/ABNNJIjJI4GeaF5YfIXo5Pgv7+9RXrSGEkPhUH2SOdxQ1utn+GAfe1W7O/ingZ7hSoJxgA4235pWWWOcaY3FDJCVj4Xlxodhj+F8fiDTYpJgcxtseVP8QronxEGALKwBAIoff9SlF03hokQU+XAzt2NZFcmvlGtpJP7hOWF3mBIyGHB7Vax5dPbGKz6dTu+8pGecADIohbzeLGHLtn51pxxjcvuZ5qTS+wRx6cVwoXdS3MZyJDoPBHb50kNxcatJck5+f+fv86a51wK9NvyF80u9U1nd0ALcc4/z/ODXKxA3Pl9Tny4/b8x8qreX6X3PPCKcNjXAU/SBvQDhjDcnFdvtxtSmuzmqISx3csRyCDtjBHIqZes3UZbQwXVtgDtVIgd80ijJwNqssP8AwbbTdT69GHuNChSSzHnbAA+81vpOhxx3AjeSZh6hQK88+FYmm6pAiyGPU4Gw/OvX5ZtAACgsP4jQvI49MtY1LtA4fDtmmAzzMSP5gP2qO46TZW6xARsxZiCWc7gKTV6KZmJZjkgEVWuHMjxA8KHP5AfvSnllXY1YYp9Aea1FqxIiEiDOCRkVTur0SRtGltGpPLKvajV3qaBtLaMA9ueayutlm2PAx8xSFOUu2N2Rj0gj0zqzW7GNyPDK4HlBK+h+VRa9OgEgal2YcEeoqC/gS1njVM6XQNg9qd0q4aeMWsiqyrrKlhnTgmhduNhUlKitcygMCDztUQkiMAUArMpxkbhh+xqK4Op+Mbkj2qDO+Rt60aQLZad9UbD21D5j+xP4VTmk1DbbHeplY4Un+Yfrj96pSeU45waakA2KrkHPrUqSEVGVC4PtmuIwR70VAWPkGG1Dhhkf0otaDNlCNyu5x75oXjMTD+XBH6VJDdSQRhVAK5OxqSVopOgjdXscCMinLrsB6UMkmN1Jl8A/w+1RMxZix3JNJjDVIwSKcrJFFXoGKqADVUZYBid6uWiiTIbnGQRTE6BfJbWTUmCcUgUYwwGP8/L9KkjiUcd/WnsNgBt+1RyspRoapdVK53PGR+v+b09ZCP4iNxxwP89fuNQq2Mg76d/zxTi5JVSc4Yr/AHqWQ//Z')}
+.bphoto::after{content:'';position:absolute;top:0;right:0;bottom:0;width:100%;background:linear-gradient(to right,transparent 0%,transparent 42%,var(--teal) 100%);pointer-events:none;z-index:2}
+.card-sdot{position:absolute;top:50%;left:42%;transform:translate(-50%,-50%);z-index:3}
+.binfo{flex:1;padding:15px 8px 15px 14px;display:flex;flex-direction:column;justify-content:center;gap:2px;background:var(--teal);min-width:0}
+.bname-row{display:flex;align-items:center;gap:8px;margin-bottom:1px;min-width:0}
+.bname{font-family:'Montserrat Alternates',sans-serif;font-size:14px;font-weight:800;color:white;letter-spacing:0.04em;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.status-row{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.status-txt{font-size:10px;font-weight:700;font-family:'Montserrat Alternates',sans-serif;letter-spacing:0.02em;display:inline-flex;align-items:center;white-space:nowrap}
+.status-txt svg{width:10px;height:10px;margin-right:3px;flex-shrink:0}
+.bat{display:flex;align-items:center;gap:3px;font-size:10px;font-weight:600;margin-left:auto;flex-shrink:0}
+.bat-outer{width:18px;height:9px;border:1.5px solid rgba(255,255,255,0.5);border-radius:2px;padding:1px}
+.bat-fill{height:100%;border-radius:1px}
+.bat-cap{width:2.5px;height:4px;background:rgba(255,255,255,0.4);border-radius:0 1px 1px 0;margin-left:1px}
+.bsub{font-size:11px;color:rgba(255,255,255,0.72);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bsub .bsub-italic{font-style:italic}
+.bci{font-size:11px;color:rgba(255,255,255,0.72);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bci strong{color:white;font-weight:700}
+.barrow{padding:0 16px 0 6px;flex-shrink:0;display:flex;align-items:center}
+.barrow-circle{width:34px;height:34px;border-radius:50%;background:#092B3A;display:flex;align-items:center;justify-content:center}
+button.fab{position:absolute !important;bottom:20px !important;left:50% !important;transform:translateX(-50%) !important;z-index:20 !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;width:56px !important;height:56px !important;min-width:56px !important;min-height:56px !important;max-width:56px !important;max-height:56px !important;border-radius:50% !important;background:linear-gradient(135deg,var(--green),var(--yellow)) !important;border:none !important;padding:0 !important;margin:0 !important;cursor:pointer !important;overflow:hidden !important;box-shadow:0 6px 20px rgba(9,43,58,0.35) !important;opacity:1;transition:opacity 0.25s ease}
+button.fab.hidden{opacity:0;pointer-events:none}
+button.fab:active{opacity:0.85}
+.d-header{display:flex;align-items:center;gap:8px;padding:12px 16px 10px;background:var(--teal);flex-shrink:0;position:relative;z-index:5;border-bottom:1px solid rgba(255,255,255,0.07)}
+button.btn-icon{background:rgba(255,255,255,0.1) !important;border:none !important;border-radius:50% !important;width:44px !important;height:44px !important;min-width:44px !important;min-height:44px !important;max-width:44px !important;max-height:44px !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;cursor:pointer !important;color:white !important;flex-shrink:0 !important;padding:0 !important;transition:background 0.15s}
+button.btn-icon:active{background:rgba(255,255,255,0.2) !important}
+button.title-pill{background:rgba(255,255,255,0.1) !important;border:none !important;border-radius:22px !important;padding:0 8px 0 12px !important;height:44px !important;min-height:44px !important;width:100% !important;display:inline-flex !important;align-items:center !important;justify-content:space-between !important;gap:8px !important;cursor:pointer !important;font-family:'Montserrat Alternates',sans-serif !important;color:white !important;white-space:nowrap !important;transition:background 0.15s}
+button.title-pill:active{background:rgba(255,255,255,0.2) !important}
+.tp-left{display:flex;align-items:center;gap:9px;min-width:0}
+.title-name{font-size:15px;font-weight:700;letter-spacing:0.03em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.title-quiet{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;height:44px;color:rgba(255,255,255,0.75);font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:600}
+.tabbar{padding:8px 16px 10px;background:var(--teal);flex-shrink:0;position:relative;z-index:4}
+.tabtrack{display:flex;gap:4px;background:rgba(255,255,255,0.06);border-radius:14px;padding:4px}
+button.tab{flex:1 !important;height:38px !important;min-height:38px !important;border:none !important;border-radius:10px !important;background:transparent !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;gap:7px !important;font-family:'Montserrat Alternates',sans-serif !important;font-size:12.5px !important;font-weight:600 !important;color:rgba(255,255,255,0.6) !important;cursor:pointer !important;transition:background 0.18s,color 0.18s;padding:0 !important}
+button.tab.active{background:rgba(255,255,255,0.18) !important;color:white !important}
+button.tab.disabled{opacity:0.3;pointer-events:none}
+button.tab svg{width:15px;height:15px;flex-shrink:0}
+.controls-row{display:flex;gap:8px;padding:9px 16px 9px;background:var(--teal);flex-shrink:0;align-items:center;position:relative;z-index:4}
+.time-row{display:flex;gap:6px;flex:1}
+button.time-opt{flex:1 !important;height:44px !important;min-height:44px !important;border-radius:22px !important;border:1.5px solid rgba(255,255,255,0.3) !important;background:transparent !important;font-family:'Montserrat Alternates',sans-serif !important;font-size:11.5px !important;font-weight:600 !important;color:rgba(255,255,255,0.72) !important;cursor:pointer !important;transition:all 0.2s;padding:0 !important}
+button.time-opt.active{background:linear-gradient(135deg,var(--green),var(--yellow)) !important;border:none !important;color:var(--teal) !important}
+.range-line{display:flex;align-items:center;gap:6px;padding:0 16px 12px;background:var(--teal);flex-shrink:0;position:relative;z-index:2;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,0.75)}
+.range-line svg{flex-shrink:0}
+.cmp-head{display:none;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px 12px;background:var(--teal);flex-shrink:0;position:relative;z-index:2}
+.cmp-head.open{display:grid}
+button.col-sel{background:rgba(255,255,255,0.1) !important;border:none !important;border-radius:22px !important;height:44px !important;min-height:44px !important;width:100% !important;padding:0 12px !important;display:inline-flex !important;align-items:center !important;justify-content:space-between !important;gap:6px !important;cursor:pointer !important;font-family:'Montserrat Alternates',sans-serif !important;font-size:12.5px !important;font-weight:700 !important;color:white !important;white-space:nowrap !important;transition:background 0.15s}
+button.col-sel:active{background:rgba(255,255,255,0.2) !important}
+.col-sel-left{display:flex;align-items:center;gap:8px;min-width:0}
+.col-sel-left span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pscroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:1}
+.pscroll::-webkit-scrollbar{display:none}
+.params{padding:16px 14px 24px;display:flex;flex-direction:column;gap:8px}
+.params.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px 14px 24px}
+.pcard{background:var(--teal);border-radius:20px;position:relative;overflow:hidden;cursor:pointer;transition:opacity 0.15s}
+.pcard:active{opacity:0.85}
+.pcard.snap{height:104px}
+.pcard.trend{height:158px}
+.p-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.p-label{font-family:'Montserrat Alternates',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,0.72);display:flex;align-items:baseline;gap:6px;min-width:0}
+.p-label .pl-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.p-unit{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,0.5);flex-shrink:0}
+.params.cmp .p-label{font-size:9px}
+.params.cmp .p-unit{font-size:9px}
+.snap-content{position:relative;z-index:2;padding:13px 15px;height:100%;display:flex;flex-direction:column;justify-content:space-between}
+.snap-trend{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.82);flex-shrink:0}
+.snap-trend svg{width:10px;height:10px}
+.params.cmp .snap-trend{font-size:9px;color:rgba(255,255,255,0.78)}
+.params.cmp .snap-trend svg{width:8px;height:8px}
+.snap-bottom{display:flex;align-items:flex-end;justify-content:space-between}
+.snap-val{font-family:'Montserrat Alternates',sans-serif;font-size:34px;font-weight:800;line-height:1;letter-spacing:-0.02em}
+.params.cmp .snap-val{font-size:24px}
+.snap-expand,.trend-expand{color:rgba(255,255,255,0.38);display:flex;flex-shrink:0}
+.snap-expand{margin-bottom:4px}
+.trend-content{position:relative;z-index:2;padding:12px 14px 12px;height:100%;display:flex;flex-direction:column}
+.trend-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+.trend-body{display:flex;gap:8px;flex:1;min-height:0}
+.trend-ygutter{width:44px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-between;padding:2px 0}
+.params.cmp .trend-ygutter{width:34px}
+.ty-lbl{font-size:8px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:0.04em;line-height:1;margin-bottom:2px}
+.ty-val{font-family:'Montserrat Alternates',sans-serif;font-size:17px;font-weight:800;line-height:1;letter-spacing:-0.01em}
+.params.cmp .ty-val{font-size:13px}
+.trend-plot{flex:1;position:relative;min-width:0}
+.tchart{position:absolute;inset:0;width:100%;height:100%}
+.gl{stroke:rgba(255,255,255,0.1);stroke-width:1;vector-effect:non-scaling-stroke}
+.gl-mid{stroke:rgba(255,255,255,0.05)}
+.trend-xaxis{display:flex;justify-content:space-between;margin-top:7px;padding-left:52px;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;color:rgba(255,255,255,0.62)}
+.params.cmp .trend-xaxis{font-size:8px;padding-left:42px}
+.obs-list{padding:16px 14px 100px;display:flex;flex-direction:column;gap:8px}
+.obs-head{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;color:rgba(17,57,75,0.6);padding:2px 4px 4px;letter-spacing:0.02em}
+.obs-card{background:var(--teal);border-radius:18px;padding:11px;display:flex;gap:12px;align-items:stretch}
+.obs-photo{width:70px;height:70px;border-radius:12px;flex-shrink:0;background-color:#0d2c3b;background-size:cover;background-position:center}
+.obs-photo.none{background-image:none;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.32)}
+.obs-body{flex:1;min-width:0;display:flex;flex-direction:column}
+.obs-when{font-family:'Montserrat Alternates',sans-serif;font-size:12.5px;font-weight:700;color:white;display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.obs-when svg{stroke:#15e49a;flex-shrink:0}
+.obs-note{font-size:12px;color:rgba(255,255,255,0.78);line-height:1.4;flex:1}
+.obs-loc{font-size:10px;color:rgba(255,255,255,0.5);margin-top:7px;display:flex;align-items:center;gap:4px;min-width:0}
+.obs-loc svg{flex-shrink:0}
+.obs-loc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.obs-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:56px 34px;color:rgba(17,57,75,0.5)}
+.obs-empty svg{margin-bottom:14px;opacity:0.5}
+.oe-title{font-family:'Montserrat Alternates',sans-serif;font-size:14px;font-weight:700;color:rgba(17,57,75,0.7);margin-bottom:5px}
+.oe-sub{font-size:12px;color:rgba(17,57,75,0.5);line-height:1.4}
+button.fab-ci{position:absolute !important;bottom:20px !important;left:50% !important;transform:translateX(-50%) !important;z-index:15 !important;background:linear-gradient(135deg,var(--green),var(--yellow)) !important;border:none !important;border-radius:28px !important;height:54px !important;min-height:54px !important;padding:0 30px !important;display:inline-flex !important;align-items:center !important;gap:8px !important;cursor:pointer !important;font-family:'Montserrat Alternates',sans-serif !important;font-size:14px !important;font-weight:700 !important;color:var(--teal) !important;white-space:nowrap !important;box-shadow:0 6px 20px rgba(9,43,58,0.35) !important;transition:transform 0.15s,opacity 0.15s}
+button.fab-ci.hidden{display:none !important}
+button.fab-ci:active{transform:translateX(-50%) scale(0.96) !important;opacity:0.9}
+.ddwrap{position:relative}
+.ddmenu{position:absolute;top:48px;background:var(--teal);border:1px solid rgba(255,255,255,0.15);border-radius:14px;overflow:hidden;z-index:400;min-width:190px;box-shadow:0 8px 32px rgba(0,0,0,0.4);display:none}
+.ddmenu.open{display:block}
+.ddmenu.left{left:0}.ddmenu.right{right:0}
+.ddi{padding:11px 15px;font-size:12.5px;cursor:pointer;font-family:'Montserrat Alternates',sans-serif;font-weight:600;color:rgba(255,255,255,0.85);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:10px;transition:background 0.1s}
+.ddi:last-child{border-bottom:none}
+.ddi:active{background:rgba(255,255,255,0.12)}
+.ddi-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.soverlay{position:absolute;inset:0;background:rgba(0,0,0,0.6);z-index:500;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.soverlay.open{opacity:1;pointer-events:all}
+.sheet{position:absolute;bottom:0;left:0;right:0;background:var(--teal);border-radius:24px 24px 0 0;padding:0 16px 40px;z-index:501;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);max-height:90%;overflow-y:auto}
+.sheet::-webkit-scrollbar{display:none}
+.sheet.open{transform:translateY(0)}
+.shandle{width:36px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:14px auto 18px}
+.stitle{font-family:'Montserrat Alternates',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px;color:white}
+.smeta{font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:14px}
+.gps-line{display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,0.75);margin-bottom:18px;font-weight:500}
+.gps-line svg{stroke:#15e49a}
+.slbl{font-size:10px;font-weight:600;color:rgba(255,255,255,0.72);margin-bottom:8px;font-family:'Montserrat Alternates',sans-serif;letter-spacing:0.04em;text-transform:uppercase}
+.ci-buoy{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.14);border-radius:14px;padding:12px 13px;cursor:pointer;margin-bottom:8px;transition:border-color 0.15s}
+.ci-buoy:active{border-color:rgba(255,255,255,0.3)}
+.ci-buoy-info{flex:1;min-width:0}
+.ci-buoy-name{font-family:'Montserrat Alternates',sans-serif;font-size:14px;font-weight:700;color:white;display:flex;align-items:center;gap:8px;line-height:1.1;min-width:0}
+.ci-buoy-name>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ci-buoy-tag{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:600;color:#15e49a;background:rgba(21,228,154,0.14);padding:2px 7px;border-radius:8px;display:inline-flex;align-items:center;gap:3px;letter-spacing:0.02em;white-space:nowrap;flex-shrink:0}
+.ci-buoy-loc{font-size:11px;color:rgba(255,255,255,0.6);margin-top:3px;display:flex;align-items:center;gap:5px;min-width:0}
+.ci-buoy-loc svg{flex-shrink:0;stroke:rgba(255,255,255,0.6)}
+.ci-buoy-loc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ci-buoy-change{display:flex;align-items:center;gap:3px;font-family:'Montserrat Alternates',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,0.55);flex-shrink:0}
+.ci-buoy-change svg{transition:transform 0.2s}
+.ci-buoy.open .ci-buoy-change svg{transform:rotate(180deg)}
+.ci-buoy.locked{cursor:default;border-color:rgba(255,255,255,0.1)}
+.ci-buoy.locked .ci-buoy-change{display:none}
+.ci-picker{background:rgba(0,0,0,0.16);border-radius:14px;overflow:hidden;margin-bottom:8px;display:none}
+.ci-picker.open{display:block}
+.ci-pick-item{display:flex;align-items:center;gap:11px;padding:11px 13px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.06);transition:background 0.12s}
+.ci-pick-item:last-child{border-bottom:none}
+.ci-pick-item:active{background:rgba(255,255,255,0.08)}
+.ci-pick-item.sel{background:rgba(21,228,154,0.08)}
+.ci-pick-info{flex:1;min-width:0}
+.ci-pick-name{font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:700;color:white;display:flex;align-items:center;gap:7px;line-height:1.1;min-width:0}
+.ci-pick-name>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ci-pick-loc{font-size:10.5px;color:rgba(255,255,255,0.55);margin-top:2px;display:flex;align-items:center;gap:5px;min-width:0}
+.ci-pick-loc svg{flex-shrink:0;stroke:rgba(255,255,255,0.5)}
+.ci-pick-loc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ci-pick-check{flex-shrink:0;color:#15e49a;display:flex}
+.stopts{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.stopt{border:1.5px solid rgba(255,255,255,0.3);border-radius:12px;padding:11px 15px;font-family:'Montserrat Alternates',sans-serif;font-size:12.5px;font-weight:600;color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.15s}
+.stopt.sel{border-color:var(--green);color:white;background:rgba(21,228,154,0.1)}
+.ex-resolved{display:flex;align-items:center;gap:6px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,0.72);margin-bottom:18px}
+.ex-resolved svg{flex-shrink:0;stroke:rgba(255,255,255,0.72)}
+.ex-custom{margin-bottom:18px}
+.ex-date-row{display:flex;gap:8px}
+.ex-date-field{flex:1;display:flex;flex-direction:column;gap:6px}
+.ex-date-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,0.6);font-family:'Montserrat Alternates',sans-serif;letter-spacing:0.03em;text-transform:uppercase}
+.ex-date-input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:13px 12px;font-family:'Montserrat',sans-serif;font-size:13px;color:white;color-scheme:dark}
+.ex-date-input:focus{outline:none;border-color:rgba(255,255,255,0.35)}
+.ex-custom-summary{margin-top:10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.85);font-family:'Montserrat',sans-serif}
+.srow{display:flex;gap:8px;margin-bottom:18px}
+.sopt{flex:1;border:1.5px solid rgba(255,255,255,0.18);border-radius:12px;padding:13px 10px;text-align:center;cursor:pointer;font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.7);transition:all 0.15s}
+.sopt.sel{border-color:var(--green);color:white;background:rgba(21,228,154,0.1)}
+.sopt-sub{font-size:9px;font-weight:400;color:rgba(255,255,255,0.6);margin-top:3px;font-family:'Montserrat',sans-serif;line-height:1.4}
+.ci-photo{width:100%;height:96px;background:#0d2c3b;border:1.5px dashed rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;cursor:pointer;position:relative;overflow:hidden}
+.ci-photo.has{border-style:solid;border-color:rgba(21,228,154,0.55);background:#0a2530}
+.ci-photo-ph{display:flex;flex-direction:column;align-items:center;gap:5px;color:rgba(255,255,255,0.7)}
+.ci-photo-ph span{font-size:11px;font-weight:600;font-family:'Montserrat Alternates',sans-serif}
+.stextarea{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:12px;font-family:'Montserrat',sans-serif;font-size:13px;color:white;resize:none;height:80px;margin-bottom:14px}
+.stextarea::placeholder{color:rgba(255,255,255,0.45)}
+.stextarea:focus{outline:none;border-color:rgba(255,255,255,0.35)}
+.sinput{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:13px 14px;font-family:'Montserrat',sans-serif;font-size:13px;color:white;margin-bottom:12px}
+.sinput::placeholder{color:rgba(255,255,255,0.45)}
+.sinput:focus{outline:none;border-color:rgba(255,255,255,0.35)}
+.deploy-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.deploy-opt{border:1.5px solid rgba(255,255,255,0.18);border-radius:12px;padding:11px 12px;cursor:pointer;display:flex;align-items:center;gap:9px;transition:all 0.15s}
+.deploy-opt.sel{border-color:var(--green);background:rgba(21,228,154,0.1)}
+.deploy-opt svg{flex-shrink:0;stroke:rgba(255,255,255,0.85)}
+.deploy-opt.sel svg{stroke:#15e49a}
+.deploy-opt span{font-family:'Montserrat Alternates',sans-serif;font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.15}
+.deploy-opt.sel span{color:white}
+.subject-hint{font-size:10px;color:rgba(255,255,255,0.5);margin:-4px 0 8px;font-family:'Montserrat',sans-serif;font-style:italic}
+.sbtn{width:100%;height:52px;border-radius:26px;border:none;background:linear-gradient(135deg,var(--green),var(--yellow));color:var(--teal);font-family:'Montserrat Alternates',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.15s}
+.sbtn:active{opacity:0.85}
+.sbtn-cancel{width:100%;height:48px;border:none;background:none;color:rgba(255,255,255,0.6);font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;transition:color 0.15s}
+.sbtn-cancel:active{color:rgba(255,255,255,0.9)}
+.edit-block{margin-top:16px;text-align:center}
+.edit-prompt{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,0.5);margin-bottom:5px}
+.edit-action{display:inline-flex;align-items:center;gap:7px;background:none;border:none;cursor:pointer;padding:6px 8px;font-family:'Montserrat Alternates',sans-serif;font-size:13px;font-weight:600;color:#15e49a;white-space:nowrap}
+.edit-action:active{opacity:0.6}
+.edit-action .ea-when{color:rgba(21,228,154,0.65);font-weight:500}
+.photo-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:18px}
+.gallery-item{aspect-ratio:1;background:#0d2c3b;border:1px dashed rgba(255,255,255,0.15);border-radius:8px}
+.detail-head{margin-bottom:2px}
+.detail-title{font-family:'Montserrat Alternates',sans-serif;font-size:17px;font-weight:700;color:white;display:flex;align-items:baseline;gap:8px}
+.detail-unit{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,0.55)}
+.detail-meta{font-size:11px;color:rgba(255,255,255,0.62);margin-top:3px;font-weight:500}
+.detail-readout{display:flex;align-items:baseline;gap:10px;margin:16px 0 12px;min-height:28px}
+.dr-time{font-size:12px;color:rgba(255,255,255,0.7);font-weight:500}
+.dr-val{font-family:'Montserrat Alternates',sans-serif;font-size:26px;font-weight:800;line-height:1;letter-spacing:-0.02em}
+.detail-plotwrap{display:flex;gap:8px}
+.detail-yaxis{display:flex;flex-direction:column;justify-content:space-between;width:46px;flex-shrink:0;padding:2px 0;text-align:right}
+.detail-yaxis span{font-family:'Montserrat',sans-serif;font-size:11px;color:rgba(255,255,255,0.6);font-weight:600}
+.detail-chart{flex:1;position:relative;height:210px;cursor:crosshair;touch-action:none;user-select:none}
+.dchart{position:absolute;inset:0;width:100%;height:100%}
+.dcross{position:absolute;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,0.5);transform:translateX(-50%);pointer-events:none}
+#dDot{position:absolute;width:13px;height:13px;border-radius:50%;background:white;border:2px solid var(--teal);transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 0 2px rgba(255,255,255,0.35)}
+.detail-xaxis{display:flex;justify-content:space-between;margin:8px 0 0 54px;font-size:10px;color:rgba(255,255,255,0.55);font-weight:500;font-family:'Montserrat',sans-serif}
+.detail-hint{text-align:center;font-size:10px;color:rgba(255,255,255,0.45);margin-top:14px;font-family:'Montserrat',sans-serif}
+</style>
+
+<div class="app">
+  <div class="screen" id="s1">
+    <div class="s1bg"></div>
+    <div class="s1-header">
+      <div class="s1-brand">
+        <svg width="26" height="26" viewBox="0 0 1583.23 1583.23"><circle fill="#15e49a" cx="791.61" cy="791.61" r="791.61"/><circle fill="#11394b" cx="308.1" cy="504.76" r="20.91"/><circle fill="#11394b" cx="275.07" cy="747.43" r="16.52"/><circle fill="#11394b" cx="1062.74" cy="1220.72" r="20.91"/><path fill="#11394b" d="M381.46,432.49c-27.02,0-49-21.98-49-49s21.98-49,49-49,49,21.98,49,49-21.98,49-49,49ZM381.46,351.74c-17.5,0-31.74,14.24-31.74,31.75s14.24,31.74,31.74,31.74,31.75-14.24,31.75-31.74-14.24-31.75-31.75-31.75Z"/><path fill="#11394b" d="M1126.59,1164.03c-45.17,0-81.91-36.75-81.91-81.91s36.75-81.91,81.91-81.91,81.91,36.74,81.91,81.91-36.74,81.91-81.91,81.91ZM1126.59,1023.21c-32.48,0-58.91,26.43-58.91,58.91s26.43,58.91,58.91,58.91,58.91-26.43,58.91-58.91-26.43-58.91-58.91-58.91Z"/></svg>
+        <span class="s1-brand-name">Cerberus OS</span>
+      </div>
+      <div class="fleet">
+        <span class="fleet-total" id="fleetTotal">4 buoys</span>
+        <span class="fleet-alert" id="fleetAlert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a1.5 1.5 0 0 0 1.3 2.3h17.8a1.5 1.5 0 0 0 1.3-2.3L13.7 3.9a1.5 1.5 0 0 0-2.6 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg><span class="fa-num">1</span></span>
+      </div>
+    </div>
+    <div class="map-area">
+      <div class="map-grid" id="mapGrid"></div>
+      <div class="map-canvas" id="mapCanvas">
+        <div class="map-pin" style="left:48%;top:34%" onclick="go(0)"><div class="pin-lbl">HYDRA 1</div><div class="sdot map live"><div class="sd-pulse" style="background:#15e49a"></div><div class="sd-core" style="background:#15e49a"></div></div></div>
+        <div class="map-pin" style="left:30%;top:56%" onclick="go(1)"><div class="pin-lbl">HYDRA 2</div><div class="sdot map"><div class="sd-core" style="background:#FD7A4E"></div></div></div>
+        <div class="map-pin" style="left:63%;top:48%" onclick="go(2)"><div class="pin-lbl">HYDRA 3</div><div class="sdot map live"><div class="sd-pulse" style="background:#FBFFAA"></div><div class="sd-core" style="background:#FBFFAA"></div></div></div>
+        <div class="you-m" style="left:29%;top:64%"><div class="you-dot"></div><span class="you-lbl">you</span></div>
+      </div>
+      <div class="map-ph">OpenFreeMap · Limfjord, DK</div>
+      <div class="sites-menu" id="sitesMenu">
+        <div class="sm-head">Jump to site</div>
+        <div class="sm-item sel" onclick="jumpTo(0)"><div class="sm-loc"><span class="sm-name">Limfjord</span><span class="sm-sub">Denmark</span></div><div class="sm-count"><span class="sm-cdot" style="background:#FD7A4E"></span><span class="sm-cnum">3</span></div></div>
+        <div class="sm-item" onclick="jumpTo(1)"><div class="sm-loc"><span class="sm-name">Chiloé</span><span class="sm-sub">Chile</span></div><div class="sm-count"><span class="sm-cdot" style="background:#15e49a"></span><span class="sm-cnum">1</span></div></div>
+      </div>
+      <div class="site-jump">
+        <button class="sj-btn" onclick="cycleSite(event)">
+          <span class="sj-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#15e49a" stroke-width="2"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg></span>
+          <span class="sj-txt"><span class="sj-kick">Site</span><span class="sj-name" id="sjName">Limfjord, DK</span></span>
+          <span class="sj-next" onclick="toggleSites(event)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><polyline points="6,9 12,15 18,9"/></svg></span>
+        </button>
+      </div>
+    </div>
+    <div class="list-wrap">
+      <div class="scroll" id="blist"></div>
+      <button class="fab" id="fab" onclick="openSh('new')" aria-label="Add new buoy">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#11394b" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="screen off" id="s2">
+    <div class="s2bg"></div>
+    <div class="d-header">
+      <button class="btn-icon" onclick="back()" aria-label="Back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg></button>
+      <div class="ddwrap" id="titleWrap" style="flex:1">
+        <button class="title-pill" onclick="tog('ddBouy')" aria-label="Select buoy">
+          <span class="tp-left"><span class="sdot mini" id="bDotWrap"><span class="sd-core" id="bDot" style="background:#15e49a"></span></span><span class="title-name" id="bLbl">HYDRA 1</span></span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><polyline points="6,9 12,15 18,9"/></svg>
+        </button>
+        <div class="ddmenu left" id="ddBouy"></div>
+      </div>
+      <div class="title-quiet" id="titleQuiet" style="display:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/></svg>
+        Comparing
+      </div>
+      <button class="btn-icon" onclick="openSh('export')" aria-label="Export"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+    </div>
+    <div class="tabbar">
+      <div class="tabtrack">
+        <button class="tab active" id="tabData" onclick="switchTab('data')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 3 4-5"/></svg>Data</button>
+        <button class="tab" id="tabObs" onclick="switchTab('obs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>Observations</button>
+      </div>
+    </div>
+    <div class="controls-row" id="controlsRow">
+      <div class="time-row" role="tablist" aria-label="Time range">
+        <button class="time-opt active" id="tp-now" role="tab" aria-selected="true" onclick="setTime('now',this)">now</button>
+        <button class="time-opt" id="tp-24h" role="tab" aria-selected="false" onclick="setTime('24h',this)">24h</button>
+        <button class="time-opt" id="tp-7d" role="tab" aria-selected="false" onclick="setTime('7d',this)">7d</button>
+        <button class="time-opt" id="tp-30d" role="tab" aria-selected="false" onclick="setTime('30d',this)">30d</button>
+      </div>
+      <button class="ghost-pill" onclick="togCmp()" id="cBtn" style="background:rgba(255,255,255,0.1);border:none;border-radius:22px;padding:0 15px;height:44px;min-height:44px;display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-family:'Montserrat Alternates',sans-serif;font-size:12.5px;font-weight:600;color:white;white-space:nowrap;flex-shrink:0">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/></svg>
+        Compare
+      </button>
+    </div>
+    <div class="range-line" id="rangeLine"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg><span id="rangeText"></span></div>
+    <div class="cmp-head" id="cmpHead">
+      <div class="ddwrap">
+        <button class="col-sel" onclick="tog('ddColL')"><span class="col-sel-left"><span class="sdot mini" id="chLwrap"><span class="sd-core" id="chLdot" style="background:#15e49a"></span></span><span id="chLname">HYDRA 1</span></span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><polyline points="6,9 12,15 18,9"/></svg></button>
+        <div class="ddmenu left" id="ddColL"></div>
+      </div>
+      <div class="ddwrap">
+        <button class="col-sel" onclick="tog('ddColR')"><span class="col-sel-left"><span class="sdot mini" id="chRwrap"><span class="sd-core" id="chRdot" style="background:#15e49a"></span></span><span id="chRname">HYDRA 4</span></span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><polyline points="6,9 12,15 18,9"/></svg></button>
+        <div class="ddmenu right" id="ddColR"></div>
+      </div>
+    </div>
+    <div class="pscroll" id="dataScroll"><div class="params" id="pgrid"></div></div>
+    <div class="pscroll" id="obsScroll" style="display:none"><div class="obs-list" id="obsList"></div></div>
+    <button class="fab-ci hidden" id="ciBtn" onclick="openSh('ci')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#11394b" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Check-In
+    </button>
+  </div>
+
+  <div class="soverlay" id="ov" onclick="closeSh()"></div>
+
+  <div class="sheet" id="shNew"><div class="shandle"></div><div class="stitle">Add New Buoy</div><div class="smeta">Battery and last check-in will be filled automatically</div>
+    <div class="slbl">Name</div><input class="sinput" type="text" value="HYDRA 5"/>
+    <div class="slbl">Deployment Type</div>
+    <div class="deploy-grid">
+      <div class="deploy-opt sel" onclick="selDeploy(this,'seaweed')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c0-4-3-6-3-10a3 3 0 0 1 6 0c0 4-3 6-3 10Z"/><path d="M12 12c-2-1-3-3-3-5"/><path d="M12 12c2-1 3-3 3-5"/></svg><span>Seaweed cultivation</span></div>
+      <div class="deploy-opt" onclick="selDeploy(this,'shellfish')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20 3 9a9 9 0 0 1 18 0Z"/><path d="M12 20 8 9M12 20l4-11M12 20V9"/></svg><span>Shellfish farm</span></div>
+      <div class="deploy-opt" onclick="selDeploy(this,'fish')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5Z"/><path d="M18 9c2 1 4 3 4 3s-2 2-4 3"/><circle cx="8" cy="12" r="0.5" fill="currentColor"/></svg><span>Fish farm</span></div>
+      <div class="deploy-opt" onclick="selDeploy(this,'restoration')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8"/><path d="M12 8c0-3 2-5 5-5-.5 3-2 5-5 5Z"/><path d="M12 11c0-3-2-5-5-5 .5 3 2 5 5 5Z"/></svg><span>Restoration site</span></div>
+      <div class="deploy-opt" onclick="selDeploy(this,'research')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v6l-5 9a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3l-5-9V3"/><path d="M8 3h8"/></svg><span>Research / baseline</span></div>
+      <div class="deploy-opt" onclick="selDeploy(this,'other')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg><span>Other</span></div>
+    </div>
+    <div class="slbl" id="subjLbl">What's being cultivated</div>
+    <div class="subject-hint" id="subjHint">Optional — e.g. species grown or studied here</div>
+    <input class="sinput" id="subjInput" type="text" placeholder="e.g. Saccharina latissima"/>
+    <div class="slbl">Location Description</div><input class="sinput" type="text" placeholder="e.g. 20 m from pier"/>
+    <button class="sbtn" onclick="closeSh()">Add Buoy</button><button class="sbtn-cancel" onclick="closeSh()">Cancel</button>
+  </div>
+
+  <div class="sheet" id="shCI">
+    <div class="shandle"></div>
+    <div class="stitle" id="ciTitle">New Check-In</div>
+    <div class="smeta" id="ciMeta"></div>
+    <div class="slbl">Buoy</div>
+    <div class="ci-buoy" id="ciBuoy" onclick="toggleCiPicker()">
+      <span class="sdot mini" id="ciBuoyDot"><span class="sd-core" style="background:#15e49a"></span></span>
+      <div class="ci-buoy-info">
+        <div class="ci-buoy-name" id="ciBuoyName"></div>
+        <div class="ci-buoy-loc" id="ciBuoyLoc"></div>
+      </div>
+      <div class="ci-buoy-change">Change<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6,9 12,15 18,9"/></svg></div>
+    </div>
+    <div class="ci-picker" id="ciPicker"></div>
+    <div class="gps-line"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>Location captured automatically</span></div>
+    <div class="slbl">Photo</div>
+    <div class="ci-photo" id="ciPhoto"></div>
+    <div class="slbl">Note</div>
+    <textarea class="stextarea" id="ciNote" placeholder="Buoy condition, fouling, observations..."></textarea>
+    <button class="sbtn" id="ciPrimary" onclick="saveCI()">Save Check-In</button>
+    <button class="sbtn-cancel" onclick="closeSh()">Cancel</button>
+    <div class="edit-block" id="ciEditBlock">
+      <div class="edit-prompt">Made a mistake?</div>
+      <button class="edit-action" onclick="switchToEdit()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Edit last check-in</span><span class="ea-when" id="ciEditWhen"></span></button>
+    </div>
+  </div>
+
+  <div class="sheet" id="shExport">
+    <div class="shandle"></div>
+    <div class="stitle">Export Data</div>
+    <div class="slbl">Time Range</div>
+    <div class="stopts">
+      <div class="stopt" onclick="selRange(this,'24h')">24h</div>
+      <div class="stopt sel" id="ex7d" onclick="selRange(this,'7d')">7d</div>
+      <div class="stopt" onclick="selRange(this,'30d')">30d</div>
+      <div class="stopt" onclick="selRange(this,'all')">All</div>
+      <div class="stopt" onclick="selRange(this,'custom')">Custom</div>
+    </div>
+    <div class="ex-resolved" id="exResolved"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg><span id="exResolvedText"></span></div>
+    <div class="ex-custom" id="exCustom" style="display:none">
+      <div class="ex-date-row">
+        <div class="ex-date-field"><label class="ex-date-lbl">From</label><input type="date" class="ex-date-input" id="exFrom" onchange="updateCustomSummary()"></div>
+        <div class="ex-date-field"><label class="ex-date-lbl">To</label><input type="date" class="ex-date-input" id="exTo" onchange="updateCustomSummary()"></div>
+      </div>
+      <div class="ex-custom-summary" id="exCustomSummary"></div>
+    </div>
+    <div class="slbl">Photo Gallery</div>
+    <div class="photo-gallery"><div class="gallery-item"></div><div class="gallery-item"></div><div class="gallery-item"></div></div>
+    <div class="slbl">Format</div>
+    <div class="srow"><div class="sopt sel" onclick="selO(this,'f')">PDF<div class="sopt-sub">Report with charts & photos</div></div><div class="sopt" onclick="selO(this,'f')">CSV<div class="sopt-sub">Raw data, full precision</div></div></div>
+    <button class="sbtn" onclick="closeSh()">Start Export</button>
+    <button class="sbtn-cancel" onclick="closeSh()">Cancel</button>
+  </div>
+
+  <div class="sheet" id="shDetail">
+    <div class="shandle"></div>
+    <div class="detail-head"><div class="detail-title"><span id="dTitle"></span><span class="detail-unit" id="dUnitLbl"></span></div><div class="detail-meta" id="dMeta"></div></div>
+    <div class="detail-readout"><span class="dr-time" id="dReadTime"></span><span class="dr-val" id="dReadVal"></span></div>
+    <div class="detail-plotwrap">
+      <div class="detail-yaxis"><span id="dYmax"></span><span id="dYmid"></span><span id="dYmin"></span></div>
+      <div class="detail-chart" id="dChart">
+        <div id="dSvgWrap" style="position:absolute;inset:0"></div>
+        <div class="dcross" id="dCross"></div>
+        <div id="dDot"></div>
+      </div>
+    </div>
+    <div class="detail-xaxis" id="dXaxis"></div>
+    <div class="detail-hint">Drag across the graph to read any point</div>
+    <button class="sbtn-cancel" onclick="closeSh()" style="margin-top:14px">Close</button>
+  </div>
+</div>
+
+<script>
+const SITES=[{name:"Limfjord",country:"Denmark",short:"Limfjord, DK"},{name:"Chiloé",country:"Chile",short:"Chiloé, CL"}];
+const DEPLOY={seaweed:"Seaweed",shellfish:"Shellfish",fish:"Fish farm",restoration:"Restoration",research:"Research",other:"Buoy"};
+const B=[
+ {n:"HYDRA 1",site:0,bat:78,deploy:"seaweed",subject:"Saccharina latissima",loc:"20 m from pier",ci:"3 days ago",lastNote:"Light fouling on the lower sensor, wiped it clean. Line sitting at good depth.",s:"ok",obs:[
+   {when:"3 days ago",note:"Light fouling on the lower sensor, wiped it clean. Line sitting at good depth.",photo:true},
+   {when:"1 week ago",note:"Good growth on the collectors, blades around 40 cm. Water clear.",photo:true},
+   {when:"2 weeks ago",note:"Checked mooring after strong winds — holding well, minor drift.",photo:true},
+   {when:"3 weeks ago",note:"Deployed a fresh line. Everything nominal at drop-off.",photo:true},
+   {when:"1 month ago",note:"Site survey and first sensor calibration done.",photo:false},
+   {when:"5 weeks ago",note:"Scouting visit, confirmed anchor point and depth.",photo:false},
+   {when:"6 weeks ago",note:"Initial deployment planning, marked GPS waypoint.",photo:false}
+ ]},
+ {n:"HYDRA 2",site:0,bat:11,deploy:"shellfish",subject:"Blue mussel",loc:"close by the cliffs",ci:"today",lastNote:"Battery low, needs swap soon. Growth looking healthy.",s:"warn",obs:[
+   {when:"today",note:"Battery low, needs a swap soon. Growth looking healthy though.",photo:true},
+   {when:"5 days ago",note:"Heavy fouling on the floats, cleaned off. Mussels developing well.",photo:true},
+   {when:"2 weeks ago",note:"Repositioned slightly after the storm. No damage found.",photo:false}
+ ]},
+ {n:"HYDRA 3",site:0,bat:49,deploy:"research",subject:"",loc:"near the restaurant",ci:"11 days ago",lastNote:"All clear, no visible fouling.",s:"mid",obs:[
+   {when:"11 days ago",note:"All clear, no visible fouling.",photo:true},
+   {when:"1 month ago",note:"Baseline check. Sensors reading steady, nothing growing — research site.",photo:false}
+ ]},
+ {n:"HYDRA 4",site:1,bat:84,deploy:"seaweed",subject:"Ulva spp.",loc:"next to the boats",ci:"3 days ago",lastNote:"Slight drift on the mooring, repositioned.",s:"ok",obs:[
+   {when:"3 days ago",note:"Slight drift on the mooring, repositioned.",photo:true},
+   {when:"2 weeks ago",note:"Ulva mats dense, took a sample for the lab.",photo:true}
+ ]}
+];
+const PARAMS=[
+  {l:"Water Temperature",  unit:"°C",     snap:"2",    snap2:"-1",   dir:1,  col:"#FFFFFF", min24:"1.4",max24:"3.1",min7:"0.8",max7:"4.2",min30:"-0.5",max30:"5.1", seed:39,amp:6},
+  {l:"Dissolved Oxygen",   unit:"mg/l",   snap:"8",    snap2:"6.2",  dir:0,  col:"#FFB6ED", min24:"7.8",max24:"8.3",min7:"7.2",max7:"8.6",min30:"6.8",max30:"9.1", seed:57,amp:5},
+  {l:"Total Dissolved Solids", unit:"μS/cm", snap:"52.3", snap2:"30.0", dir:1, col:"#FFAA8E", min24:"48",max24:"53",min7:"41",max7:"54",min30:"38",max30:"55", seed:64,amp:9},
+  {l:"Redox Potential",    unit:"mV",     snap:"412",  snap2:"319",  dir:1,  col:"#B0ADFF", min24:"398",max24:"418",min7:"380",max7:"425",min30:"360",max30:"430", seed:46,amp:6},
+  {l:"Light Above Water",  unit:"lx",     snap:"50.1", snap2:"46.1", dir:-1, col:"#FBFFAA", min24:"42",max24:"61",min7:"30",max7:"68",min30:"10",max30:"72", seed:72,amp:12},
+  {l:"Light Below Water",  unit:"lx",     snap:"8.2",  snap2:"4.4",  dir:-1, col:"#A9E3F4", min24:"6.1",max24:"9.8",min7:"4.2",max7:"11",min30:"2.1",max30:"12", seed:31,amp:6},
+];
+function genSeries(seed,amp,n){const out=[];for(let i=0;i<n;i++){const w=Math.sin(i*0.55+seed)*amp*0.5+Math.sin(i*0.17+seed*0.3)*amp*0.35;out.push(seed+w+(((i*seed)%7)-3)*amp*0.06);}return out;}
+PARAMS.forEach(p=>{p.c=genSeries(p.seed,p.amp,80);});
+const SC={ok:"#15e49a",warn:"#FD7A4E",mid:"#FBFFAA"};
+const STXT={ok:"online",mid:"online",warn:"needs attention"};
+let cur=0,cmp=false,cmp2=3,ddOpen=null,scrollT=null,timeMode='now',exportRange='7d',detailIdx=0,curSite=0,tab='data',ciEditing=false,ciTarget=0;
+const ciNearest=1;
+let dC=[],dCmin=0,dCr=1,dNumMin=0,dNumMax=1,dUnit='',dMode='24h';
+function sc(s){return SC[s]||"#15e49a"}
+function statusText(s){return STXT[s]||"online"}
+function bc(p){return p>50?"#15e49a":p>20?"#FBFFAA":"#FD7A4E"}
+function firstOther(i){for(let k=0;k<B.length;k++)if(k!==i)return k;return 0;}
+function subLine(b){if(b.subject)return`<span class="bsub-italic">${b.subject}</span>`;return DEPLOY[b.deploy]||"Buoy";}
+function trendWord(dir){return dir===1?'rising':dir===-1?'falling':'same'}
+function trendIcon(dir){if(dir===1)return`<svg viewBox="0 0 9 9" aria-hidden="true"><polygon points="4.5,1 8,8 1,8" fill="currentColor"/></svg>`;if(dir===-1)return`<svg viewBox="0 0 9 9" aria-hidden="true"><polygon points="4.5,8 8,1 1,1" fill="currentColor"/></svg>`;return`<svg viewBox="0 0 9 9" aria-hidden="true"><rect x="1" y="3.5" width="7" height="2" fill="currentColor"/></svg>`;}
+const expandIcon=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`;
+const liveIcon=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12.5c1.5 0 2-3.5 3.2-3.5s1.3 7 2.6 7 1.4-11 2.7-11 1.4 9 2.6 9 1.3-4 2.4-4H22"/></svg>`;
+const warnIcon=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a1.5 1.5 0 0 0 1.3 2.3h17.8a1.5 1.5 0 0 0 1.3-2.3L13.7 3.9a1.5 1.5 0 0 0-2.6 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>`;
+const clockMini=`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg>`;
+const pinMini=`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+const pinSmall=`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+const pinTag=`<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+const checkIcon=`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+const noPhotoIcon=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`;
+const eyeBig=`<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>`;
+function statusDotCard(s){const live=(s!=='warn');return`<div class="card-sdot"><div class="sdot card ${live?'live':''}"><div class="sd-pulse" style="background:${sc(s)}"></div><div class="sd-core" style="background:${sc(s)}"></div></div></div>`;}
+function chartSvg(c,col,id,cls){const n=c.length,mn=Math.min(...c),mx=Math.max(...c),r=mx-mn||1,pad=8;const pts=c.map((v,i)=>({x:i/(n-1)*100,y:pad+(1-(v-mn)/r)*(100-2*pad)}));let line=`M${pts[0].x.toFixed(2)},${pts[0].y.toFixed(2)}`;for(let i=1;i<n;i++){const cx=((pts[i-1].x+pts[i].x)/2).toFixed(2);line+=` C${cx},${pts[i-1].y.toFixed(2)} ${cx},${pts[i].y.toFixed(2)} ${pts[i].x.toFixed(2)},${pts[i].y.toFixed(2)}`;}const fill=line+` L100,100 L0,100 Z`;return `<svg class="${cls}" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity="0.26"/><stop offset="100%" stop-color="${col}" stop-opacity="0.02"/></linearGradient></defs><line x1="0" y1="${pad}" x2="100" y2="${pad}" class="gl"/><line x1="0" y1="50" x2="100" y2="50" class="gl gl-mid"/><line x1="0" y1="${100-pad}" x2="100" y2="${100-pad}" class="gl"/><path d="${fill}" fill="url(#${id})"/><path d="${line}" fill="none" stroke="${col}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+function curve2(c){return c.map(v=>v*0.82+3)}
+function mmForMode(p,mode){if(mode==='24h')return{min:p.min24,max:p.max24};if(mode==='7d')return{min:p.min7,max:p.max7};return{min:p.min30,max:p.max30};}
+function mmFor(p){return mmForMode(p,timeMode==='now'?'24h':timeMode);}
+function fmtDM(d){return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
+function fmtDMY(d){return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+function fmtT(d){return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}
+function isoDate(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${dd}`;}
+function spanOf(mode){return mode==='24h'?24*3600e3:mode==='7d'?6*864e5:29*864e5;}
+function xTicks(mode,n){const now=new Date(),span=spanOf(mode),start=now.getTime()-span,out=[];for(let k=0;k<n;k++){const t=new Date(start+(k/(n-1))*span);out.push(mode==='24h'?fmtT(t):fmtDM(t));}return out;}
+function resolvedRange(){const now=new Date();if(timeMode==='now')return `Latest reading · ${fmtT(now)}, ${fmtDM(now)}`;if(timeMode==='24h'){const s=new Date(now.getTime()-24*3600e3);return `Last 24 h · ${fmtDM(s)} ${fmtT(s)} → ${fmtDM(now)} ${fmtT(now)}`;}if(timeMode==='7d'){const s=new Date(now.getTime()-6*864e5);return `Last 7 days · ${fmtDM(s)} – ${fmtDM(now)}`;}const s=new Date(now.getTime()-29*864e5);return `Last 30 days · ${fmtDM(s)} – ${fmtDM(now)}`;}
+function updateRange(){document.getElementById('rangeText').textContent=resolvedRange();}
+function exResolvedRange(mode){const now=new Date();if(mode==='24h'){const s=new Date(now.getTime()-24*3600e3);return `${fmtDM(s)} ${fmtT(s)} → ${fmtDM(now)} ${fmtT(now)}, ${now.getFullYear()}`;}if(mode==='7d'){const s=new Date(now.getTime()-6*864e5);return `${fmtDMY(s)} → ${fmtDMY(now)}`;}if(mode==='30d'){const s=new Date(now.getTime()-29*864e5);return `${fmtDMY(s)} → ${fmtDMY(now)}`;}if(mode==='all')return `All data on record, up to ${fmtDMY(now)}`;return '';}
+function updateExResolved(){document.getElementById('exResolvedText').textContent=exResolvedRange(exportRange);}
+function updateCustomSummary(){const f=document.getElementById('exFrom').value,t=document.getElementById('exTo').value,el=document.getElementById('exCustomSummary');if(!f||!t){el.textContent='Pick a start and end date';return;}const fd=new Date(f+'T00:00:00'),td=new Date(t+'T00:00:00');if(td<fd){el.textContent='End date is before the start date';return;}const days=Math.round((td-fd)/864e5)+1;el.textContent=`${fmtDMY(fd)} → ${fmtDMY(td)} · ${days} day${days>1?'s':''}`;}
+function selRange(el,mode){exportRange=mode;el.closest('.stopts').querySelectorAll('.stopt').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');if(mode==='custom'){document.getElementById('exResolved').style.display='none';document.getElementById('exCustom').style.display='block';updateCustomSummary();}else{document.getElementById('exResolved').style.display='flex';document.getElementById('exCustom').style.display='none';updateExResolved();}}
+function setupExport(){exportRange='7d';document.querySelectorAll('#shExport .stopt').forEach(e=>e.classList.remove('sel'));document.getElementById('ex7d').classList.add('sel');document.getElementById('exResolved').style.display='flex';document.getElementById('exCustom').style.display='none';const now=new Date();document.getElementById('exTo').value=isoDate(now);document.getElementById('exFrom').value=isoDate(new Date(now.getTime()-6*864e5));updateExResolved();}
+const SUBJ={seaweed:{lbl:"What's being cultivated",hint:"Optional — species grown here",ph:"e.g. Saccharina latissima"},shellfish:{lbl:"What's being farmed",hint:"Optional — species farmed here",ph:"e.g. Blue mussel"},fish:{lbl:"What's being farmed",hint:"Optional — species farmed here",ph:"e.g. Atlantic salmon"},restoration:{lbl:"What's being restored",hint:"Optional — species or habitat",ph:"e.g. Eelgrass"},research:{lbl:"What's being studied",hint:"Optional — subject or leave blank",ph:"e.g. open water"},other:{lbl:"Subject",hint:"Optional",ph:""}};
+function selDeploy(el,key){el.closest('.deploy-grid').querySelectorAll('.deploy-opt').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');const s=SUBJ[key]||SUBJ.other;document.getElementById('subjLbl').textContent=s.lbl;document.getElementById('subjHint').textContent=s.hint;document.getElementById('subjInput').placeholder=s.ph;}
+function renderFleetHeader(){const total=B.length;const attn=B.filter(b=>b.s==='warn').length;document.getElementById('fleetTotal').textContent=`${total} ${total===1?'buoy':'buoys'}`;const al=document.getElementById('fleetAlert');if(attn>0){al.style.display='inline-flex';al.querySelector('.fa-num').textContent=attn;al.setAttribute('aria-label',`${attn} buoy${attn===1?'':'s'} need${attn===1?'s':''} attention`);}else{al.style.display='none';}}
+function applySite(){document.getElementById('sjName').textContent=SITES[curSite].short;document.querySelectorAll('#sitesMenu .sm-item').forEach((el,i)=>el.classList.toggle('sel',i===curSite));const cv=document.getElementById('mapCanvas'),gr=document.getElementById('mapGrid');if(curSite===1){cv.style.transform='translateX(-14%) scale(1.05)';gr.style.transform='translate(30px,-20px)';document.querySelector('.map-ph').textContent='OpenFreeMap · Chiloé, CL';}else{cv.style.transform='';gr.style.transform='';document.querySelector('.map-ph').textContent='OpenFreeMap · Limfjord, DK';}}
+function cycleSite(e){if(e&&e.target.closest('.sj-next'))return;curSite=(curSite+1)%SITES.length;applySite();closeSites();}
+function toggleSites(e){e.stopPropagation();document.getElementById('sitesMenu').classList.toggle('open');}
+function closeSites(){document.getElementById('sitesMenu').classList.remove('open');}
+function jumpTo(i){curSite=i;applySite();closeSites();}
+function pLabel(p){return`<span class="p-label"><span class="pl-name">${p.l}</span><span class="p-unit">${p.unit}</span></span>`;}
+function renderSnap(p,i,isCmp){const col=p.col,dir=p.dir,tw=trendWord(dir),snapVal=isCmp?p.snap2:p.snap;return`<div class="pcard snap" onclick="openDetail(${i})" role="button" aria-label="${p.l}: ${snapVal} ${p.unit}, ${tw}. Tap for detail"><div class="snap-content"><div class="p-head">${pLabel(p)}<span class="snap-trend">${trendIcon(dir)}<span>${tw}</span></span></div><div class="snap-bottom"><span class="snap-val" style="color:${col}">${snapVal}</span><span class="snap-expand">${expandIcon}</span></div></div></div>`;}
+function renderTrend(p,i,isCmp){const col=p.col,id=`g${i}${isCmp?'c':''}`,mm=mmFor(p),cv=isCmp?curve2(p.c):p.c,ticks=xTicks(timeMode,isCmp?2:3);return`<div class="pcard trend" onclick="openDetail(${i})" role="button" aria-label="${p.l} ${p.unit}, min ${mm.min}, max ${mm.max}. Tap for detail"><div class="trend-content"><div class="trend-top">${pLabel(p)}<span class="trend-expand">${expandIcon}</span></div><div class="trend-body"><div class="trend-ygutter"><div><div class="ty-lbl">MAX</div><div class="ty-val" style="color:${col}">${mm.max}</div></div><div><div class="ty-lbl">MIN</div><div class="ty-val" style="color:${col}">${mm.min}</div></div></div><div class="trend-plot">${chartSvg(cv,col,id,'tchart')}</div></div><div class="trend-xaxis">${ticks.map(t=>`<span>${t}</span>`).join('')}</div></div></div>`;}
+function renderCard(p,i,isCmp){return timeMode==='now'?renderSnap(p,i,isCmp):renderTrend(p,i,isCmp);}
+function renderParams(){const g=document.getElementById('pgrid');g.className=cmp?'params cmp':'params';g.innerHTML=PARAMS.map((p,i)=>cmp?renderCard(p,i,false)+renderCard(p,i,true):renderCard(p,i,false)).join('');}
+function renderObs(){const b=B[cur];const list=b.obs||[];if(!list.length){document.getElementById('obsList').innerHTML=`<div class="obs-empty">${eyeBig}<div class="oe-title">No observations yet</div><div class="oe-sub">Tap New Check-In below to log the first one.</div></div>`;return;}const head=`<div class="obs-head">Field log · ${list.length} observation${list.length!==1?'s':''} · newest first</div>`;const items=list.map(o=>`<div class="obs-card"><div class="obs-photo ${o.photo?'':'none'}">${o.photo?'':noPhotoIcon}</div><div class="obs-body"><div class="obs-when">${clockMini}${o.when}</div><div class="obs-note">${o.note}</div><div class="obs-loc">${pinMini}<span>${b.loc}</span></div></div></div>`).join('');document.getElementById('obsList').innerHTML=head+items;}
+function updateS2Chrome(){const onObs=(tab==='obs');document.getElementById('tabData').classList.toggle('active',!onObs);document.getElementById('tabObs').classList.toggle('active',onObs);document.getElementById('tabObs').classList.toggle('disabled',cmp);document.getElementById('controlsRow').style.display=onObs?'none':'flex';document.getElementById('rangeLine').style.display=onObs?'none':'flex';document.getElementById('cmpHead').className=(cmp&&!onObs)?'cmp-head open':'cmp-head';document.getElementById('dataScroll').style.display=onObs?'none':'block';document.getElementById('obsScroll').style.display=onObs?'block':'none';document.getElementById('ciBtn').classList.toggle('hidden',!(onObs&&!cmp));document.getElementById('titleWrap').style.display=cmp?'none':'';document.getElementById('titleQuiet').style.display=cmp?'flex':'none';}
+function switchTab(t){if(t==='obs'&&cmp)return;tab=t;if(t==='obs')renderObs();updateS2Chrome();}
+function setTime(t,el){timeMode=t;document.querySelectorAll('.time-opt').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false')});el.classList.add('active');el.setAttribute('aria-selected','true');updateRange();renderParams();}
+function bcardHTML(b,i){const stColor=sc(b.s);const live=(b.s!=='warn');return`<div class="bcard" onclick="go(${i})" role="button" tabindex="0"><div class="bphoto">${statusDotCard(b.s)}</div><div class="binfo"><div class="bname-row"><span class="bname">${b.n}</span></div><div class="status-row"><span class="status-txt" style="color:${stColor}">${live?liveIcon:warnIcon}${statusText(b.s)}</span><div class="bat"><div class="bat-outer"><div class="bat-fill" style="width:${b.bat}%;background:${bc(b.bat)}"></div></div><div class="bat-cap"></div><span style="color:${bc(b.bat)}">${b.bat}%</span></div></div><div class="bsub">${subLine(b)}</div><div class="bci">Last Check-In: <strong>${b.ci}</strong></div></div><div class="barrow"><div class="barrow-circle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="9,18 15,12 9,6"/></svg></div></div></div>`;}
+function renderList(){let html='';SITES.forEach((site,si)=>{const inSite=B.map((b,i)=>({b,i})).filter(x=>x.b.site===si);if(!inSite.length)return;html+=`<div class="site-label"><span class="sl-name">${site.name}, ${site.country}</span><span class="sl-line"></span></div>`;inSite.forEach(x=>{html+=bcardHTML(x.b,x.i);});});document.getElementById('blist').innerHTML=html;const sc2=document.getElementById('blist');const fab=document.getElementById('fab');sc2.addEventListener('scroll',()=>{fab.classList.add('hidden');clearTimeout(scrollT);scrollT=setTimeout(()=>fab.classList.remove('hidden'),200)});}
+function ddItem(b,i,fn){return`<div class="ddi" onclick="${fn}(${i})"><span class="sdot mini"><span class="sd-core" style="background:${sc(b.s)}"></span></span><span class="ddi-name">${b.n}</span></div>`;}
+function buildDD(id,excl,fn){document.getElementById(id).innerHTML=B.map((b,i)=>i===excl?'':ddItem(b,i,fn)).join('');}
+function updateDetail(){const b=B[cur];document.getElementById('bLbl').textContent=b.n;document.getElementById('bDot').style.background=sc(b.s);buildDD('ddBouy',-1,'selB');renderParams();}
+function updateColHeaders(){document.getElementById('chLname').textContent=B[cur].n;document.getElementById('chLdot').style.background=sc(B[cur].s);document.getElementById('chRname').textContent=B[cmp2].n;document.getElementById('chRdot').style.background=sc(B[cmp2].s);buildDD('ddColL',cmp2,'selColL');buildDD('ddColR',cur,'selColR');}
+function go(i){cur=i;tab='data';cmp=false;document.getElementById('cBtn').style.background='rgba(255,255,255,0.1)';if(cmp2===cur)cmp2=firstOther(cur);updateDetail();updateColHeaders();updateRange();updateS2Chrome();document.getElementById('s1').style.transform='translateX(-100%)';document.getElementById('s2').classList.remove('off');closeDD();}
+function back(){document.getElementById('s1').style.transform='';document.getElementById('s2').classList.add('off');closeSh();closeDD();}
+function selB(i){cur=i;if(cmp2===cur)cmp2=firstOther(cur);updateDetail();updateColHeaders();if(tab==='obs')renderObs();closeDD();}
+function selColL(i){cur=i;updateDetail();updateColHeaders();closeDD();}
+function selColR(i){cmp2=i;updateColHeaders();renderParams();closeDD();}
+function togCmp(){cmp=!cmp;document.getElementById('cBtn').style.background=cmp?'rgba(21,228,154,0.18)':'rgba(255,255,255,0.1)';if(cmp)updateColHeaders();renderParams();updateS2Chrome();}
+function tog(id){const was=ddOpen===id;closeDD();if(!was){document.getElementById(id).classList.add('open');ddOpen=id;}}
+function closeDD(){document.querySelectorAll('.ddmenu').forEach(d=>d.classList.remove('open'));ddOpen=null;}
+function setScrub(idx){idx=Math.max(0,Math.min(dC.length-1,idx));const leftPct=idx/(dC.length-1)*100;const fv=(dC[idx]-dCmin)/dCr;const topPct=8+(1-fv)*84;document.getElementById('dCross').style.left=leftPct+'%';const dot=document.getElementById('dDot');dot.style.left=leftPct+'%';dot.style.top=topPct+'%';const val=dNumMin+fv*(dNumMax-dNumMin);const now=new Date(),span=spanOf(dMode),start=now.getTime()-span,t=new Date(start+(idx/(dC.length-1))*span);document.getElementById('dReadTime').textContent=`${fmtDM(t)} ${fmtT(t)}`;document.getElementById('dReadVal').textContent=val.toFixed(1);document.getElementById('dReadVal').style.color=PARAMS[detailIdx].col;}
+function renderDetailView(){const p=PARAMS[detailIdx];dMode=(timeMode==='now')?'24h':timeMode;const mm=mmForMode(p,dMode);dNumMin=parseFloat(mm.min);dNumMax=parseFloat(mm.max);dUnit=p.unit;dC=p.c;dCmin=Math.min(...dC);dCr=(Math.max(...dC)-dCmin)||1;document.getElementById('dTitle').textContent=p.l;document.getElementById('dUnitLbl').textContent='· '+p.unit;document.getElementById('dMeta').textContent=`${B[cur].n} · ${dMode==='24h'?'last 24 hours':dMode==='7d'?'last 7 days':'last 30 days'}`;document.getElementById('dSvgWrap').innerHTML=chartSvg(dC,p.col,'dgrad','dchart');document.getElementById('dYmax').textContent=mm.max;document.getElementById('dYmid').textContent=((dNumMin+dNumMax)/2).toFixed(1);document.getElementById('dYmin').textContent=mm.min;document.getElementById('dXaxis').innerHTML=xTicks(dMode,4).map(t=>`<span>${t}</span>`).join('');setScrub(dC.length-1);}
+function openDetail(i){detailIdx=i;openSh('detail');}
+const photoNew=`<div class="ci-photo-ph"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Take Photo</span></div>`;
+const photoEdit=`<div class="ci-photo-ph" style="color:rgba(255,255,255,0.85)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Photo attached — tap to replace</span></div>`;
+function renderCiTarget(){const b=B[ciTarget];const core=document.querySelector('#ciBuoyDot .sd-core');if(core)core.style.background=sc(b.s);const tag=(ciTarget===ciNearest)?`<span class="ci-buoy-tag">${pinTag} nearest to you</span>`:'';document.getElementById('ciBuoyName').innerHTML=`<span>${b.n}</span>${tag}`;document.getElementById('ciBuoyLoc').innerHTML=`${pinSmall}<span>${b.loc}</span>`;}
+function renderCiPicker(){document.getElementById('ciPicker').innerHTML=B.map((b,i)=>{const tag=(i===ciNearest)?`<span class="ci-buoy-tag">${pinTag} nearest</span>`:'';const check=(i===ciTarget)?`<span class="ci-pick-check">${checkIcon}</span>`:'';return `<div class="ci-pick-item ${i===ciTarget?'sel':''}" onclick="selCiBuoy(${i})"><span class="sdot mini"><span class="sd-core" style="background:${sc(b.s)}"></span></span><div class="ci-pick-info"><div class="ci-pick-name"><span>${b.n}</span>${tag}</div><div class="ci-pick-loc">${pinSmall}<span>${b.loc}</span></div></div>${check}</div>`;}).join('');}
+function toggleCiPicker(){if(ciEditing)return;document.getElementById('ciPicker').classList.toggle('open');document.getElementById('ciBuoy').classList.toggle('open');}
+function selCiBuoy(i){ciTarget=i;renderCiTarget();renderCiPicker();document.getElementById('ciPicker').classList.remove('open');document.getElementById('ciBuoy').classList.remove('open');}
+function setCINew(){ciEditing=false;ciTarget=cur;document.getElementById('ciTitle').textContent='New Check-In';document.getElementById('ciMeta').textContent=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' · '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});document.getElementById('ciBuoy').classList.remove('locked','open');document.getElementById('ciPicker').classList.remove('open');renderCiTarget();renderCiPicker();document.getElementById('ciPhoto').className='ci-photo';document.getElementById('ciPhoto').innerHTML=photoNew;document.getElementById('ciNote').value='';document.getElementById('ciPrimary').textContent='Save Check-In';document.getElementById('ciEditBlock').style.display='block';document.getElementById('ciEditWhen').textContent='· '+B[cur].ci;}
+function switchToEdit(){ciEditing=true;const b=B[ciTarget];document.getElementById('ciTitle').textContent='Edit Check-In';document.getElementById('ciMeta').textContent='Editing the last check-in';document.getElementById('ciBuoy').classList.add('locked');document.getElementById('ciBuoy').classList.remove('open');document.getElementById('ciPicker').classList.remove('open');renderCiTarget();document.getElementById('ciPhoto').className='ci-photo has';document.getElementById('ciPhoto').innerHTML=photoEdit;document.getElementById('ciNote').value=b.lastNote;document.getElementById('ciPrimary').textContent='Update Check-In';document.getElementById('ciEditBlock').style.display='none';}
+function saveCI(){const note=document.getElementById('ciNote').value;const t=ciTarget;B[t].ci='just now';B[t].lastNote=note;if(!B[t].obs)B[t].obs=[];if(ciEditing){if(B[t].obs.length)B[t].obs[0].note=note||B[t].obs[0].note;}else{B[t].obs.unshift({when:'just now',note:note||'(no note added)',photo:true});}renderList();renderObs();closeSh();}
+function openSh(t){closeSh();closeDD();closeSites();document.getElementById('ov').classList.add('open');if(t==='ci')setCINew();if(t==='export')setupExport();if(t==='detail')renderDetailView();const m={'new':'shNew','ci':'shCI','export':'shExport','detail':'shDetail'};requestAnimationFrame(()=>document.getElementById(m[t]).classList.add('open'));}
+function closeSh(){document.getElementById('ov').classList.remove('open');document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('open'));}
+function selO(el,g){el.closest('.sheet').querySelectorAll(g==='t'?'.stopt':'.sopt').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');}
+document.addEventListener('click',e=>{if(!e.target.closest('.ddwrap'))closeDD();if(!e.target.closest('.site-jump')&&!e.target.closest('.sites-menu'))closeSites();});
+(function(){const el=document.getElementById('dChart');function scrub(e){if(!dC.length)return;const rect=el.getBoundingClientRect();let x=e.clientX-rect.left;x=Math.max(0,Math.min(rect.width,x));setScrub(Math.round(x/rect.width*(dC.length-1)));}el.addEventListener('pointerdown',e=>{try{el.setPointerCapture(e.pointerId);}catch(_){}scrub(e);e.preventDefault();});el.addEventListener('pointermove',e=>{scrub(e);});})();
+renderFleetHeader();renderList();updateRange();updateColHeaders();applySite();
+</script>

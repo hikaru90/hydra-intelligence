@@ -1,0 +1,317 @@
+<script lang="ts">
+	import type { Map as MlMap } from 'maplibre-gl';
+	import { MapLibre, Marker } from 'svelte-maplibre';
+	import type { Buoy, Site } from '$lib/types';
+	import StatusDot from '$lib/components/StatusDot.svelte';
+
+	interface Props {
+		buoys: Buoy[];
+		sites: Site[];
+		/** The person's current position, if known. */
+		you?: { lat: number; lng: number } | null;
+		/**
+		 * OpenFreeMap style URL. Defaults to the public "liberty" style — no API key needed.
+		 * If your engineer configured a different style/endpoint, pass it here.
+		 */
+		styleUrl?: string;
+		onselect?: (id: string) => void;
+	}
+
+	let {
+		buoys,
+		sites,
+		you = null,
+		styleUrl = 'https://tiles.openfreemap.org/styles/liberty',
+		onselect
+	}: Props = $props();
+
+	// Bound map instance — used for programmatic camera moves (flyTo).
+	let map = $state<MlMap | undefined>(undefined);
+	let currentSite = $state(0);
+	let menuOpen = $state(false);
+
+	const firstSite = $derived(sites[0]);
+	const initialCenter = $derived<[number, number]>(
+		firstSite?.lng != null && firstSite?.lat != null ? [firstSite.lng, firstSite.lat] : [0, 0]
+	);
+	const initialZoom = $derived(firstSite?.zoom ?? 12);
+
+	// Only pin buoys that actually have coordinates.
+	const pins = $derived(buoys.filter((b) => b.lat != null && b.lng != null));
+
+	function focusSite(i: number) {
+		currentSite = i;
+		menuOpen = false;
+		const site = sites[i];
+		if (map && site?.lng != null && site?.lat != null) {
+			map.flyTo({ center: [site.lng, site.lat], zoom: site.zoom ?? 12, duration: 900 });
+		}
+	}
+
+	function cycleSite() {
+		focusSite((currentSite + 1) % sites.length);
+	}
+</script>
+
+<div class="map-panel">
+	<MapLibre
+		bind:map
+		style={styleUrl}
+		center={initialCenter}
+		zoom={initialZoom}
+		class="map"
+		cooperativeGestures
+	>
+		{#each pins as buoy (buoy.id)}
+			<Marker
+				lngLat={[buoy.lng!, buoy.lat!]}
+				asButton
+				onclick={() => onselect?.(buoy.id)}
+			>
+				<div class="pin">
+					<div class="pin-label">{buoy.name}</div>
+					<StatusDot status={buoy.status} variant="map" live={buoy.status !== 'warn'} />
+				</div>
+			</Marker>
+		{/each}
+
+		{#if you}
+			<Marker lngLat={[you.lng, you.lat]}>
+				<div class="you">
+					<span class="you-dot"></span>
+					<span class="you-label">you</span>
+				</div>
+			</Marker>
+		{/if}
+	</MapLibre>
+
+	<!-- Site-jump control: tap the body to cycle sites, the chevron to open the list. -->
+	<div class="site-jump">
+		<button class="sj-btn" onclick={cycleSite} aria-label="Jump to next site">
+			<span class="sj-icon" aria-hidden="true">
+				<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#15e49a" stroke-width="2">
+					<circle cx="12" cy="12" r="3" />
+					<line x1="12" y1="2" x2="12" y2="5" /><line x1="12" y1="19" x2="12" y2="22" />
+					<line x1="2" y1="12" x2="5" y2="12" /><line x1="19" y1="12" x2="22" y2="12" />
+				</svg>
+			</span>
+			<span class="sj-text">
+				<span class="sj-kicker">Site</span>
+				<span class="sj-name">{sites[currentSite]?.short ?? ''}</span>
+			</span>
+		</button>
+		<button
+			class="sj-next"
+			onclick={() => (menuOpen = !menuOpen)}
+			aria-label="Choose a site"
+			aria-expanded={menuOpen}
+		>
+			<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2">
+				<polyline points="6,9 12,15 18,9" />
+			</svg>
+		</button>
+	</div>
+
+	{#if menuOpen}
+		<div class="sites-menu" role="listbox" aria-label="Sites">
+			<div class="sm-head">Jump to site</div>
+			{#each sites as site, i (site.id)}
+				{@const count = buoys.filter((b) => b.siteId === site.id).length}
+				<button class="sm-item" class:sel={i === currentSite} role="option" aria-selected={i === currentSite} onclick={() => focusSite(i)}>
+					<span class="sm-loc">
+						<span class="sm-name">{site.name}</span>
+						<span class="sm-sub">{site.country}</span>
+					</span>
+					<span class="sm-count">{count}</span>
+				</button>
+			{/each}
+		</div>
+	{/if}
+</div>
+
+<style>
+	.map-panel {
+		position: relative;
+		height: 296px;
+		flex-shrink: 0;
+		overflow: hidden;
+		background: var(--color-teal);
+	}
+	/* svelte-maplibre renders into a child div; make it fill the panel. */
+	.map-panel :global(.map),
+	.map-panel :global(.maplibregl-map) {
+		width: 100%;
+		height: 100%;
+	}
+
+	.pin {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+	}
+	.pin-label {
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		margin-bottom: 4px;
+		padding: 3px 9px;
+		border-radius: 10px 10px 10px 2px;
+		background: var(--color-teal);
+		color: #fff;
+		font-family: var(--font-heading);
+		font-size: 9px;
+		font-weight: 700;
+		white-space: nowrap;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+	}
+
+	.you {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
+	.you-dot {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: #fff;
+		box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+	}
+	.you-label {
+		padding: 3px 9px;
+		border-radius: 10px;
+		background: var(--color-teal);
+		color: #fff;
+		font-family: var(--font-heading);
+		font-size: 9px;
+		font-weight: 600;
+	}
+
+	.site-jump {
+		position: absolute;
+		bottom: 14px;
+		right: 14px;
+		z-index: 6;
+		display: flex;
+		align-items: center;
+		background: rgba(9, 43, 58, 0.82);
+		backdrop-filter: blur(6px);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		border-radius: 22px;
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+		height: 44px;
+	}
+	.sj-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		height: 100%;
+		padding: 0 4px 0 14px;
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: #fff;
+		font-family: var(--font-heading);
+	}
+	.sj-icon {
+		display: flex;
+		flex-shrink: 0;
+	}
+	.sj-text {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		line-height: 1.05;
+	}
+	.sj-kicker {
+		font-family: var(--font-body);
+		font-size: 8px;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.55);
+	}
+	.sj-name {
+		font-size: 12px;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+	.sj-next {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		margin-right: 8px;
+		border: none;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.12);
+		cursor: pointer;
+	}
+
+	.sites-menu {
+		position: absolute;
+		bottom: 66px;
+		right: 14px;
+		z-index: 7;
+		min-width: 210px;
+		overflow: hidden;
+		border-radius: 16px;
+		background: var(--color-teal);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		box-shadow: 0 10px 34px rgba(0, 0, 0, 0.45);
+	}
+	.sm-head {
+		padding: 11px 15px 8px;
+		font-family: var(--font-heading);
+		font-size: 9px;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.45);
+	}
+	.sm-item {
+		display: flex;
+		align-items: center;
+		gap: 11px;
+		width: 100%;
+		padding: 12px 15px;
+		border: none;
+		border-top: 1px solid rgba(255, 255, 255, 0.07);
+		background: none;
+		cursor: pointer;
+		text-align: left;
+	}
+	.sm-item.sel {
+		background: rgba(21, 228, 154, 0.1);
+	}
+	.sm-loc {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		flex: 1;
+		min-width: 0;
+	}
+	.sm-name {
+		font-family: var(--font-heading);
+		font-size: 13px;
+		font-weight: 700;
+		color: #fff;
+		line-height: 1;
+	}
+	.sm-sub {
+		font-size: 10px;
+		font-weight: 500;
+		color: rgba(255, 255, 255, 0.6);
+	}
+	.sm-count {
+		flex-shrink: 0;
+		font-family: var(--font-heading);
+		font-size: 12px;
+		font-weight: 700;
+		color: rgba(255, 255, 255, 0.85);
+	}
+</style>

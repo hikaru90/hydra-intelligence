@@ -1,0 +1,59 @@
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+/*
+ * Cerberus OS design tokens.
+ * Declared in @theme so they are available both as Tailwind utilities
+ * (bg-teal, text-green, font-heading ...) and as CSS custom properties
+ * (var(--color-teal) ...) inside component <style> blocks.
+ */
+@theme {
+	--color-teal: #11394b; /* cards, headers, sheets */
+	--color-teal-deep: #0d2c3b; /* photo backing */
+	--color-teal-darkest: #092b3a; /* deepest wells / arrow circles */
+	--color-green: #15e49a; /* primary — ok / online */
+	--color-yellow: #fbffaa; /* mid / gradient end */
+	--color-orange: #fd7a4e; /* attention / warnings only */
+	--color-sky: #a9e3f4; /* light-below-water, backgrounds */
+
+	/* parameter accents (fixed per parameter) */
+	--color-param-oxygen: #ffb6ed;
+	--color-param-tds: #ffaa8e;
+	--color-param-redox: #b0adff;
+
+	--font-heading: 'Montserrat Alternates', sans-serif;
+	--font-body: 'Montserrat', sans-serif;
+}
+
+/* Non-colour tokens (gradients / screen backgrounds). */
+:root {
+	--gradient-brand: linear-gradient(135deg, var(--color-green), var(--color-yellow));
+	--bg-dashboard: linear-gradient(173deg, #ffffff 55%, #a9e3f4 100%);
+	--bg-buoy: linear-gradient(173deg, #ffffff 0%, #a9e3f4 100%);
+	--shadow-fab: 0 6px 20px rgba(9, 43, 58, 0.35);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	-webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+	margin: 0;
+	font-family: var(--font-body);
+	color: var(--color-teal);
+}
+
+/* Respect reduced-motion everywhere. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}
