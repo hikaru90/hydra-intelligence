@@ -1,6 +1,4 @@
 <script lang="ts">
-  import * as Form from "$lib/components/ui/form";
-  import { Input } from "$lib/components/ui/input";
   import { formSchema, type FormSchema } from "./schema";
   import { type SuperValidated, type Infer, superForm } from "sveltekit-superforms";
   import { zod4Client } from "sveltekit-superforms/adapters";
@@ -12,8 +10,6 @@
   import Check from "lucide-svelte/icons/check";
   import { authClient } from "$lib/auth-client";
 
-  let className: string | undefined = undefined;
-  export { className as class };
   export let data: SuperValidated<Infer<FormSchema>> & { redirectTo?: string | null };
 
   let resetPasswordDialogOpen = false;
@@ -48,45 +44,55 @@
     toast.success(m.forgotPasswordSuccess());
   };
 
-  const { form: formData, errors, enhance, delayed, message, constraints, reset } = form;
+  const { form: formData, errors, enhance } = form;
 </script>
 
-<div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full space-y-8">
-    <div>
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-emerald-500">
-        {m.loginToAccount()}
-      </h2>
-    </div>
-    <form method="POST" use:enhance action="/login?/login" class={className} on:submit={handleSubmit}>
-      <Form.Field {form} name="email">
-        <Form.Control let:attrs>
-          <Form.Label>{m.email()}</Form.Label>
-          <Input {...attrs} bind:value={$formData.email} type="email" />
-        </Form.Control>
-        <!-- <Form.Description>This is your public display name.</Form.Description> -->
-        <Form.FieldErrors />
-      </Form.Field>
-      <Form.Field {form} name="password">
-        <Form.Control let:attrs>
-          <Form.Label>{m.password()}</Form.Label>
-          <Input {...attrs} bind:value={$formData.password} type="password" />
-        </Form.Control>
-        <Form.Description
-          ><a
-            role="button"
-            tabindex="0"
-            on:click={() => (resetPasswordDialogOpen = true)}
-            class="text-sm text-muted-foreground hover:underline">{m.forgotPassword()}</a
-          ></Form.Description
-        >
-        <Form.FieldErrors />
-      </Form.Field>
+<div class="screen">
+  <div class="content">
+    <img class="wordmark" src="/cerberus-wordmark-dark.svg" alt="Cerberus Blue Systems" />
 
-      <div class="flex items-center justify-between">
-        <a href="/register" class="text-sm hover:underline">{m.switchToRegister()}</a>
-        <Form.Button class="bg-primary text-muted" disabled={signingIn}>{m.login()}</Form.Button>
+    <h1 class="heading">{m.loginToAccount()}</h1>
+
+    <form method="POST" use:enhance action="/login?/login" onsubmit={handleSubmit} class="form">
+      <div class="field">
+        <label class="label" for="email">{m.email()}</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          class="input"
+          bind:value={$formData.email}
+        />
+        {#if $errors.email}<span class="err">{$errors.email}</span>{/if}
       </div>
+
+      <div class="field">
+        <div class="label-row">
+          <label class="label" for="password">{m.password()}</label>
+          <button
+            type="button"
+            class="forgot"
+            onclick={() => (resetPasswordDialogOpen = true)}
+          >
+            {m.forgotPassword()}
+          </button>
+        </div>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          class="input"
+          bind:value={$formData.password}
+        />
+        {#if $errors.password}<span class="err">{$errors.password}</span>{/if}
+      </div>
+
+      <button class="btn" disabled={signingIn}>
+        {signingIn ? '…' : m.login()}
+      </button>
+      <a class="btn-cancel" href="/register">{m.switchToRegister()}</a>
     </form>
   </div>
 </div>
@@ -107,3 +113,136 @@
     </Dialog.Header>
   </Dialog.Content>
 </Dialog.Root>
+
+<style>
+  .screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    background: var(--color-teal-darkest, #092b3a);
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 340px;
+  }
+  .wordmark {
+    width: 200px;
+    height: auto;
+    margin-bottom: 36px;
+    border-radius: 14px;
+  }
+  .heading {
+    align-self: flex-start;
+    margin: 0 0 22px;
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 14px;
+  }
+  .label {
+    margin-bottom: 8px;
+    font-family: var(--font-heading);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .label-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .forgot {
+    margin-bottom: 8px;
+    border: none;
+    background: none;
+    padding: 0;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-green);
+    cursor: pointer;
+  }
+  .input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 13px;
+  }
+  .input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+  .err {
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-orange);
+  }
+
+  .btn {
+    width: 100%;
+    height: 52px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 26px;
+    background: var(--gradient-brand, linear-gradient(135deg, #15e49a, #fbffaa));
+    color: var(--color-teal);
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn:active {
+    opacity: 0.85;
+  }
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .btn-cancel {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 0;
+    border: none;
+    background: none;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .btn-cancel:active {
+    color: rgba(255, 255, 255, 0.9);
+  }
+</style>
