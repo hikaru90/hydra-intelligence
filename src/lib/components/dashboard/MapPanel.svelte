@@ -25,6 +25,14 @@
 	let currentSite = $state(0);
 	let menuOpen = $state(false);
 	let attribOpen = $state(false);
+	let expanded = $state(false);
+
+	function toggleExpanded() {
+		expanded = !expanded;
+		// MapLibre sizes its canvas from the container's layout box, which only
+		// settles after the CSS transition to/from fullscreen finishes.
+		setTimeout(() => map?.resize(), 320);
+	}
 
 	const firstSite = $derived(sites[0]);
 	const initialCenter = $derived<[number, number]>(
@@ -49,7 +57,7 @@
 	}
 </script>
 
-<div class="map-panel">
+<div class="map-panel" class:expanded>
 	<MapLibre
 		bind:map
 		style={styleUrl}
@@ -81,6 +89,28 @@
 			</Marker>
 		{/if}
 	</MapLibre>
+
+	<!-- Expand toggle: the dashboard map is compact by design (fleet overview,
+	     not the data screen), so precise zoom/pan gets a dedicated fullscreen
+	     mode instead of permanently growing the panel. -->
+	<button
+		class="expand-btn"
+		onclick={toggleExpanded}
+		aria-label={expanded ? 'Collapse map' : 'Expand map'}
+		aria-pressed={expanded}
+	>
+		{#if expanded}
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<polyline points="9 3 9 9 3 9" /><polyline points="15 21 15 15 21 15" />
+				<line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" />
+			</svg>
+		{:else}
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" />
+				<line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" />
+			</svg>
+		{/if}
+	</button>
 
 	<!-- Site-jump control: tap the body to cycle sites, the chevron to open the list. -->
 	<div class="site-jump">
@@ -151,6 +181,32 @@
 		flex-shrink: 0;
 		overflow: hidden;
 		background: var(--color-teal);
+		transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	.map-panel.expanded {
+		position: fixed;
+		inset: 0;
+		z-index: 50;
+		height: 100dvh;
+	}
+
+	.expand-btn {
+		position: absolute;
+		top: 14px;
+		right: 14px;
+		z-index: 6;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border: none;
+		border-radius: 50%;
+		background: rgba(9, 43, 58, 0.82);
+		backdrop-filter: blur(6px);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+		cursor: pointer;
 	}
 	/* svelte-maplibre renders into a child div; make it fill the panel. */
 	.map-panel :global(.map),
