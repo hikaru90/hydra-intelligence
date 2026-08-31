@@ -43,6 +43,7 @@
 		padding: 15px 18px 13px;
 		background: var(--color-teal);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		border-radius: 0 0 16px 16px;
 	}
 	.brand {
 		display: flex;
