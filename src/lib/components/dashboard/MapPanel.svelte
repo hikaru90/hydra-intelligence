@@ -43,9 +43,14 @@
 
 	// Only pin buoys that actually have coordinates.
 	const pins = $derived(buoys.filter((b) => b.lat != null && b.lng != null));
+	// Buoys belonging to whichever site is currently focused — the crosshair
+	// steps through these, not the whole fleet, so it stays scoped to what
+	// the site pill is already showing.
+	const sitePins = $derived(pins.filter((b) => b.siteId === sites[currentSite]?.id));
 
 	function focusSite(i: number) {
 		currentSite = i;
+		currentBuoy = 0;
 		menuOpen = false;
 		const site = sites[i];
 		if (map && site?.lng != null && site?.lat != null) {
@@ -53,19 +58,17 @@
 		}
 	}
 
-	// The crosshair steps through every individual buoy (not just the two
-	// broad site areas — that's what the chevron's dropdown is for).
 	function focusBuoy(i: number) {
 		currentBuoy = i;
-		const buoy = pins[i];
+		const buoy = sitePins[i];
 		if (map && buoy?.lng != null && buoy?.lat != null) {
 			map.flyTo({ center: [buoy.lng, buoy.lat], zoom: 15, duration: 900 });
 		}
 	}
 
 	function cycleBuoy() {
-		if (!pins.length) return;
-		focusBuoy((currentBuoy + 1) % pins.length);
+		if (!sitePins.length) return;
+		focusBuoy((currentBuoy + 1) % sitePins.length);
 	}
 </script>
 
@@ -124,29 +127,35 @@
 		{/if}
 	</button>
 
-	<!-- Crosshair steps through every buoy one by one; the chevron opens the
-	     broader site-area list (that's the only thing that still jumps
-	     between "Limfjord" / "Kieler Förde" as a whole). -->
-	<div class="site-jump">
-		<button class="sj-btn" onclick={cycleBuoy} aria-label="Jump to next buoy">
-			<span class="sj-icon" aria-hidden="true">
-				<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#15e49a" stroke-width="2">
-					<circle cx="12" cy="12" r="3" />
-					<line x1="12" y1="2" x2="12" y2="5" /><line x1="12" y1="19" x2="12" y2="22" />
-					<line x1="2" y1="12" x2="5" y2="12" /><line x1="19" y1="12" x2="22" y2="12" />
-				</svg>
-			</span>
-			<span class="sj-text">
-				<span class="sj-kicker">Buoy</span>
-				<span class="sj-name">{pins[currentBuoy]?.name ?? ''}</span>
-			</span>
-		</button>
+	<!-- Two separate controls, on purpose: a chevron next to a label reads as
+	     "pick a value for this" — pairing it with the buoy name would wrongly
+	     suggest tapping it lets you choose a buoy, when it actually opens the
+	     site list. Site pill (its own full action) + a plain icon-only
+	     crosshair button beside it (steps through this site's buoys). -->
+	<div class="map-controls">
 		<button
-			class="sj-next"
+			class="buoy-btn"
+			onclick={cycleBuoy}
+			aria-label={`Jump to next buoy (${sitePins[currentBuoy]?.name ?? ''})`}
+		>
+			<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#15e49a" stroke-width="2">
+				<circle cx="12" cy="12" r="3" />
+				<line x1="12" y1="2" x2="12" y2="5" /><line x1="12" y1="19" x2="12" y2="22" />
+				<line x1="2" y1="12" x2="5" y2="12" /><line x1="19" y1="12" x2="22" y2="12" />
+			</svg>
+		</button>
+
+		<button
+			class="site-pill"
 			onclick={() => (menuOpen = !menuOpen)}
 			aria-label="Choose a site"
+			aria-haspopup="listbox"
 			aria-expanded={menuOpen}
 		>
+			<span class="sj-text">
+				<span class="sj-kicker">Site</span>
+				<span class="sj-name">{sites[currentSite]?.short ?? ''}</span>
+			</span>
 			<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2">
 				<polyline points="6,9 12,15 18,9" />
 			</svg>
@@ -275,35 +284,45 @@
 		font-weight: 600;
 	}
 
-	.site-jump {
+	.map-controls {
 		position: absolute;
 		bottom: 14px;
 		right: 14px;
 		z-index: 6;
 		display: flex;
 		align-items: center;
+		gap: 8px;
+	}
+	.buoy-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		flex-shrink: 0;
+		border: none;
+		border-radius: 50%;
 		background: rgba(9, 43, 58, 0.82);
 		backdrop-filter: blur(6px);
 		border: 1px solid rgba(255, 255, 255, 0.14);
-		border-radius: 22px;
 		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-		height: 44px;
+		cursor: pointer;
 	}
-	.sj-btn {
+	.site-pill {
 		display: inline-flex;
 		align-items: center;
-		gap: 8px;
-		height: 100%;
-		padding: 0 4px 0 14px;
-		background: none;
+		gap: 10px;
+		height: 44px;
+		padding: 0 12px 0 14px;
 		border: none;
+		border-radius: 22px;
+		background: rgba(9, 43, 58, 0.82);
+		backdrop-filter: blur(6px);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 		cursor: pointer;
 		color: #fff;
 		font-family: var(--font-heading);
-	}
-	.sj-icon {
-		display: flex;
-		flex-shrink: 0;
 	}
 	.sj-text {
 		display: flex;
@@ -323,18 +342,6 @@
 		font-size: 12px;
 		font-weight: 700;
 		white-space: nowrap;
-	}
-	.sj-next {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 28px;
-		height: 28px;
-		margin-right: 8px;
-		border: none;
-		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.12);
-		cursor: pointer;
 	}
 
 	.sites-menu {
