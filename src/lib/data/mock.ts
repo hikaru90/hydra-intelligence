@@ -138,6 +138,15 @@ export const OBSERVATIONS: Observation[] = [
 	o('hydra-5', 27, 'Initial deployment off Möltenort, GPS waypoint marked.', false)
 ];
 
+/** Removes a buoy (and its observations) from the shared mock store in place. Swap for a PocketBase delete when the backend lands. */
+export function removeBuoy(buoyId: string): void {
+	const i = BUOYS.findIndex((b) => b.id === buoyId);
+	if (i !== -1) BUOYS.splice(i, 1);
+	for (let j = OBSERVATIONS.length - 1; j >= 0; j--) {
+		if (OBSERVATIONS[j].buoyId === buoyId) OBSERVATIONS.splice(j, 1);
+	}
+}
+
 /** Observations for one buoy, newest first. */
 export function observationsForBuoy(buoyId: string): Observation[] {
 	return OBSERVATIONS.filter((obs) => obs.buoyId === buoyId).sort(

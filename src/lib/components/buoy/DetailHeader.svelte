@@ -10,9 +10,10 @@
 		onback: () => void;
 		onselect: (id: string) => void;
 		onexport: () => void;
+		onmanage: () => void;
 	}
 
-	let { buoy, buoys, compare = false, onback, onselect, onexport }: Props = $props();
+	let { buoy, buoys, compare = false, onback, onselect, onexport, onmanage }: Props = $props();
 
 	let menuOpen = $state(false);
 
@@ -71,6 +72,16 @@
 			<line x1="12" y1="15" x2="12" y2="3" />
 		</svg>
 	</button>
+
+	{#if !compare}
+		<button class="icon-btn" onclick={onmanage} aria-label="Manage buoy">
+			<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+				<circle cx="12" cy="5" r="1.4" />
+				<circle cx="12" cy="12" r="1.4" />
+				<circle cx="12" cy="19" r="1.4" />
+			</svg>
+		</button>
+	{/if}
 </header>
 
 <style>

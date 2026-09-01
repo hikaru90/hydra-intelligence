@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { Observation, ParameterId, TimeRange } from '$lib/types';
-	import { BUOYS, OBSERVATIONS, YOU } from '$lib/data/mock';
+	import { BUOYS, OBSERVATIONS, YOU, removeBuoy } from '$lib/data/mock';
 	import { relativeTime } from '$lib/utils/format';
 	import { resolvedRangeLabel } from '$lib/utils/time-range';
 
@@ -15,6 +15,7 @@
 	import CheckInSheet from '$lib/components/sheets/CheckInSheet.svelte';
 	import ExportSheet from '$lib/components/sheets/ExportSheet.svelte';
 	import ParameterDetailSheet from '$lib/components/sheets/ParameterDetailSheet.svelte';
+	import ManageBuoySheet from '$lib/components/sheets/ManageBuoySheet.svelte';
 
 	let { data }: { data: { buoyId: string } } = $props();
 
@@ -31,6 +32,7 @@
 	// Sheets
 	let checkInOpen = $state(false);
 	let exportOpen = $state(false);
+	let manageOpen = $state(false);
 	let detailOpen = $state(false);
 	let detailParam = $state<ParameterId | null>(null);
 	let detailBuoyId = $state<string | null>(null);
@@ -102,6 +104,10 @@
 			});
 		}
 	}
+	function deleteBuoy() {
+		removeBuoy(currentId);
+		goto('/');
+	}
 	function expandParameter(id: ParameterId, buoyId: string) {
 		detailParam = id;
 		detailBuoyId = buoyId;
@@ -117,6 +123,7 @@
 		onback={() => goto('/')}
 		onselect={selectBuoy}
 		onexport={() => (exportOpen = true)}
+		onmanage={() => (manageOpen = true)}
 	/>
 
 	<TabBar {tab} {compare} onchange={changeTab} />
@@ -163,6 +170,7 @@
 		onsave={saveCheckIn}
 	/>
 	<ExportSheet bind:open={exportOpen} />
+	<ManageBuoySheet bind:open={manageOpen} buoyName={buoy.name} onremove={deleteBuoy} />
 	<ParameterDetailSheet
 		bind:open={detailOpen}
 		paramId={detailParam}
