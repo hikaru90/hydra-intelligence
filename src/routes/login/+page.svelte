@@ -185,10 +185,11 @@
   }
   .brand-suffix {
     font-family: var(--font-body);
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
     letter-spacing: 0.01em;
     color: var(--color-sky);
+    opacity: 0.8;
   }
 
   /* Sits roughly where the dashboard's MapPanel does, but taller and fading

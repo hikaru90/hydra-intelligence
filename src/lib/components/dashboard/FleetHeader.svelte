@@ -73,17 +73,19 @@
 		letter-spacing: 0.01em;
 		color: #fff;
 	}
-	/* Sky blue at full opacity, not dimmed white — a translucent white read
-	   as disabled/inactive UI text rather than an intentional secondary
-	   brand color. Sky blue is already in the marine palette and isn't a
-	   status color (green/orange are), so it doesn't borrow meaning from
+	/* Same size as "Cerberus Blue" — a much smaller suffix threw the lockup's
+	   balance off. Hierarchy now comes from weight + the sky-blue tint
+	   (dropped to 80% opacity so it still reads as secondary) rather than
+	   from a size drop. Sky blue is already in the marine palette and isn't
+	   a status color (green/orange are), so it doesn't borrow meaning from
 	   elsewhere in the UI. */
 	.brand-suffix {
 		font-family: var(--font-body);
-		font-size: 13px;
+		font-size: 16px;
 		font-weight: 600;
 		letter-spacing: 0.01em;
 		color: var(--color-sky);
+		opacity: 0.8;
 	}
 	.fleet {
 		display: flex;
