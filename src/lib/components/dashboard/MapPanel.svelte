@@ -12,7 +12,7 @@
 		/**
 		 * Map style URL. Defaults to the app's dark teal style (static/dark.json,
 		 * built on OpenFreeMap tiles — no API key needed) to match the rest of
-		 * the Cerberus OS design.
+		 * the Cerberus Blue OS design.
 		 */
 		styleUrl?: string;
 		onselect?: (id: string) => void;

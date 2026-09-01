@@ -8,7 +8,7 @@ export interface Hydra {
 	label: string;
 }
 
-// Core domain model for Cerberus OS.
+// Core domain model for Cerberus Blue OS.
 //
 // A buoy carries two parallel logs:
 //   1. a sensor log  — automatic telemetry (Reading / series)

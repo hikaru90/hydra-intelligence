@@ -5,7 +5,7 @@
    build. */
 
 /*
- * Cerberus OS design tokens (dashboard + buoy screens).
+ * Cerberus Blue OS design tokens (dashboard + buoy screens).
  * Declared in @theme so they are available both as Tailwind utilities
  * (bg-teal, text-green, font-heading ...) and as CSS custom properties
  * (var(--color-teal) ...) inside component <style> blocks.

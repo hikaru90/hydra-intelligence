@@ -63,7 +63,7 @@
   <header class="s1-header">
     <div class="brand" style="view-transition-name: brand-mark">
       <img class="logo" src="/cerberus-mark-dark.svg" alt="" aria-hidden="true" />
-      <span class="brand-name">Cerberus OS</span>
+      <span class="brand-name"><span class="brand-primary">Cerberus Blue</span> <span class="brand-suffix">OS</span></span>
     </div>
   </header>
 
@@ -171,12 +171,24 @@
     height: 26px;
   }
   .brand-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .brand-primary {
     font-family: var(--font-heading);
     font-size: 16px;
     font-weight: 700;
     letter-spacing: 0.02em;
     color: #fff;
-    white-space: nowrap;
+  }
+  .brand-suffix {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.55);
   }
 
   /* Sits roughly where the dashboard's MapPanel does, but taller and fading

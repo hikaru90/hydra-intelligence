@@ -57,7 +57,7 @@
     });
   });
 
-  // Cerberus OS app screens (dashboard, buoy detail, login, register) ship
+  // Cerberus Blue OS app screens (dashboard, buoy detail, login, register) ship
   // their own full-screen layout and header — the global Navbar is only
   // shown on the remaining pages.
   const isAppScreen = $derived(
