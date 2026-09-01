@@ -248,7 +248,10 @@
 
   /* Light capsules on the deep teal — same fully-rounded object language as
      the buoy cards, inverted for the dark ground (and matching how the app's
-     bottom sheets put light fields on teal). */
+     bottom sheets put light fields on teal). Sky blue instead of plain white
+     ties them to Screen 1's own background gradient, which fades into this
+     same hue at the bottom — lightened further toward white so the fields
+     stay a clearly distinct, airy surface rather than a saturated block. */
   .input {
     width: 100%;
     height: 56px;
@@ -256,7 +259,7 @@
     padding: 0 24px;
     border: 1px solid transparent;
     border-radius: 28px;
-    background: #fff;
+    background: #f2fbfd;
     color: var(--color-teal);
     font-family: var(--font-body);
     /* 16px, not smaller — iOS Safari auto-zooms the page on focus for any
