@@ -36,15 +36,15 @@
 				<line x1="10" y1="11" x2="10" y2="17" />
 				<line x1="14" y1="11" x2="14" y2="17" />
 			</svg>
-			Remove Buoy
+			Delete Buoy
 		</button>
 		<button class="btn-cancel" onclick={cancel}>Cancel</button>
 	{:else}
-		<div class="title">Remove {buoyName}?</div>
+		<div class="title">Delete {buoyName}?</div>
 		<p class="warning">
-			This removes {buoyName} and its full history from your fleet. This can't be undone.
+			This deletes {buoyName} and its full history from your fleet. This can't be undone.
 		</p>
-		<button class="danger confirm" onclick={remove}>Yes, Remove Buoy</button>
+		<button class="danger confirm" onclick={remove}>Yes, Delete Buoy</button>
 		<button class="btn-cancel" onclick={() => (confirming = false)}>Cancel</button>
 	{/if}
 </BottomSheet>

@@ -193,7 +193,7 @@
 		display: flex;
 		align-items: center;
 		gap: 3px;
-		margin-left: auto;
+		margin-left: 10px;
 		flex-shrink: 0;
 		font-size: 10px;
 		font-weight: 600;
