@@ -14,7 +14,10 @@
 </script>
 
 <header class="s1-header">
-	<div class="brand">
+	<!-- Shares view-transition-name with the login screen's identical brand
+	     lockup, so signing in leaves it sitting still while the rest of the
+	     page transitions around it. -->
+	<div class="brand" style="view-transition-name: brand-mark">
 		<img class="logo" src="/cerberus-mark-dark.svg" alt="" aria-hidden="true" />
 		<span class="brand-name">Cerberus OS</span>
 	</div>
@@ -40,7 +43,7 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 10px;
-		padding: 12px 16px 10px;
+		padding: calc(12px + env(safe-area-inset-top)) 16px 10px;
 		background: var(--color-teal);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 	}

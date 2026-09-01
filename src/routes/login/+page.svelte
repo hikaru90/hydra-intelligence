@@ -54,54 +54,66 @@
   const { form: formData, errors, enhance } = form;
 </script>
 
+<!-- Deliberately built on the dashboard's skeleton (FleetHeader -> MapPanel ->
+     light content list), so signing in reads as the same app continuing rather
+     than a different one handing over: same dark header bar with the same brand
+     lockup, a visual panel in the slot the map occupies, then content on the
+     same light gradient. -->
 <div class="screen">
-  <div class="photo-band" aria-hidden="true"></div>
-  <div class="content">
-    <div class="brand-row">
-      <img class="mark" src="/cerberus-icon-green.svg" alt="" aria-hidden="true" />
-      <span class="brand-text">Cerberus Blue Systems</span>
+  <header class="s1-header">
+    <div class="brand" style="view-transition-name: brand-mark">
+      <img class="logo" src="/cerberus-mark-dark.svg" alt="" aria-hidden="true" />
+      <span class="brand-name">Cerberus OS</span>
+    </div>
+  </header>
+
+  <div class="photo-panel" aria-hidden="true"></div>
+
+  <div class="body">
+    <div class="section-label">
+      <span class="section-name">{m.loginToAccount()}</span>
+      <span class="section-line"></span>
     </div>
 
     <form method="POST" use:enhance action="/login?/login" onsubmit={handleSubmit} class="form">
-      <div class="field">
-        <label class="label" for="email">{m.email()}</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autocomplete="email"
-          class="input"
-          bind:value={$formData.email}
-        />
-        {#if $errors.email}<span class="err">{$errors.email}</span>{/if}
-      </div>
+      <label class="sr-only" for="email">{m.email()}</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        class="input"
+        placeholder={m.email()}
+        bind:value={$formData.email}
+      />
+      {#if $errors.email}<span class="err">{$errors.email}</span>{/if}
 
-      <div class="field">
-        <div class="label-row">
-          <label class="label" for="password">{m.password()}</label>
-          <button
-            type="button"
-            class="forgot"
-            onclick={() => (resetPasswordDialogOpen = true)}
-          >
-            {m.forgotPassword()}
-          </button>
-        </div>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autocomplete="current-password"
-          class="input"
-          bind:value={$formData.password}
-        />
-        {#if $errors.password}<span class="err">{$errors.password}</span>{/if}
-      </div>
+      <label class="sr-only" for="password">{m.password()}</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        class="input"
+        placeholder={m.password()}
+        bind:value={$formData.password}
+      />
+      {#if $errors.password}<span class="err">{$errors.password}</span>{/if}
 
       <button class="btn" disabled={signingIn}>
         {signingIn ? '…' : m.login()}
       </button>
-      <a class="btn-cancel" href="/register">{m.switchToRegister()}</a>
+
+      <!-- Both secondary actions live together, well clear of the primary
+           button — "Forgot password?" used to sit directly above it, close
+           enough to hit by accident when reaching for sign-in. -->
+      <div class="secondary">
+        <button type="button" class="link" onclick={() => (resetPasswordDialogOpen = true)}>
+          {m.forgotPassword()}
+        </button>
+        <span class="dot" aria-hidden="true"></span>
+        <a class="link" href="/register">{m.switchToRegister()}</a>
+      </div>
     </form>
   </div>
 </div>
@@ -124,130 +136,157 @@
 </Dialog.Root>
 
 <style>
+  /* Same shell as the dashboard route, but kept on the deep teal the app
+     uses for its sheets rather than the dashboard's light list ground —
+     the photo needs to fade into something, and a hard photo-to-white edge
+     looked like a seam. */
   .screen {
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
     min-height: 100dvh;
     max-width: 480px;
     margin: 0 auto;
-    position: relative;
-    padding: 32px 24px calc(56px + env(safe-area-inset-bottom));
-    /* Matches the wordmark SVG's own background fill exactly, so the logo
-       has no visible edge/card around it — the photo band above is capped
-       to a fixed height so it never reaches this far down. */
     background: var(--color-teal);
+    overflow: hidden;
   }
-  .photo-band {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 300px;
-    z-index: 0;
-    /* Real HYDRA-in-water photo for a maritime feel, fading into the
-       screen's flat fill so it reads as an accent, not a full backdrop. */
-    background:
-      linear-gradient(180deg, rgba(9, 43, 58, 0.15) 0%, var(--color-teal) 100%),
-      url('/login-bg-hydra.jpg') top center / cover no-repeat;
-  }
-  .content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-    max-width: 340px;
-  }
-  .brand-row {
+
+  /* Identical to FleetHeader's bar and brand lockup (26px mark, 10px gap,
+     16px 700-weight heading) so the two headers are interchangeable. */
+  .s1-header {
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 36px;
+    padding: calc(12px + env(safe-area-inset-top)) 16px 10px;
+    background: var(--color-teal);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
-  .mark {
-    width: 46px;
-    height: 46px;
-    flex-shrink: 0;
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
   }
-  .brand-text {
+  .logo {
+    width: 26px;
+    height: 26px;
+  }
+  .brand-name {
     font-family: var(--font-heading);
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: 0.02em;
-    color: var(--color-green);
+    color: #fff;
+    white-space: nowrap;
   }
+
+  /* Sits roughly where the dashboard's MapPanel does, but taller and fading
+     out at the bottom instead of ending on a hard edge — a photograph cut
+     off mid-frame reads as a seam in a way a map panel doesn't. */
+  .photo-panel {
+    height: 380px;
+    flex-shrink: 0;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(9, 43, 58, 0.1) 0%,
+        rgba(17, 57, 75, 0.15) 45%,
+        rgba(17, 57, 75, 0.85) 82%,
+        var(--color-teal) 100%
+      ),
+      url('/login-bg-hydra.jpg') center 30% / cover no-repeat;
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* A light tuck into the photo's faded tail (not a deep pull like
+       before) — enough to feel continuous with the fade, but with real
+       clearance from the buoy itself so the fields don't crowd it. */
+    margin-top: -12px;
+    padding: 20px 22px calc(24px + env(safe-area-inset-bottom));
+  }
+
+  /* Same treatment as BuoyList's site headings. */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px 2px;
+    margin-bottom: 12px;
+  }
+  .section-name {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.16);
+  }
+
   .form {
     display: flex;
     flex-direction: column;
-    width: 100%;
   }
-  .field {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 14px;
-  }
-  .label {
-    margin-bottom: 8px;
-    font-family: var(--font-heading);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.72);
-  }
-  .label-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
-  }
-  .forgot {
-    margin-bottom: 8px;
-    border: none;
-    background: none;
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
     padding: 0;
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--color-green);
-    cursor: pointer;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
+
+  /* Light capsules on the deep teal — same fully-rounded object language as
+     the buoy cards, inverted for the dark ground (and matching how the app's
+     bottom sheets put light fields on teal). */
   .input {
     width: 100%;
-    padding: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.07);
-    color: #fff;
+    height: 56px;
+    margin-bottom: 10px;
+    padding: 0 24px;
+    border: 1px solid transparent;
+    border-radius: 28px;
+    background: #fff;
+    color: var(--color-teal);
     font-family: var(--font-body);
-    /* 16px, not 13 — iOS Safari auto-zooms the page on focus for any input
-       with a smaller font-size, which reads as a jarring "jump" on mobile. */
+    /* 16px, not smaller — iOS Safari auto-zooms the page on focus for any
+       input below 16px, which reads as a jarring "jump" on mobile. */
     font-size: 16px;
   }
   .input::placeholder {
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(17, 57, 75, 0.45);
   }
   .input:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.35);
+    border-color: var(--color-green);
+    box-shadow: 0 0 0 3px rgba(21, 228, 154, 0.25);
   }
   .err {
-    margin-top: 6px;
+    margin: 0 0 10px 24px;
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--color-orange);
   }
 
+  /* Same gradient capsule as the dashboard's add-buoy FAB. */
   .btn {
     width: 100%;
-    height: 52px;
-    margin-top: 8px;
+    height: 56px;
+    margin-top: 16px;
     border: none;
-    border-radius: 26px;
-    background: var(--gradient-brand, linear-gradient(135deg, #15e49a, #fbffaa));
+    border-radius: 28px;
+    background: var(--gradient-brand);
+    box-shadow: var(--shadow-fab);
     color: var(--color-teal);
     font-family: var(--font-heading);
     font-size: 14px;
@@ -258,25 +297,40 @@
     opacity: 0.85;
   }
   .btn:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: default;
   }
-  .btn-cancel {
-    display: block;
-    width: 100%;
-    margin-top: 14px;
-    padding: 0;
+  /* Sits well below the primary button, with both links given a full 44px
+     touch target so neither can be clipped by a stray reach for sign-in. */
+  .secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 28px;
+  }
+  .link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 4px;
     border: none;
     background: none;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.6);
     font-family: var(--font-heading);
     font-size: 13px;
     font-weight: 600;
+    color: rgba(255, 255, 255, 0.62);
     text-decoration: none;
     cursor: pointer;
   }
-  .btn-cancel:active {
-    color: rgba(255, 255, 255, 0.9);
+  .link:active {
+    color: #fff;
+  }
+  .dot {
+    width: 3px;
+    height: 3px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.28);
   }
 </style>
