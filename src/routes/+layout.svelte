@@ -40,11 +40,14 @@
     });
   });
 
-  // Cerberus OS app screens (dashboard, buoy detail, login) ship their own
-  // full-screen layout and header — the global Navbar is only shown on the
-  // remaining pages.
+  // Cerberus OS app screens (dashboard, buoy detail, login, register) ship
+  // their own full-screen layout and header — the global Navbar is only
+  // shown on the remaining pages.
   const isAppScreen = $derived(
-    page.url.pathname === '/' || page.url.pathname.startsWith('/buoy/') || page.url.pathname === '/login'
+    page.url.pathname === '/' ||
+      page.url.pathname.startsWith('/buoy/') ||
+      page.url.pathname === '/login' ||
+      page.url.pathname === '/register'
   );
 </script>
 
