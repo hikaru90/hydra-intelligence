@@ -50,17 +50,17 @@
 		justify-content: center;
 		width: 100%;
 		height: 52px;
-		border: none;
+		border: 1.5px solid var(--color-orange);
 		border-radius: 26px;
-		background: var(--color-orange);
-		color: var(--color-teal);
+		background: rgba(253, 122, 78, 0.08);
+		color: var(--color-orange);
 		font-family: var(--font-heading);
 		font-size: 14px;
 		font-weight: 700;
 		cursor: pointer;
 	}
 	.danger:active {
-		opacity: 0.85;
+		background: rgba(253, 122, 78, 0.16);
 	}
 	.btn-cancel {
 		width: 100%;

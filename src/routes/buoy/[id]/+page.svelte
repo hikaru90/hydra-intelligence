@@ -16,6 +16,7 @@
 	import ExportSheet from '$lib/components/sheets/ExportSheet.svelte';
 	import ParameterDetailSheet from '$lib/components/sheets/ParameterDetailSheet.svelte';
 	import DeleteBuoySheet from '$lib/components/sheets/DeleteBuoySheet.svelte';
+	import BuoyActionsSheet from '$lib/components/sheets/BuoyActionsSheet.svelte';
 
 	let { data }: { data: { buoyId: string } } = $props();
 
@@ -31,6 +32,7 @@
 
 	// Sheets
 	let checkInOpen = $state(false);
+	let actionsOpen = $state(false);
 	let exportOpen = $state(false);
 	let deleteOpen = $state(false);
 	let detailOpen = $state(false);
@@ -122,8 +124,7 @@
 		{compare}
 		onback={() => goto('/')}
 		onselect={selectBuoy}
-		onexport={() => (exportOpen = true)}
-		ondelete={() => (deleteOpen = true)}
+		onactions={() => (actionsOpen = true)}
 	/>
 
 	<TabBar {tab} {compare} onchange={changeTab} />
@@ -168,6 +169,12 @@
 		{nearestId}
 		{latestFor}
 		onsave={saveCheckIn}
+	/>
+	<BuoyActionsSheet
+		bind:open={actionsOpen}
+		hideDelete={compare}
+		onexport={() => (exportOpen = true)}
+		ondelete={() => (deleteOpen = true)}
 	/>
 	<ExportSheet bind:open={exportOpen} />
 	<DeleteBuoySheet bind:open={deleteOpen} buoyName={buoy.name} ondelete={deleteBuoy} />
