@@ -63,23 +63,27 @@
 		text-overflow: ellipsis;
 		min-width: 0;
 	}
+	/* Plain Montserrat (--font-body), not the Alternates display face used
+	   for section labels/big numbers elsewhere — the wordmark reads more
+	   composed and less decorative in the straighter face. */
 	.brand-primary {
-		font-family: var(--font-heading);
+		font-family: var(--font-body);
 		font-size: 16px;
 		font-weight: 700;
-		letter-spacing: 0.02em;
+		letter-spacing: 0.01em;
 		color: #fff;
 	}
-	/* Lighter weight + dimmer, not a color accent — green is already
-	   "online/ok" everywhere else in this UI, so tinting the wordmark would
-	   read as a status, not a brand. Weight/opacity alone gives it hierarchy
-	   without borrowing that meaning. */
+	/* Sky blue at full opacity, not dimmed white — a translucent white read
+	   as disabled/inactive UI text rather than an intentional secondary
+	   brand color. Sky blue is already in the marine palette and isn't a
+	   status color (green/orange are), so it doesn't borrow meaning from
+	   elsewhere in the UI. */
 	.brand-suffix {
-		font-family: var(--font-heading);
+		font-family: var(--font-body);
 		font-size: 13px;
-		font-weight: 500;
-		letter-spacing: 0.02em;
-		color: rgba(255, 255, 255, 0.55);
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		color: var(--color-sky);
 	}
 	.fleet {
 		display: flex;

@@ -177,18 +177,18 @@
     min-width: 0;
   }
   .brand-primary {
-    font-family: var(--font-heading);
+    font-family: var(--font-body);
     font-size: 16px;
     font-weight: 700;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     color: #fff;
   }
   .brand-suffix {
-    font-family: var(--font-heading);
+    font-family: var(--font-body);
     font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    color: rgba(255, 255, 255, 0.55);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--color-sky);
   }
 
   /* Sits roughly where the dashboard's MapPanel does, but taller and fading
