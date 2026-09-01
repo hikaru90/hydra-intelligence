@@ -15,7 +15,7 @@
 	import CheckInSheet from '$lib/components/sheets/CheckInSheet.svelte';
 	import ExportSheet from '$lib/components/sheets/ExportSheet.svelte';
 	import ParameterDetailSheet from '$lib/components/sheets/ParameterDetailSheet.svelte';
-	import ManageBuoySheet from '$lib/components/sheets/ManageBuoySheet.svelte';
+	import DeleteBuoySheet from '$lib/components/sheets/DeleteBuoySheet.svelte';
 
 	let { data }: { data: { buoyId: string } } = $props();
 
@@ -32,7 +32,7 @@
 	// Sheets
 	let checkInOpen = $state(false);
 	let exportOpen = $state(false);
-	let manageOpen = $state(false);
+	let deleteOpen = $state(false);
 	let detailOpen = $state(false);
 	let detailParam = $state<ParameterId | null>(null);
 	let detailBuoyId = $state<string | null>(null);
@@ -123,7 +123,7 @@
 		onback={() => goto('/')}
 		onselect={selectBuoy}
 		onexport={() => (exportOpen = true)}
-		onmanage={() => (manageOpen = true)}
+		ondelete={() => (deleteOpen = true)}
 	/>
 
 	<TabBar {tab} {compare} onchange={changeTab} />
@@ -170,7 +170,7 @@
 		onsave={saveCheckIn}
 	/>
 	<ExportSheet bind:open={exportOpen} />
-	<ManageBuoySheet bind:open={manageOpen} buoyName={buoy.name} onremove={deleteBuoy} />
+	<DeleteBuoySheet bind:open={deleteOpen} buoyName={buoy.name} ondelete={deleteBuoy} />
 	<ParameterDetailSheet
 		bind:open={detailOpen}
 		paramId={detailParam}
