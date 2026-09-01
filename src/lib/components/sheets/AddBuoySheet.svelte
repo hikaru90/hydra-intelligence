@@ -93,7 +93,7 @@
 
 	.input { width: 100%; margin-bottom: 12px; padding: 14px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: rgba(255, 255, 255, 0.07); color: #fff; font-family: var(--font-body); font-size: 16px; }
 	.input::placeholder { color: rgba(255, 255, 255, 0.45); }
-	.input:focus { outline: none; border-color: rgba(255, 255, 255, 0.35); }
+	.input:focus { outline: none; border-color: var(--color-green); box-shadow: 0 0 0 3px rgba(21, 228, 154, 0.25); }
 
 	.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
 	.opt { display: flex; align-items: center; gap: 9px; padding: 11px 12px; border: 1.5px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: none; cursor: pointer; text-align: left; transition: all 0.15s; }

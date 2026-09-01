@@ -136,7 +136,7 @@
 	.field { flex: 1; display: flex; flex-direction: column; gap: 6px; }
 	.date-lbl { font-family: var(--font-heading); font-size: 10px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
 	.date { width: 100%; min-height: 48px; padding: 13px 12px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: rgba(255, 255, 255, 0.07); color: #fff; font-family: var(--font-body); font-size: 16px; color-scheme: dark; }
-	.date:focus { outline: none; border-color: rgba(255, 255, 255, 0.35); }
+	.date:focus { outline: none; border-color: var(--color-green); box-shadow: 0 0 0 3px rgba(21, 228, 154, 0.25); }
 	.summary { margin: 10px 0 18px; font-family: var(--font-body); font-size: 11px; font-weight: 600; color: rgba(255, 255, 255, 0.85); }
 	.summary.bad { color: var(--color-orange); }
 

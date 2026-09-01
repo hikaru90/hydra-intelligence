@@ -188,7 +188,7 @@
 
 	.note { width: 100%; height: 80px; margin-bottom: 14px; padding: 12px; resize: none; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: rgba(255, 255, 255, 0.07); color: #fff; font-family: var(--font-body); font-size: 16px; }
 	.note::placeholder { color: rgba(255, 255, 255, 0.45); }
-	.note:focus { outline: none; border-color: rgba(255, 255, 255, 0.35); }
+	.note:focus { outline: none; border-color: var(--color-green); box-shadow: 0 0 0 3px rgba(21, 228, 154, 0.25); }
 
 	.btn { width: 100%; height: 52px; border: none; border-radius: 26px; background: var(--gradient-brand); color: var(--color-teal); font-family: var(--font-heading); font-size: 14px; font-weight: 700; cursor: pointer; }
 	.btn:active { opacity: 0.85; }
