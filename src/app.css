@@ -95,6 +95,29 @@ html.vt-water::view-transition-new(root) {
   }
 }
 
+/* Login <-> register: both screens share the same header/photo/body
+   skeleton, so this is a plain, fast opacity cross-fade — no scale, no
+   slide. Anything more choreographed would suggest a scene change, but
+   this is the same screen with a different form swapped in. Faster than
+   the other transitions (220ms vs 380-400ms) since there's no motion to
+   read, just a form-content swap. */
+html.vt-auth-switch::view-transition-old(root) {
+  animation: auth-switch-out 220ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+html.vt-auth-switch::view-transition-new(root) {
+  animation: auth-switch-in 220ms cubic-bezier(0, 0, 0.2, 1) both;
+}
+@keyframes auth-switch-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes auth-switch-in {
+  from {
+    opacity: 0;
+  }
+}
+
 /* Dashboard <-> buoy detail: a native-feeling push/pop slide (only the
    entering/leaving layer moves; the other stays put underneath) instead of
    the flat default cross-fade. Drilling in slides the buoy screen in from
@@ -153,6 +176,8 @@ html.vt-back::view-transition-old(root) {
 @media (prefers-reduced-motion: reduce) {
   html.vt-water::view-transition-old(root),
   html.vt-water::view-transition-new(root),
+  html.vt-auth-switch::view-transition-old(root),
+  html.vt-auth-switch::view-transition-new(root),
   html.vt-forward::view-transition-new(root),
   html.vt-back::view-transition-old(root) {
     animation: none;

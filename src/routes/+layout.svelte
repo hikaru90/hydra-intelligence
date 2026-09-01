@@ -15,10 +15,19 @@
     const fromPath = navigation.from?.url.pathname;
     const toPath = navigation.to?.url.pathname;
 
-    // The drain-into-the-corner wipe (app.css) is reserved for leaving
-    // /login — every other navigation keeps the plain cross-fade so it
-    // doesn't get old fast.
-    const isLoginExit = fromPath === '/login';
+    // The drain-into-the-corner wipe (app.css) reads as "leaving the auth
+    // flow into the app" — it's only correct when the destination is the
+    // dashboard. It used to fire on every navigation away from /login,
+    // which meant clicking through to /register also played the "exiting
+    // into the app" animation, even though that's just a lateral move
+    // between two sibling auth screens.
+    const isLoginExit = fromPath === '/login' && toPath === '/';
+    // Login <-> register share the same header/photo/body skeleton, so a
+    // quick plain cross-fade (no drain, no slide) is enough to read as
+    // "same screen, different form" rather than a scene change.
+    const isAuthSwitch =
+      (fromPath === '/login' && toPath === '/register') ||
+      (fromPath === '/register' && toPath === '/login');
     // Dashboard <-> buoy detail reads as drilling into / backing out of a
     // buoy, so it gets a native-feeling push/pop slide instead of the flat
     // default cross-fade. (Switching buoys *within* the detail screen is
@@ -26,7 +35,15 @@
     const isDrillIn = fromPath === '/' && !!toPath?.startsWith('/buoy/');
     const isBackOut = !!fromPath?.startsWith('/buoy/') && toPath === '/';
 
-    const cls = isLoginExit ? 'vt-water' : isDrillIn ? 'vt-forward' : isBackOut ? 'vt-back' : null;
+    const cls = isLoginExit
+      ? 'vt-water'
+      : isAuthSwitch
+        ? 'vt-auth-switch'
+        : isDrillIn
+          ? 'vt-forward'
+          : isBackOut
+            ? 'vt-back'
+            : null;
     if (cls) document.documentElement.classList.add(cls);
 
     return new Promise((resolve) => {
