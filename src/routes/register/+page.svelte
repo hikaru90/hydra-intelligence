@@ -180,8 +180,11 @@
     opacity: 0.8;
   }
 
+  /* Shorter than /login's — register has one more field row (first/last
+     name), and the two screens sharing the exact same photo height isn't
+     worth the extra scroll it forces here. */
   .photo-panel {
-    height: 380px;
+    height: 190px;
     flex-shrink: 0;
     background:
       linear-gradient(
