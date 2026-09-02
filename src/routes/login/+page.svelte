@@ -5,10 +5,8 @@
   import { m } from "$src/paraglide/messages";
   import { toast } from "svelte-sonner";
   import { goto } from "$app/navigation";
-  import { Button } from "$lib/components/ui/button";
-  import * as Dialog from "$lib/components/ui/dialog";
-  import Check from "lucide-svelte/icons/check";
   import { authClient } from "$lib/auth-client";
+  import ForgotPasswordSheet from "$lib/components/sheets/ForgotPasswordSheet.svelte";
 
   export let data: SuperValidated<Infer<FormSchema>> & { redirectTo?: string | null };
 
@@ -45,7 +43,7 @@
     goto(data.redirectTo ?? "/", { invalidateAll: true });
   }
 
-  const resetPassword = async () => {
+  const resetPassword = async (email: string) => {
     resetPasswordDialogOpen = false;
     // TODO: better-auth forgot password flow
     toast.success(m.forgotPasswordSuccess());
@@ -116,24 +114,9 @@
       </div>
     </form>
   </div>
-</div>
 
-<Dialog.Root bind:open={resetPasswordDialogOpen} preventScroll={false}>
-  <Dialog.Content>
-    <Dialog.Header>
-      <Dialog.Title class="mb-10 leading-tight">{m.forgotPassword()}</Dialog.Title>
-      <Dialog.Description>
-        {m.forgotPasswordDescription()}
-        <div class="mt-4 flex justify-end">
-          <Button on:click={resetPassword} class="flex items-center gap-3 bg-muted-dark"
-            >{m.forgotPassword()}
-            <Check class="text-needs-background" /></Button
-          >
-        </div>
-      </Dialog.Description>
-    </Dialog.Header>
-  </Dialog.Content>
-</Dialog.Root>
+  <ForgotPasswordSheet bind:open={resetPasswordDialogOpen} onsubmit={resetPassword} />
+</div>
 
 <style>
   /* Same shell as the dashboard route, but kept on the deep teal the app
