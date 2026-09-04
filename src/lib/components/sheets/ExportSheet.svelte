@@ -2,11 +2,10 @@
 	import BottomSheet from '$lib/components/BottomSheet.svelte';
 
 	type Preset = '24h' | '7d' | '30d' | 'all' | 'custom';
-	type Format = 'pdf' | 'csv';
 
 	interface Props {
 		open?: boolean;
-		onexport?: (payload: { preset: Preset; format: Format; from?: string; to?: string }) => void;
+		onexport?: (payload: { preset: Preset; from?: string; to?: string }) => void;
 		onclose?: () => void;
 	}
 
@@ -25,14 +24,12 @@
 	}
 
 	let preset = $state<Preset>('7d');
-	let format = $state<Format>('pdf');
 	let from = $state('');
 	let to = $state('');
 
 	$effect(() => {
 		if (open) {
 			preset = '7d';
-			format = 'pdf';
 			to = isoDate(new Date());
 			from = isoDate(new Date(Date.now() - 6 * DAY));
 		}
@@ -70,7 +67,7 @@
 
 	function start() {
 		if (!canExport) return;
-		onexport?.(preset === 'custom' ? { preset, format, from, to } : { preset, format });
+		onexport?.(preset === 'custom' ? { preset, from, to } : { preset });
 		open = false;
 	}
 	function cancel() {
@@ -108,13 +105,11 @@
 		</div>
 	{/if}
 
-	<div class="label">Photo Gallery</div>
-	<div class="gallery"><div class="tile"></div><div class="tile"></div><div class="tile"></div></div>
-
-	<div class="label">Format</div>
-	<div class="formats">
-		<button class="fmt" class:sel={format === 'pdf'} onclick={() => (format = 'pdf')}>PDF<span>Report with charts &amp; photos</span></button>
-		<button class="fmt" class:sel={format === 'csv'} onclick={() => (format = 'csv')}>CSV<span>Raw data, full precision</span></button>
+	<div class="csv-note">
+		<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z" />
+		</svg>
+		<span>Exported as CSV — raw data, full precision</span>
 	</div>
 
 	<button class="btn" onclick={start} disabled={!canExport}>Start Export</button>
@@ -140,13 +135,8 @@
 	.summary { margin: 10px 0 18px; font-family: var(--font-body); font-size: 11px; font-weight: 600; color: rgba(255, 255, 255, 0.85); }
 	.summary.bad { color: var(--color-orange); }
 
-	.gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 18px; }
-	.tile { aspect-ratio: 1; border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 8px; background: var(--color-teal-deep); }
-
-	.formats { display: flex; gap: 8px; margin-bottom: 18px; }
-	.fmt { flex: 1; padding: 13px 10px; border: 1.5px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: none; cursor: pointer; text-align: center; font-family: var(--font-heading); font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.7); transition: all 0.15s; }
-	.fmt.sel { border-color: var(--color-green); background: rgba(21, 228, 154, 0.1); color: #fff; }
-	.fmt span { display: block; margin-top: 3px; font-family: var(--font-body); font-size: 9px; font-weight: 400; line-height: 1.4; color: rgba(255, 255, 255, 0.6); }
+	.csv-note { display: flex; align-items: center; gap: 7px; margin-bottom: 18px; font-family: var(--font-body); font-size: 11.5px; font-weight: 500; color: rgba(255, 255, 255, 0.62); }
+	.csv-note svg { flex-shrink: 0; }
 
 	.btn { width: 100%; height: 52px; border: none; border-radius: 26px; background: var(--gradient-brand); color: var(--color-teal); font-family: var(--font-heading); font-size: 14px; font-weight: 700; cursor: pointer; }
 	.btn:disabled { opacity: 0.45; cursor: default; }

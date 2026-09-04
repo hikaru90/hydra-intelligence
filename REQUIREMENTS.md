@@ -161,10 +161,8 @@ Ein Check-In ist eine menschliche Feldbeobachtung, kein Wartungslog. Öffnet als
 Bottom Sheet: Name, **Deployment-Typ** (2×2-Raster mit Icons), **adaptives Subjekt-Feld** (Label passt sich dem Typ an — „Was wird kultiviert?" / „Was wird untersucht?"), Standort-Beschreibung. Batterie und Check-In werden automatisch gefüllt.
 
 **Export (V1)**  
-Export-Icon oben rechts im Bojen-Screen. Tippen → Bottom Sheet: Zeitraum wählen (24h / 7d / 30d / Alle / Benutzerdefiniert mit validierten Datumsfeldern) + Format wählen.  
-Zwei Formate:  
-— CSV: rohe Daten, alle Dezimalstellen, für alle die tiefer wollen (Forscher, Betreiber, interne Analyse)  
-— PDF: designtes Dokument im App-Look (Cerberus-Header, Ampelfarben, Mini-Kurven, Metadaten)  
+Export-Aktion im Bojen-Screen (unter "Buoy actions"). Tippen → Bottom Sheet: Zeitraum wählen (24h / 7d / 30d / Alle / Benutzerdefiniert mit validierten Datumsfeldern).  
+Nur ein Format: CSV — rohe Daten, alle Dezimalstellen, für alle die tiefer wollen (Forscher, Betreiber, interne Analyse). Der designte PDF-Report (App-Look, Ampelfarben, Mini-Kurven, Metadaten) ist gestrichen — kein Bedarf in V1.  
 Export wird per E-Mail verschickt oder direkt als Download.
 
 **Was V1 nicht hat:**  
